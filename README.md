@@ -1,5 +1,8 @@
 FTC ThunderWolves, Team 26205
-Includes Pedro Pathing 
+
+Includes Pedro Pathing constants and tuning in the TEAMCODE folder
+
+Includes old team code (including Fluffy) in org/firstinspires/ftc/robotcontroller/team/samples
 
 BenBot Branch is for the chassis that Ben is messing with at home.
 

@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.robotcontroller.team.samples; // Defines the package where this class is located.
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @TeleOp(name = "JLG_Encoder_Equalize", group = "LinearOpMode") // Annotates the class as a TeleOp mode with a name and group.
+@Disabled
 public class JLG_Encoder_Equalize extends LinearOpMode { // Begins the class definition for the TeleOp mode.
 
     private DcMotor leftMotor; // Declares the left motor variable.

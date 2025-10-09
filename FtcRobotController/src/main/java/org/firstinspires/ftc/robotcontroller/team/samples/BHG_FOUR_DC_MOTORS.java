@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @TeleOp(name = "Ben 4 Motors", group = "Teleop")
+@Disabled
 public class BHG_FOUR_DC_MOTORS extends LinearOpMode{
     public DcMotor frontLeft;
     public DcMotor frontRight;

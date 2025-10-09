@@ -5,12 +5,14 @@ package org.firstinspires.ftc.robotcontroller.team.samples;
 
 //Import Statements Go Here
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @TeleOp(name="Default TeleOp OpMode Template", group="TeleOp") //Change "AAA_TeleOp_Template" to the name of your OpMode
+@Disabled
 public class AAA_TeleOp_Opmode_Template extends OpMode {
 
   //Declare Variables Here

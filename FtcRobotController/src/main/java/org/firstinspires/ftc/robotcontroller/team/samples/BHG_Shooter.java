@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "Ben Shooter", group = "Teleop")
+@Disabled
 public class BHG_Shooter extends LinearOpMode {
     private DcMotor leftDrive;
     private DcMotor rightDrive;

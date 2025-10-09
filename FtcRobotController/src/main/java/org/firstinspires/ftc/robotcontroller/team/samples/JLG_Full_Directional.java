@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "JLG_Full_Directional", group = "TeleOp")
+@Disabled
 public class JLG_Full_Directional extends LinearOpMode {
 
     private DcMotor leftDrive;

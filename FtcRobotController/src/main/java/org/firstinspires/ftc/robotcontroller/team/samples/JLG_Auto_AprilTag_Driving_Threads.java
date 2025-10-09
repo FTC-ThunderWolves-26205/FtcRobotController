@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @Autonomous(name = "JLG_Auto_AprilTag_Driving_Threads", group = "Autonomous")
+@Disabled
 public class JLG_Auto_AprilTag_Driving_Threads extends LinearOpMode {
 
     private DcMotor leftDrive;

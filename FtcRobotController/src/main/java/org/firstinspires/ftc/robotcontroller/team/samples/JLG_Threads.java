@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class JLG_Threads extends LinearOpMode {
-
+    @Disabled
     private DcMotor leftDrive;
     private DcMotor rightDrive;
     private DistanceSensor distanceSensor;

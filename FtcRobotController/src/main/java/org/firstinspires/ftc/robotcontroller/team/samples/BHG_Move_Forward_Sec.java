@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name = "BHG_Move_Forward_Sec", group = "Autonomous")
+@Disabled
 public class BHG_Move_Forward_Sec extends LinearOpMode {
 
     private DcMotor leftDrive;

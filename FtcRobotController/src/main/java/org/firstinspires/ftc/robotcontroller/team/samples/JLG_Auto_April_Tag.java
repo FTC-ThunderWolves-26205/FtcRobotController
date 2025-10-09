@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -15,6 +16,7 @@ import java.util.List;
 
 
 @Autonomous(name = "JLG_Auto_April_Tag", group = "Autonomous")
+@Disabled
 public class JLG_Auto_April_Tag extends LinearOpMode {
 
     //Declaring Variables for Motors and Distance Sensor

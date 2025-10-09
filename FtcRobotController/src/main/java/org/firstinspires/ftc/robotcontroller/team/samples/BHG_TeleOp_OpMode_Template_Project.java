@@ -5,6 +5,7 @@ package org.firstinspires.ftc.robotcontroller.team.samples;
 
 //Import Statements Go Here
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name="Ben's TeleOp OpMode Project", group="TeleOp") //Change "AAA_TeleOp_Template" to the name of your OpMode
+@Disabled
 public class BHG_TeleOp_OpMode_Template_Project extends OpMode {
 
     //Declare Variables Here

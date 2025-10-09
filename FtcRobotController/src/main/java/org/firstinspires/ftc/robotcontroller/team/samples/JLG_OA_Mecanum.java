@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "JLG_OA_Mecanum", group = "Autonomous")
+@Disabled
 public class JLG_OA_Mecanum extends LinearOpMode {
     private DcMotor frontLeft;
     private DcMotor frontRight;

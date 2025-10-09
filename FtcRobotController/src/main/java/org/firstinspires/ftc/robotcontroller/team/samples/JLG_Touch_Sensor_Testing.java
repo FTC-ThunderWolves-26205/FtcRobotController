@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 @TeleOp(name = "JLG_Touch_Sensor_Testing", group = "TeleOp")
+@Disabled
 public class JLG_Touch_Sensor_Testing extends LinearOpMode {
 
     TouchSensor touchSensor;

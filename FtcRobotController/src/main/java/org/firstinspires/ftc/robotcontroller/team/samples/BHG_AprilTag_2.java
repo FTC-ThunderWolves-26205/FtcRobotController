@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 //Second Vision Portal (by Sophie)
 
 @Autonomous(name="BHG_AprilTag_2", group="Autonomous") // Defines this OpMode as an autonomous program
+@Disabled
 public class BHG_AprilTag_2 extends LinearOpMode { // Creates a class extending LinearOpMode
     private DcMotor leftDrive;
     private DcMotor rightDrive;

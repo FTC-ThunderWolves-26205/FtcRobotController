@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="JLG_Servo_Test", group="TeleOp")
+@Disabled
 public class JLG_Servo_Test extends OpMode {
 
     private Servo servo;

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.robotcontroller.team.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -12,6 +13,7 @@ import java.util.List;
 //Second Vision Portal (by Sophie)
 
 @Autonomous
+@Disabled
 public class BHG_Logitech_AprilTag_Detect_2 extends LinearOpMode { // Creates a class extending LinearOpMode
     public VisionPortal visionPortal; // Declares the VisionPortal for handling camera input
     public AprilTagProcessor aprilTagProcessor; // Declares the AprilTag processor for detecting AprilTags

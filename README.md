@@ -1,3 +1,15 @@
+FTC ThunderWolves, Team 26205
+
+Includes Pedro Pathing constants and tuning in the TEAMCODE folder
+
+Includes old team code (including Fluffy) in org/firstinspires/ftc/robotcontroller/team/samples
+
+BenBot Branch is for the chassis that Ben is messing with at home.
+
+TeamBot Branch is for the team's bot being built at the lab.
+
+
+
 ## NOTICE
 
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.

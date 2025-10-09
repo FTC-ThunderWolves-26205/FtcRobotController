@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.robotcontroller.team.samples;
+package org.firstinspires.ftc.robotcontroller.external.samples.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @TeleOp(name = "JLG_Mecanum_Approach", group = "Teleop")
+@Disabled
 public class JLG_Mecanum_Approach extends LinearOpMode{
     public DcMotor frontLeft;
     public DcMotor frontRight;

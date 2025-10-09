@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.robotcontroller.team.samples;
+package org.firstinspires.ftc.robotcontroller.external.samples.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "BHG_Object Avoidance", group = "Autonomous")
+@Disabled
 public class BHG_Object_Avoidance extends LinearOpMode {
     private DcMotor leftDrive;
     private DcMotor rightDrive;

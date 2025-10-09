@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.robotcontroller.team.samples;
+package org.firstinspires.ftc.robotcontroller.external.samples.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -12,23 +12,14 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 //Second Vision Portal (by Sophie)
 
-@Autonomous(name="BHG_AprilTag_2", group="Autonomous") // Defines this OpMode as an autonomous program
-public class BHG_AprilTag_2 extends LinearOpMode { // Creates a class extending LinearOpMode
-    private DcMotor leftDrive;
-    private DcMotor rightDrive;
+@Autonomous(name="BHG_Camera_AprilTag_Detect", group="Autonomous") // Defines this OpMode as an autonomous program
+@Disabled
+public class BHG_Camera_AprilTag_Detect extends LinearOpMode { // Creates a class extending LinearOpMode
     public VisionPortal visionPortal; // Declares the VisionPortal for handling camera input
     public AprilTagProcessor aprilTagProcessor; // Declares the AprilTag processor for detecting AprilTags
 
     @Override
     public void runOpMode() { // Main function that runs the Autonomous program
-        //Initialize Motors
-        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-
-        // Set motor direction (adjust based on physical setup)
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-
         // Initialize AprilTag processor
         aprilTagProcessor = new AprilTagProcessor.Builder().build(); // Creates an AprilTagProcessor instance
 
@@ -47,12 +38,32 @@ public class BHG_AprilTag_2 extends LinearOpMode { // Creates a class extending 
             List<AprilTagDetection> detections = aprilTagProcessor.getDetections(); // Retrieves detected AprilTags
             if (detections.isEmpty()) {
                 telemetry.addData("NO TAG DETECTED", "No AprilTags found");
+                telemetry.update(); // Displays message for no tag detection
             } else {
-                for (AprilTagDetection tag : detections) { // Loops through all detected AprilTags
-                    telemetry.addData("AprilTag Detected!", "ID: %d", tag.id);
 
-                    leftDrive.setPower(0.5);
-                    rightDrive.setPower(0.5);
+
+                for (AprilTagDetection tag : detections) { // Loops through all detected AprilTags
+                    int TagId = tag.id;
+                    if (TagId == 11) { // Checks if the detected tag is ID 11 (Into the Deep AprilTag)
+                        telemetry.addData("AprilTag Detected!", "ID: %d", tag.id);
+                        telemetry.update();// Displays AprilTag detection info
+                    } else if (TagId == 12) {
+                        telemetry.addData("AprilTag Detected!", "ID: %d", tag.id);
+                        telemetry.update();// Displays AprilTag detection info
+                    } else if (TagId == 13) {
+                        telemetry.addData("AprilTag Detected!", "ID: %d", tag.id);
+                        telemetry.update();// Displays AprilTag detection info
+                    } else if (TagId == 14) {
+                        telemetry.addData("AprilTag Detected!", "ID: %d", tag.id);
+                        telemetry.update();// Displays AprilTag detection info
+                    } else if (TagId == 15) {
+                        telemetry.addData("AprilTag Detected!", "ID: %d", tag.id);
+                        telemetry.update();// Displays AprilTag detection info
+                    } else if (TagId == 16) {
+                        telemetry.addData("AprilTag Detected!", "ID: %d", tag.id);
+                        telemetry.update();// Displays AprilTag detection info
+                    }
+
 
                 }
 
@@ -64,5 +75,4 @@ public class BHG_AprilTag_2 extends LinearOpMode { // Creates a class extending 
 
     }
 }
-
 

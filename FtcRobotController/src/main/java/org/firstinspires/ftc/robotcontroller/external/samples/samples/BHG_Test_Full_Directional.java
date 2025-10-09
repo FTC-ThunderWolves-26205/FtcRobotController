@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.robotcontroller.team.samples;
+package org.firstinspires.ftc.robotcontroller.external.samples.samples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +18,7 @@ import java.util.List;
 /*Second Vision Portal (by Sophie)*/
 
 @TeleOp(name = "BHG Full Directional", group = "TeleOp")
+@Disabled
 public class BHG_Test_Full_Directional extends LinearOpMode {
     private DcMotor leftDrive;
     private DcMotor rightDrive;

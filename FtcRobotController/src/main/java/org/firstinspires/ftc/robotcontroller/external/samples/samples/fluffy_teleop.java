@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotcontroller.team.samples; ///* package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.external.samples.samples; ///* package org.firstinspires.ftc.teamcode;
 //
 //
 //import com.qualcomm.hardware.sparkfun.SparkFunOTOS;

@@ -25,8 +25,8 @@ public class MCM_Mecanum extends LinearOpMode {
 
         while(opModeIsActive()) {
 
-            double forward = gamepad1.left_stick_y;
-            double strafe = -gamepad1.left_stick_x;
+            double forward = -gamepad1.left_stick_y;
+            double strafe = gamepad1.left_stick_x;
             double turn = gamepad1.right_stick_x/2;
 
             double frontLeftPower = (forward + strafe + turn) * speed;
@@ -68,7 +68,7 @@ public class MCM_Mecanum extends LinearOpMode {
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         telemetry.addData("Status","Initialized");
         //blow up world... just not this house

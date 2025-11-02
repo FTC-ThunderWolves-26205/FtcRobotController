@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,6 +21,7 @@ public class BHG_Shooter_Test extends LinearOpMode {
     public void runOpMode() {
         hardwareStart();
         double speed = 0.5;
+        double shooterPower = 0;
         waitForStart();
 
         while(opModeIsActive()) {
@@ -29,7 +29,6 @@ public class BHG_Shooter_Test extends LinearOpMode {
             double forward = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
             double turn = gamepad1.right_stick_x/2;
-            double shooterPower = 0;
 
             double frontLeftPower = (forward + strafe + turn) * speed;
             double backLeftPower = (forward - strafe + turn) * speed;
@@ -56,9 +55,6 @@ public class BHG_Shooter_Test extends LinearOpMode {
 
             prevDpadUp = gamepad1.dpad_up;
             prevDpadDown = gamepad1.dpad_down;
-
-
-
 
         }
     }

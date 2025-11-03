@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "Basic Drive", group = "Teleop")
-
+@Disabled
 public class MCM_Mecanum extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

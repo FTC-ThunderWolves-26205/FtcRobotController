@@ -42,7 +42,9 @@ public class TB_Shooter extends LinearOpMode {
 
             if (gamepad1.dpad_up && !prevDpadUp) {
                 shooterPower += 0.1;
-            } else if (gamepad1.dpad_down && !prevDpadDown) {
+            }
+
+            else if (gamepad1.dpad_down && !prevDpadDown) {
                 shooterPower -= 0.1;
             }
 
@@ -75,4 +77,3 @@ public class TB_Shooter extends LinearOpMode {
         telemetry.update();
     }
 }
-

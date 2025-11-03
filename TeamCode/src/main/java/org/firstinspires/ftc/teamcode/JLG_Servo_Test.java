@@ -18,7 +18,7 @@ public class JLG_Servo_Test extends OpMode {
     private boolean dPadRightStatus = false;
     private boolean dPadLeftStatus = false;
 
-    private ElapsedTime dPadTimer = new ElapsedTime();
+    private ElapsedTime dPadTimer = new ElapsedTime(); // declaring a timer called "dPadTimer"
 
     @Override
     public void init() {
@@ -26,9 +26,8 @@ public class JLG_Servo_Test extends OpMode {
         servo = hardwareMap.get(Servo.class, "servo");
         servo.setPosition(0.0);
 
-        dPadTimer.reset();
+        dPadTimer.reset(); // resetting our timer to 0 at init
 
-        // Display initialization message in telemetry.
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -45,11 +44,11 @@ public class JLG_Servo_Test extends OpMode {
         }
         // Increase servo position by 0.1 each time dpad_right is freshly pressed.
         // This prevents continuous adjustment when the button is held down.
-        else if (dPadTimer.milliseconds() > 250) {
+        else if (dPadTimer.milliseconds() > 250) { //prevents reading of any fast presses
           if (gamepad1.dpad_right && !dPadRightStatus) {
-                servoPosition += 0.1;  // Simple way to increase value by 0.1
-                servoPosition = Math.min(1.0, servoPosition);
-                dPadTimer.reset();// Ensure servo does not exceed max of 1.0
+                servoPosition += 0.1;
+                servoPosition = Math.min(1.0, servoPosition);// Ensure servo does not exceed max of 1.0
+                dPadTimer.reset(); //start our timer over
             }
             // Decrease servo position by 0.1 each time dpad_left is freshly pressed.
             // Prevents continuous adjustment while holding the button.

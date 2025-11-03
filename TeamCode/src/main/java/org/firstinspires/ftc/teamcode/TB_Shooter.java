@@ -13,8 +13,8 @@ public class TB_Shooter extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
     private DcMotor shooter;
-    private boolean prevDpadUp = false;
-    private boolean prevDpadDown = false;
+    private boolean wasDpadUp = false;
+    private boolean wasDpadDown = false;
 
 
     @Override
@@ -40,11 +40,9 @@ public class TB_Shooter extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             backRight.setPower(backRightPower);
 
-            if (gamepad1.dpad_up && !prevDpadUp) {
+            if (gamepad1.dpad_up && !wasDpadUp) {
                 shooterPower += 0.1;
-            }
-
-            else if (gamepad1.dpad_down && !prevDpadDown) {
+            } else if (gamepad1.dpad_down && !wasDpadDown) {
                 shooterPower -= 0.1;
             }
 
@@ -55,8 +53,8 @@ public class TB_Shooter extends LinearOpMode {
             telemetry.addData("Shooter Power", shooterPower);
             telemetry.update();
 
-            prevDpadUp = gamepad1.dpad_up;
-            prevDpadDown = gamepad1.dpad_down;
+            wasDpadUp = gamepad1.dpad_up;
+            wasDpadDown = gamepad1.dpad_down;
 
         }
     }

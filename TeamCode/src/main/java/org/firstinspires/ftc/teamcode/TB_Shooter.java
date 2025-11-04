@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 // basic shooter testing (incremental) + drive (mecanum) + intake (boolean)
 
+// TO DO:  For basic testing, we are using .setPower() for the shooter.  For better control over the shooter
+//motor speed, we should instead switch to .setVelocity() using a PIDF controller.
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -46,15 +49,15 @@ public class TB_Shooter extends LinearOpMode {
             backLeft.setPower(Math.max(-1.0, Math.min(1.0, backLeftPower)));//go backwards, and that would've prevented it.
             backRight.setPower(Math.max(-1.0, Math.min(1.0, backRightPower)));
 
-            if (dpadTimer.milliseconds() > 500) {
-                if (gamepad1.dpad_up && !wasDpadUp) {
+
+                if (gamepad1.dpad_up && !wasDpadUp && dpadTimer.milliseconds() > 500) {
                     shooterPower += 0.1;
                     dpadTimer.reset();
-                } else if (gamepad1.dpad_down && !wasDpadDown) {
+                } else if (gamepad1.dpad_down && !wasDpadDown && dpadTimer.milliseconds() > 500) {
                     shooterPower -= 0.1;
                     dpadTimer.reset();
                 }
-            }
+
 
             if (gamepad1.right_trigger > 0.2) {
                 speed = 1;

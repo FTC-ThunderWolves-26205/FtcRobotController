@@ -1,9 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-// basic shooter testing (incremental) + drive (mecanum) + intake (boolean)
+/*
+This code performs three basic functions:  basic mecanum drive + power-based shooter control + intake off/on
+The basic mecanum drive uses the left stick for forward/backward/strafe and right stick for turning.  Right trigger for turbo.
+The shooter control uses dPadUp/dPadDown to incrementally raise/lower the shooter motor power by 0.1
+The intake control uses the right/left bumper to turn on/off the intake.
 
-// TO DO:  For basic testing, we are using .setPower() for the shooter.  For better control over the shooter
-//motor speed, we should instead switch to .setVelocity() using a PIDF controller.
+TO DO:  For basic testing, we are using .setPower() for the shooter.  But for better control over the shooter motor
+speed, we should instead use .setVelocity() with PIDF.
+ */
+
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

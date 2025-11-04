@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-// basic shooter testing (incremental) + drive (mechanum) + intake (boolean)
+// basic shooter testing (incremental) + drive (mecanum) + intake (boolean)
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -22,7 +22,6 @@ public class TB_Shooter extends LinearOpMode {
     private boolean wasDpadDown = false;
     private ElapsedTime dpadTimer = new ElapsedTime();
 
-
     @Override
     public void runOpMode() {
         hardwareStart();
@@ -42,10 +41,10 @@ public class TB_Shooter extends LinearOpMode {
             double frontRightPower = (forward - strafe - turn) * speed;
             double backRightPower = (forward + strafe - turn) * speed;
 
-            frontLeft.setPower(Math.max(0.0, Math.min(1.0, frontLeftPower)));
-            frontRight.setPower(Math.max(0.0, Math.min(1.0, frontRightPower)));
-            backLeft.setPower(Math.max(0.0, Math.min(1.0, backLeftPower)));
-            backRight.setPower(Math.max(0.0, Math.min(1.0, backRightPower)));
+            frontLeft.setPower(Math.max(-1.0, Math.min(1.0, frontLeftPower)));//changed all four of the 0.0 to -1.0
+            frontRight.setPower(Math.max(-1.0, Math.min(1.0, frontRightPower)));//this is because Mecanum wheels can like,
+            backLeft.setPower(Math.max(-1.0, Math.min(1.0, backLeftPower)));//go backwards, and that would've prevented it.
+            backRight.setPower(Math.max(-1.0, Math.min(1.0, backRightPower)));
 
             if (dpadTimer.milliseconds() > 500) {
                 if (gamepad1.dpad_up && !wasDpadUp) {
@@ -76,7 +75,8 @@ public class TB_Shooter extends LinearOpMode {
             intake.setPower(intakePower);
 
             telemetry.addData("Shooter Power", shooterPower);
-            telemetry.addData("Sho0ter Velocity",shooter.getVelocity());
+            telemetry.addData("Shooter Velocity",shooter.getVelocity());//Changed Sho0ter to Shooter. Not that big of a deal
+            //but it was annoying me
             telemetry.addData("Timer", dpadTimer.milliseconds());
             telemetry.update();
 
@@ -92,6 +92,16 @@ public class TB_Shooter extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "BL");
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
         intake = hardwareMap.get(DcMotor.class,"ID");
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //added stuff on lines 96-101. This code is making it so that when the motor power is zero,
+        //it stops immediately and doesn't drift. Mainly need this for the shooter motor and this works
+        //because all the motors have brakes.
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);

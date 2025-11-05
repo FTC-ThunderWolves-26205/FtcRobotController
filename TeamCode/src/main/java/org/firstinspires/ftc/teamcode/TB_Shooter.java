@@ -8,6 +8,10 @@ The intake control uses the right/left bumper to turn on/off the intake.
 
 TO DO:  For basic testing, we are using .setPower() for the shooter.  But for better control over the shooter motor
 speed, we should instead use .setVelocity() with PIDF.
+
+TO DO:  FIX THE BUTTONS4
+
+//  TEST #1 - 2080;  TEST #2 - 1480; TEST #3 - 1700
  */
 
 
@@ -64,7 +68,6 @@ public class TB_Shooter extends LinearOpMode {
                     dpadTimer.reset();
                 }
 
-
             if (gamepad1.right_trigger > 0.2) {
                 speed = 1;
             } else  {
@@ -77,11 +80,8 @@ public class TB_Shooter extends LinearOpMode {
                 intakePower = 0;
             }
 
-            shooterPower = Math.max(0.0, Math.min(1.0, shooterPower));
-            intakePower = Math.max(0.0, Math.min(1.0, intakePower));
-
-            shooter.setPower(shooterPower);
-            intake.setPower(intakePower);
+            shooter.setPower(Math.max(0.0, Math.min(1.0, shooterPower)));
+            intake.setPower(Math.max(0.0, Math.min(1.0, intakePower)));
 
             telemetry.addData("Shooter Power", shooterPower);
             telemetry.addData("Shooter Velocity",shooter.getVelocity());//Changed Sho0ter to Shooter. Not that big of a deal
@@ -114,10 +114,10 @@ public class TB_Shooter extends LinearOpMode {
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status","Initialized");
         telemetry.update();

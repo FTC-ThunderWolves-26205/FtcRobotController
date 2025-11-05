@@ -84,11 +84,13 @@ public class TB_Shooter extends LinearOpMode {
                 intakePower = 0;
             }
 
-            if (gamepad1.x) {  //Press X to get our max velocity of our shooter motor.
+            if (gamepad1.x) {  //Press X to crank max voltage to shooter.  Let it run a while and let's measure our max velocity (ticks/sec)
                 shooter.setPower(1.0);
-                sleep (1000);
-                telemetry.addData ("Max Velocity", shooter.getVelocity());
                 }
+
+            if (gamepad1.y) { // Press Y to stop shooter.
+                shooter.setPower(0.0);
+            }
 
             shooter.setPower(Math.max(0.0, Math.min(1.0, shooterPower)));
             intake.setPower(Math.max(0.0, Math.min(1.0, intakePower)));

@@ -60,13 +60,17 @@ public class TB_Shooter extends LinearOpMode {
             backRight.setPower(Math.max(-1.0, Math.min(1.0, backRightPower)));
 
 
-                if (gamepad1.dpad_up && dpadTimer.milliseconds() > 500) {
-                    shooterPower += 0.1;
-                    dpadTimer.reset();
-                } else if (gamepad1.dpad_down && dpadTimer.milliseconds() > 500) {
-                    shooterPower -= 0.1;
-                    dpadTimer.reset();
-                }
+                if (gamepad1.dpad_up && !wasDpadUp) {
+                    if (dpadTimer.milliseconds() > 300) {
+                        shooterPower += 0.1;
+                        dpadTimer.reset();
+                    } }
+                if (gamepad1.dpad_down && !wasDpadDown) {
+                        if (dpadTimer.milliseconds() > 300) {
+                            shooterPower -= 0.1;
+                            dpadTimer.reset();
+                        }
+                    }
 
             if (gamepad1.right_trigger > 0.2) {
                 speed = 1;
@@ -89,8 +93,8 @@ public class TB_Shooter extends LinearOpMode {
             telemetry.addData("Timer", dpadTimer.milliseconds());
             telemetry.update();
 
-           // wasDpadUp = gamepad1.dpad_up;
-           //++ wasDpadDown = gamepad1.dpad_down;
+           wasDpadUp = gamepad1.dpad_up;
+           wasDpadDown = gamepad1.dpad_down;
 
         }
     }

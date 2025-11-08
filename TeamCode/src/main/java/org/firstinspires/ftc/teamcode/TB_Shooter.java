@@ -9,12 +9,13 @@ The shooter control uses dPadUp/dPadDown to incrementally raise/lower the shoote
 
 The outer intake uses leftBumper to turn power to 1 and 0.  The inner intake uses rightBumper to turn power to 1 and 0.
 
-The servo uses x and y to incrementally raise and lower the servo position by 0.1.
+The servo uses x and y to incrementally raise and lower the servo position by 0.1, and now uses "a" to switch the servo position between 0.5 and 0.1, which are the right positions.
 
 
 
 TO DO:  For basic testing, we are using .setPower() for the shooter.  But for better control over the shooter motor
 speed, we should instead use .setVelocity() with PIDF.
+
 
 
  */
@@ -39,8 +40,6 @@ public class TB_Shooter extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private boolean wasDpadUp = false;
-    private boolean wasDpadDown = false;
     private boolean iIntakePressed = false;
     private boolean oIntakePressed = false;
     private ElapsedTime timer = new ElapsedTime();
@@ -49,7 +48,7 @@ public class TB_Shooter extends LinearOpMode {
     public void runOpMode() {
         hardwareStart();
         double speed = 0.5;
-        double servoPosition = 0;
+        double servoPosition = 0.5;
         double shooterPower = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
@@ -73,16 +72,12 @@ public class TB_Shooter extends LinearOpMode {
             servo.setPosition(Math.max(0.0, Math.min(1.0, servoPosition)));
 
 
-            if (gamepad1.dpad_up && !wasDpadUp) {
-                if (timer.milliseconds() > 300) {
-                    shooterPower += 0.1;
-                    timer.reset();
-                }
-            } else if (gamepad1.dpad_down && !wasDpadDown) {
-                if (timer.milliseconds() > 300) {
-                    shooterPower -= 0.1;
-                    timer.reset();
-                }
+            if (gamepad1.dpad_up && timer.milliseconds() > 300) {
+                shooterPower += 0.1;
+                timer.reset();
+            } else if (gamepad1.dpad_down && timer.milliseconds() > 300) {
+                shooterPower -= 0.1;
+                timer.reset();
             } else if(gamepad1.dpad_right && timer.milliseconds() > 500) {
                shooterPower = (shooterPower == 0) ? 1 : 0;
                timer.reset();
@@ -100,32 +95,18 @@ public class TB_Shooter extends LinearOpMode {
             } else if(gamepad1.y && timer.milliseconds() > 300) {
                 servoPosition -= 0.1;
                 timer.reset();
+            } else if(gamepad1.a && timer.milliseconds() > 300) {
+                servoPosition = (servoPosition == 0.5) ? 0.1 : 0.5;
             }
 
-            if(gamepad1.right_bumper && !iIntakePressed) {
-               if(timer.milliseconds() > 300) {
-                    iIntakePressed = true;
-                    iIntake.setPower(1);
-                    timer.reset();
-               }
-            } else if(gamepad1.right_bumper && iIntakePressed) {
-                if(timer.milliseconds() > 300) {
-                    iIntakePressed = false;
-                    iIntake.setPower(0);
-                    timer.reset();
-              }
-            } else if(gamepad1.left_bumper && !oIntakePressed) {
-                if(timer.milliseconds() > 300) {
-                    oIntakePressed = true;
-                    oIntake.setPower(1);
-                    timer.reset();
-                }
-            } else if(gamepad1.left_bumper && oIntakePressed) {
-                if (timer.milliseconds() > 300) {
-                    oIntakePressed = false;
-                    oIntake.setPower(0);
-                    timer.reset();
-                }
+            if(gamepad1.right_bumper && iIntakePower == 0) {
+                    iIntakePower = 1;
+            } else if(gamepad1.right_bumper && iIntakePower > 0) {
+                    iIntakePower = 0;
+            } else if(gamepad1.left_bumper && oIntakePower == 0) {
+                    oIntakePower = 1;
+            } else if(gamepad1.left_bumper && oIntakePower > 0) {
+                    oIntakePower = 0;
             }
 
             shooter.setPower(Math.max(0.0, Math.min(1.0, shooterPower)));
@@ -139,9 +120,6 @@ public class TB_Shooter extends LinearOpMode {
             telemetry.addData("Outer Intake Power", oIntakePower);
             telemetry.addData("Timer", timer.milliseconds());
             telemetry.update();
-
-            wasDpadUp = gamepad1.dpad_up;
-            wasDpadDown = gamepad1.dpad_down;
 
         }
     }

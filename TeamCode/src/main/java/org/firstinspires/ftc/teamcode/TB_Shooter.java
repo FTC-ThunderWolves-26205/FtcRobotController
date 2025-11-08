@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 /*
-This code performs three basic functions:  basic mecanum drive + power-based shooter control + intake off/on
+This code performs four basic functions:  basic mecanum drive + power-based shooter control + intakes on/off + servo increments.
 
 The basic mecanum drive uses the left stick for forward/backward/strafe and right stick for turning.  Right trigger for turbo.
 
-The shooter control uses dPadUp/dPadDown to incrementally raise/lower the shooter motor power by 0.1
+The shooter control uses dPadUp/dPadDown to incrementally raise/lower the shooter motor power by 0.1, and uses dpadRight to set the power to 1 and uses dpadLeft to set it to 0.
 
-The intake control uses the right/left bumper to turn on/off the intake.
+The outer intake uses leftBumper to turn power to 1 and 0.  The inner intake uses rightBumper to turn power to 1 and 0.
+
+The servo uses x and y to incrementally raise and lower the servo position by 0.1.
+
+
 
 TO DO:  For basic testing, we are using .setPower() for the shooter.  But for better control over the shooter motor
 speed, we should instead use .setVelocity() with PIDF.
@@ -21,6 +25,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Basic Shooter Testing", group = "Teleop")
@@ -33,21 +38,23 @@ public class TB_Shooter extends LinearOpMode {
     private DcMotorEx shooter;
     private DcMotor iIntake;
     private DcMotor oIntake;
+    private Servo servo;
     private boolean wasDpadUp = false;
     private boolean wasDpadDown = false;
     private boolean iIntakePressed = false;
     private boolean oIntakePressed = false;
-    private ElapsedTime dpadTimer = new ElapsedTime();
+    private ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() {
         hardwareStart();
         double speed = 0.5;
+        double servoPosition = 0;
         double shooterPower = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
         waitForStart();
-        dpadTimer.reset();
+        timer.reset();
         while(opModeIsActive()) {
 
             double forward = -gamepad1.left_stick_y;
@@ -63,18 +70,23 @@ public class TB_Shooter extends LinearOpMode {
             frontRight.setPower(Math.max(-1.0, Math.min(1.0, frontRightPower)));//this is because Mecanum wheels can like,
             backLeft.setPower(Math.max(-1.0, Math.min(1.0, backLeftPower)));//go backwards, and that would've prevented it.
             backRight.setPower(Math.max(-1.0, Math.min(1.0, backRightPower)));
+            servo.setPosition(Math.max(0.0, Math.min(1.0, servoPosition)));
 
 
             if (gamepad1.dpad_up && !wasDpadUp) {
-                if (dpadTimer.milliseconds() > 300) {
+                if (timer.milliseconds() > 300) {
                     shooterPower += 0.1;
-                    dpadTimer.reset();
-                } }
-            if (gamepad1.dpad_down && !wasDpadDown) {
-                if (dpadTimer.milliseconds() > 300) {
-                    shooterPower -= 0.1;
-                    dpadTimer.reset();
+                    timer.reset();
                 }
+            } else if (gamepad1.dpad_down && !wasDpadDown) {
+                if (timer.milliseconds() > 300) {
+                    shooterPower -= 0.1;
+                    timer.reset();
+                }
+            } else if(gamepad1.dpad_right) {
+                shooterPower = 1;
+            } else if(gamepad1.dpad_left) {
+                shooterPower = 0;
             }
 
             if (gamepad1.right_trigger > 0) {
@@ -83,27 +95,39 @@ public class TB_Shooter extends LinearOpMode {
                 speed = 0.5;
             }
 
+            if(gamepad1.x && timer.milliseconds() > 300) {
+                servoPosition += 0.1;
+                timer.reset();
+            } else if(gamepad1.y && timer.milliseconds() > 300) {
+                servoPosition -= 0.1;
+                timer.reset();
+            }
+
 
             if(gamepad1.right_bumper && !iIntakePressed) {
-                iIntakePressed = true;
-                iIntake.setPower(1);
+               if(timer.milliseconds() > 300) {
+                    iIntakePressed = true;
+                    iIntake.setPower(1);
+                    timer.reset();
+               }
             } else if(gamepad1.right_bumper && iIntakePressed) {
-                iIntakePressed = false;
-                iIntake.setPower(0);
+                if(timer.milliseconds() > 300) {
+                    iIntakePressed = false;
+                    iIntake.setPower(0);
+                    timer.reset();
+              }
             } else if(gamepad1.left_bumper && !oIntakePressed) {
-                oIntakePressed = true;
-                oIntake.setPower(1);
+                if(timer.milliseconds() > 300) {
+                    oIntakePressed = true;
+                    oIntake.setPower(1);
+                    timer.reset();
+                }
             } else if(gamepad1.left_bumper && oIntakePressed) {
-                oIntakePressed = false;
-                oIntake.setPower(0);
-            }
-
-            if (gamepad1.x) {  //Press X to crank max voltage to shooter.  Let it run a while and let's measure our max velocity (ticks/sec)
-                shooter.setPower(1.0);
-            }
-
-            if (gamepad1.y) { // Press Y to stop shooter.
-                shooter.setPower(0.0);
+                if (timer.milliseconds() > 300) {
+                    oIntakePressed = false;
+                    oIntake.setPower(0);
+                    timer.reset();
+                }
             }
 
             shooter.setPower(Math.max(0.0, Math.min(1.0, shooterPower)));
@@ -111,9 +135,11 @@ public class TB_Shooter extends LinearOpMode {
             oIntake.setPower(Math.max(0.0, Math.min(1.0, oIntakePower)));
 
             telemetry.addData("Shooter Power", shooterPower);
-            telemetry.addData("Shooter Velocity",shooter.getVelocity());//Changed Sho0ter to Shooter. Not that big of a deal
-            //but it was annoying me
-            telemetry.addData("Timer", dpadTimer.milliseconds());
+            telemetry.addData("Shooter Velocity",shooter.getVelocity());
+            telemetry.addData("Servo Position", servoPosition);
+            telemetry.addData("Inner Intake Power", iIntakePower);
+            telemetry.addData("Outer Intake Power", oIntakePower);
+            telemetry.addData("Timer", timer.milliseconds());
             telemetry.update();
 
             wasDpadUp = gamepad1.dpad_up;
@@ -129,6 +155,7 @@ public class TB_Shooter extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
         oIntake = hardwareMap.get(DcMotor.class,"OID");
         iIntake = hardwareMap.get(DcMotor.class,"IID");
+        servo = hardwareMap.get(Servo.class, "servo");
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

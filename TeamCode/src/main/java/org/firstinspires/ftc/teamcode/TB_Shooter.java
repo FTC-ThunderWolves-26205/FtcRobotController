@@ -5,7 +5,7 @@ This code performs four basic functions:  basic mecanum drive + power-based shoo
 
 The basic mecanum drive uses the left stick for forward/backward/strafe and right stick for turning.  Right trigger for turbo.
 
-The shooter control uses dPadUp/dPadDown to incrementally raise/lower the shooter motor power by 0.1, and uses dpadRight to set the power to 1 and uses dpadLeft to set it to 0.
+The shooter control uses dPadUp/dPadDown to incrementally raise/lower the shooter motor power by 0.1, and uses dpadRight to set the power to 1 and to 0.
 
 The outer intake uses leftBumper to turn power to 1 and 0.  The inner intake uses rightBumper to turn power to 1 and 0.
 
@@ -83,10 +83,9 @@ public class TB_Shooter extends LinearOpMode {
                     shooterPower -= 0.1;
                     timer.reset();
                 }
-            } else if(gamepad1.dpad_right) {
-                shooterPower = 1;
-            } else if(gamepad1.dpad_left) {
-                shooterPower = 0;
+            } else if(gamepad1.dpad_right && timer.milliseconds() > 500) {
+               shooterPower = (shooterPower == 0) ? 1 : 0;
+               timer.reset();
             }
 
             if (gamepad1.right_trigger > 0) {
@@ -102,7 +101,6 @@ public class TB_Shooter extends LinearOpMode {
                 servoPosition -= 0.1;
                 timer.reset();
             }
-
 
             if(gamepad1.right_bumper && !iIntakePressed) {
                if(timer.milliseconds() > 300) {
@@ -164,9 +162,6 @@ public class TB_Shooter extends LinearOpMode {
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         oIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         iIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //added stuff on lines 96-101. This code is making it so that when the motor power is zero,
-        //it stops immediately and doesn't drift. Mainly need this for the shooter motor and this works
-        //because all the motors have brakes.
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.util.Button;
 
 @TeleOp(name = "Shooter PIDF Tuner", group = "Tuning")
 @Config
+@Disabled
 public class JLG_PIDF_Tuning extends LinearOpMode {
 
     public static double targetRPM = 3000;

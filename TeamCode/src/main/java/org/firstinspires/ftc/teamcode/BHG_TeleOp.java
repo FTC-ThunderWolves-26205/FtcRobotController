@@ -56,15 +56,7 @@ public class BHG_TeleOp extends LinearOpMode {
     private ElapsedTime oIntakeTimer = new ElapsedTime();
     private static final double MAX_SERVO = 0.5;
     private static final double MIN_SERVO = 0.1;
-    private double clampPos(double val) {
-        return Math.max(0.0, Math.min(1.0, val));
-    }
-    private double clampFull(double val) {
-        return Math.max(-1.0, Math.min(1.0, val));
-    }
-    private double clampServo(double val) {
-        return Math.max(MIN_SERVO, Math.min(MAX_SERVO, val));
-    }
+
     @Override
     public void runOpMode() {
         hardwareStart();
@@ -175,5 +167,15 @@ public class BHG_TeleOp extends LinearOpMode {
 
         telemetry.addData("Status","Initialized");
         telemetry.update();
+    }
+
+    private double clampPos(double val) {
+        return Math.max(0.0, Math.min(1.0, val));
+    }
+    private double clampFull(double val) {
+        return Math.max(-1.0, Math.min(1.0, val));
+    }
+    private double clampServo(double val) {
+        return Math.max(MIN_SERVO, Math.min(MAX_SERVO, val));
     }
 }

@@ -1,3 +1,21 @@
+/*
+Learning FTC Dashboard functionality
+
+TO GRAPH:
+-create FtcDashboard variable:  private FtcDashboard dashboard;
+-On INIT, before start, set dashboard = FtcDashboard.getInstance()
+-In the main loop, declare a new TelemetryPacket:  TelemetryPacket packet = new TelemetryPacket();
+-Add whatever variables you want to graph to the packet (as many as you wish):  packet.put("Front Left Power", frontLeftPower);
+-send the telemetry packet:  dashboard.sendTelemetryPacket(packet);
+
+TO CHANGE VARIABLES WHILE BOT IS RUNNING FOR TUNING PURPOSES (PIDF COEFFICIENTS):
+-Need to add @Config at @Override spot
+-To mark a field as a config variable, declare it static and not final and annotate the enclosing class with @Config
+-public static PIDCoefficients ShooterPIDF = new PIDCoefficients();
+ */
+
+
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,6 +25,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+
 
 @TeleOp(name = "DashBoard Testing", group = "Teleop")
 public class JLG_DashBoard_Testing extends LinearOpMode {

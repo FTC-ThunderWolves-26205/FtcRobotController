@@ -3,15 +3,22 @@ package org.firstinspires.ftc.teamcode;
 /*
 This code performs four basic functions:  basic mecanum drive + power-based shooter control + intakes on/off + servo increments.
 
-The basic mecanum drive uses the left stick for forward/backward/strafe and right stick for turning.  Right trigger for turbo.
+CONTROLS:
 
-The shooter control uses dPadUp/dPadDown to incrementally raise/lower the shooter motor power by 0.1, and uses dpadRight to set the power to 1 and to 0.
-
-The outer intake uses leftBumper to turn power to 1 and 0.  The inner intake uses rightBumper to turn power to 1 and 0.
-
-The servo uses x and y to incrementally raise and lower the servo position by 0.1, and now uses "a" to switch the servo position between 0.5 and 0.1, which are the right positions.
-
-
+    GAMEPAD 1:
+        LEFT STICK Y: Moves ROBOT forward
+        LEFT STICK X: Strafes ROBOT
+        RIGHT STICK X: Turns ROBOT
+        RIGHT BUMPER: Sets speed to 1 (double speed)
+        LEFT BUMPER: Sets= speed to 0.25 (half speed)
+        LEFT BUMPER & RIGHT BUMPER: Sets= speed to 0.1 (1/5 speed)
+    GAMEPAD 2:
+        DPAD UP: Adds 0.1 (1/10 power) to current shooter power
+        DPAD DOWN: Subtracts 0.1 (1/10 power) to current shooter power
+        DPAD RIGHT: Sets shooter power to 1 (full power) or 0 (no power)
+        A: Sets servo position to 0.5 (resting position) or 0.1 (launching position)
+        LEFT BUMPER: Sets outer intake power to 0 (no power) and 1 (full power)
+        RIGHT BUMPER: Sets inner intake power to 0 (no power) and 1 (full power)
 
 TO DO:  For basic testing, we are using .setPower() for the shooter.  But for better control over the shooter motor
 speed, we should instead use .setVelocity() with PIDF.
@@ -135,6 +142,7 @@ public class BHG_TeleOp extends LinearOpMode {
             telemetry.addData("Servo Timer", servoTimer.milliseconds());
             telemetry.addData("Inner Intake Timer", iIntakeTimer.milliseconds());
             telemetry.addData("Outer Intake Timer", oIntakeTimer.milliseconds());
+            telemetry.addData("Battery Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
             telemetry.update();
 
         }

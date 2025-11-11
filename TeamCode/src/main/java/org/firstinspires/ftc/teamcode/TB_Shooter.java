@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.dashboard.FtcDashboard;
 
 
 @TeleOp(name = "Basic Shooter Testing", group = "Teleop")

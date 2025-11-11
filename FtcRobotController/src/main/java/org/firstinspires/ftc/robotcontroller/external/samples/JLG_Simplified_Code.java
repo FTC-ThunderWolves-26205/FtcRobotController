@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Basic Shooter Testing", group = "Teleop")
+@Disabled
 public class JLG_Simplified_Code extends LinearOpMode {
 
     private DcMotor frontRight, frontLeft, backRight, backLeft;
@@ -49,25 +52,25 @@ public class JLG_Simplified_Code extends LinearOpMode {
             backRight.setPower(clamp(backRightPower));
 
             // Turbo mode
-            speed = (driver.getTrigger(GamepadEx.Trigger.RIGHT_TRIGGER) > 0) ? 1.0 : 0.5;
+            speed = (driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0) ? 1.0 : 0.5;
 
             // Shooter control
-            if (driver.wasJustPressed(GamepadEx.Button.DPAD_UP)) shooterPower += 0.1;
-            if (driver.wasJustPressed(GamepadEx.Button.DPAD_DOWN)) shooterPower -= 0.1;
-            if (driver.wasJustPressed(GamepadEx.Button.DPAD_RIGHT)) shooterPower = (shooterPower == 0) ? 1 : 0;
+            if (driver.wasJustPressed(GamepadKeys.Button.DPAD_UP)) shooterPower += 0.1;
+            if (driver.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) shooterPower -= 0.1;
+            if (driver.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) shooterPower = (shooterPower == 0) ? 1 : 0;
 
             shooter.setPower(clamp(shooterPower));
 
             // Servo control
-            if (driver.wasJustPressed(GamepadEx.Button.X)) servoPosition += 0.1;
-            if (driver.wasJustPressed(GamepadEx.Button.Y)) servoPosition -= 0.1;
-            if (driver.wasJustPressed(GamepadEx.Button.A)) servoPosition = (servoPosition == 0.5) ? 0.1 : 0.5;
+            if (driver.wasJustPressed(GamepadKeys.Button.X)) servoPosition += 0.1;
+            if (driver.wasJustPressed(GamepadKeys.Button.Y)) servoPosition -= 0.1;
+            if (driver.wasJustPressed(GamepadKeys.Button.A)) servoPosition = (servoPosition == 0.5) ? 0.1 : 0.5;
 
             servo.setPosition(clamp(servoPosition));
 
             // Intake toggles
-            if (driver.wasJustPressed(GamepadEx.Button.RIGHT_BUMPER)) iIntakePower = (iIntakePower == 0) ? 1 : 0;
-            if (driver.wasJustPressed(GamepadEx.Button.LEFT_BUMPER)) oIntakePower = (oIntakePower == 0) ? 1 : 0;
+            if (driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) iIntakePower = (iIntakePower == 0) ? 1 : 0;
+            if (driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) oIntakePower = (oIntakePower == 0) ? 1 : 0;
 
             iIntake.setPower(iIntakePower);
             oIntake.setPower(oIntakePower);

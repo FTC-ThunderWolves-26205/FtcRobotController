@@ -18,6 +18,7 @@ TO CHANGE VARIABLES WHILE BOT IS RUNNING FOR TUNING PURPOSES (PIDF COEFFICIENTS)
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -29,6 +30,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 
 @TeleOp(name = "DashBoard Testing", group = "Teleop")
+@Disabled
 public class JLG_DashBoard_Testing extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

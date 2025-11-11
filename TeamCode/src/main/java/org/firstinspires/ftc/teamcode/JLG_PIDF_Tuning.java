@@ -4,14 +4,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
-import org.firstinspires.ftc.teamcode.util.GamepadEx;
-import org.firstinspires.ftc.teamcode.util.Button;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+
 
 @TeleOp(name = "Shooter PIDF Tuner", group = "Tuning")
 @Config
@@ -47,7 +48,7 @@ public class JLG_PIDF_Tuning extends LinearOpMode {
             driver.readButtons();
 
             // Toggle shooter with A button
-            if (driver.getButton(Button.A).wasJustPressed()) {
+            if (driver.wasJustPressed(GamepadKeys.Button.A)) {
                 shooterEnabled = !shooterEnabled;
             }
 

@@ -16,7 +16,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 
 @TeleOp(name = "Shooter PIDF Tuner", group = "Tuning")
 @Config
-@Disabled
+
 public class JLG_PIDF_Tuning extends LinearOpMode {
 
     public static double targetRPM = 3000;

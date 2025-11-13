@@ -23,7 +23,7 @@ CONTROLS:
 TO DO:  For basic testing, we are using .setPower() for the shooter.  But for better control over the shooter motor
 speed, we should instead use .setVelocity() with PIDF.
 
-
+TO DO:  intake shooter 0.2 power
 
  */
 
@@ -48,6 +48,7 @@ public class BHG_TeleOp extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
+
     private boolean iIntakePressed = false;
     private boolean oIntakePressed = false;
     private ElapsedTime shooterTimer = new ElapsedTime();
@@ -130,10 +131,7 @@ public class BHG_TeleOp extends LinearOpMode {
             telemetry.addData("Servo Position", servoPosition);
             telemetry.addData("Inner Intake Power", iIntakePower);
             telemetry.addData("Outer Intake Power", oIntakePower);
-            telemetry.addData("Shooter Timer", shooterTimer.milliseconds());
-            telemetry.addData("Servo Timer", servoTimer.milliseconds());
-            telemetry.addData("Inner Intake Timer", iIntakeTimer.milliseconds());
-            telemetry.addData("Outer Intake Timer", oIntakeTimer.milliseconds());
+            telemetry.addData("Shooter RPM", ticksPerSecondToRPM(shooter.getVelocity()));
             telemetry.addData("Battery Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
             telemetry.update();
 
@@ -161,7 +159,7 @@ public class BHG_TeleOp extends LinearOpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         oIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -177,5 +175,8 @@ public class BHG_TeleOp extends LinearOpMode {
     }
     private double clampServo(double val) {
         return Math.max(MIN_SERVO, Math.min(MAX_SERVO, val));
+    }
+    private double ticksPerSecondToRPM(double tps) {
+        return tps * 60.0 / 28.0; // GoBILDA 6K motor: 28 ticks/rev
     }
 }

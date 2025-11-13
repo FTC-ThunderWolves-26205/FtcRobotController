@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.sun.tools.javac.tree.DCTree;
 
 
 @TeleOp(name = "Shooter PIDF Tuner", group = "Tuning")
@@ -36,6 +38,7 @@ public class JLG_PIDF_Tuning extends LinearOpMode {
     public void runOpMode() {
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
         pidfController = new PIDFController(kP, kI, kD, kF);
         driver = new GamepadEx(gamepad1);

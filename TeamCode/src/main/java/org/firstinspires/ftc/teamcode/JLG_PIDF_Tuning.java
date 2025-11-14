@@ -85,9 +85,11 @@ public class JLG_PIDF_Tuning extends LinearOpMode {
 
             // Optional: Send data to Driver Station
             telemetry.addLine("Connect to 192.168.43.1:8080/dash for dashboard");
+            telemetry.addLine ("Try kF = 0.00025, then kP = 0.002, then Kd = 0.0002.");
             telemetry.addData("Shooter Enabled", shooterEnabled);
             telemetry.addData("Target RPM", targetRPM);
             telemetry.addData("Actual RPM", currentRPM);
+            telemetry.addData("Output Power", outputPower);
             telemetry.update();
         }
     }

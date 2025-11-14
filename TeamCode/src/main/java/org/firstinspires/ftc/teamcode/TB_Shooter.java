@@ -21,6 +21,7 @@ CONTROLS:
         RIGHT BUMPER: Sets inner intake power to 0 (no power) and 1 (full power)
 
 TO DO:  1.  Clean up our edge detection to use FTCLib .wasJustPressed method.  Remove all timers.
+                - driver.wasJustPressed(GamepadKeys.Button.A) is an example
         2.  Implement .setVelocity and PIDF for shooter.
         3.  Pick two or three "shooting spots", assign a button on the second controller for each, and code appropriate velocity levels.
 

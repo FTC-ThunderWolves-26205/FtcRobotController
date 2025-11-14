@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "Shooter PIDF Tuner", group = "Tuning")
 @Config
 
-public class JLG_PIDF_Tuning extends LinearOpMode {
+public class JLG_PIDFTuning extends LinearOpMode {
 
     // PIDF Coefficients: Tune these in the FTC Dashboard
     public static double kP = 0.0;

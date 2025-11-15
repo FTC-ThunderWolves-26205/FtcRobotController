@@ -34,6 +34,8 @@ Testing showed that -0.2 power appears to work for intake mode on the shooter.
  */
 
 
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -56,10 +58,8 @@ public class TB_Shooter extends LinearOpMode {
     private Servo servo;
 
 
-    private ElapsedTime shooterTimer = new ElapsedTime();
-    private ElapsedTime servoTimer = new ElapsedTime();
-    private ElapsedTime iIntakeTimer = new ElapsedTime();
-    private ElapsedTime oIntakeTimer = new ElapsedTime();
+   private GamepadEx driver1;
+   private GamepadEx driver2;
     private static final double MAX_SERVO = 0.5;
     private static final double MIN_SERVO = 0.1;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
@@ -73,10 +73,7 @@ public class TB_Shooter extends LinearOpMode {
         double iIntakePower = 0;
         double oIntakePower = 0;
         waitForStart();
-        shooterTimer.reset();
-        servoTimer.reset();
-        iIntakeTimer.reset();
-        oIntakeTimer.reset();
+
         while(opModeIsActive()) {
 
             double forward = -gamepad1.left_stick_y;
@@ -104,12 +101,11 @@ public class TB_Shooter extends LinearOpMode {
                 speed = 0.5;
             }
 
-            if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
+            if (driver2.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
                 shooterPower += 0.1;
-                shooterTimer.reset();
-            } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
+            } else if (driver2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
                 shooterPower -= 0.1;
-                shooterTimer.reset();
+
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
                 shooterPower = (shooterPower == 0) ? 1 : 0;
                 shooterTimer.reset();
@@ -168,6 +164,9 @@ public class TB_Shooter extends LinearOpMode {
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         oIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        driver1 = new GamepadEx(gamepad1);
+        driver2 = new GamepadEx(gamepad2);
 
         telemetry.addData("Status","Initialized");
         telemetry.update();

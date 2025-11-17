@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Basic TeleOp Mode", group = "Teleop")
-
+@TeleOp(name = "Basic Servo Mode", group = "Teleop")
+@Disabled
 public class TB_Servo extends LinearOpMode {
 
         private Servo servo;
@@ -22,7 +22,7 @@ public class TB_Servo extends LinearOpMode {
     @Override
     public void runOpMode() {
         servo = hardwareMap.get(Servo.class, "servo");
-        double servoPosition = 0.5;
+        double servoPosition = 0.6;
 
         waitForStart();
         timer.reset();
@@ -35,8 +35,13 @@ public class TB_Servo extends LinearOpMode {
             } else if (gamepad1.dpad_down && timer.milliseconds() > 500) {
                 servoPosition -= 0.1;
                 timer.reset();
+            } else if(gamepad1.dpad_right && timer.milliseconds() > 500) {
+                servoPosition = (servoPosition == 0.6) ? 0.1 : 0.6;
+                timer.reset();
             }
-            servo.setPosition(clampPos(servoPosition));
+            servo.setPosition(servoPosition);
+
+
             telemetry.addData("Servo Position", servoPosition);
             telemetry.update();
         }

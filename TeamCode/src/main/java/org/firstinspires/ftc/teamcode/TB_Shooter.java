@@ -60,7 +60,7 @@ public class TB_Shooter extends LinearOpMode {
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime iIntakeTimer = new ElapsedTime();
     private ElapsedTime oIntakeTimer = new ElapsedTime();
-    private static final double MAX_SERVO = 0.5;
+    private static final double MAX_SERVO = 0.6;
     private static final double MIN_SERVO = 0.1;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
 
@@ -68,7 +68,7 @@ public class TB_Shooter extends LinearOpMode {
     public void runOpMode() {
         hardwareStart();
         double speed = 0.5;
-        double servoPosition = 0.5;
+        double servoPosition = 0.6;
         double shooterPower = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
@@ -165,7 +165,7 @@ public class TB_Shooter extends LinearOpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.REVERSE);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
 

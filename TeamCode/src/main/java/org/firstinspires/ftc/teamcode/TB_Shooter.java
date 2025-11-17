@@ -19,7 +19,7 @@ CONTROLS:
         LEFT BUMPER: Sets outer intake power to 0 (no power) and 1 (full power)
         RIGHT BUMPER: Sets inner intake power to 0 (no power) and 1 (full power)
         LEFT TRIGGER: Sets outer intake motor speed to -1 (full reverse power) (Toggle)
-        RIGHT TRIGGER: Sets inner intake motor speed to -1 (ful reverse power) (Togge)
+        RIGHT TRIGGER: Sets inner intake motor speed to -1 (ful reverse power) (Toggle)
 
 TO DO:  1.  Clean up our edge detection to use FTCLib .wasJustPressed method.  Remove all timers.
                 - driver.wasJustPressed(GamepadKeys.Button.A) is an example

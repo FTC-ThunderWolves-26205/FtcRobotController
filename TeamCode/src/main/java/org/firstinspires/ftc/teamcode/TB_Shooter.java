@@ -18,13 +18,13 @@ CONTROLS:
         A: Sets servo position to 0.6 (resting position) or 0.1 (launching position)
         LEFT BUMPER: Sets outer intake power to 0 (no power) and 1 (full power)
         RIGHT BUMPER: Sets inner intake power to 0 (no power) and 1 (full power)
+        LEFT TRIGGER: Sets outer intake motor speed to -1 (full reverse power) (Toggle)
+        RIGHT TRIGGER: Sets inner intake motor speed to -1 (ful reverse power) (Togge)
 
 TO DO:  1.  Clean up our edge detection to use FTCLib .wasJustPressed method.  Remove all timers.
                 - driver.wasJustPressed(GamepadKeys.Button.A) is an example
         2.  Implement .setVelocity and PIDF for shooter.
         3.  Pick two or three "shooting spots", assign a button on the second controller for each, and code appropriate velocity levels.
-        5.  Add a reverse mode to the intakes
-        6.  Remove the reverse mode for the shooter
         7.  Make one button for the servo to go to its launching position then go back to its resting position
 
 LONGER TO DO (Things to Try Before 2nd Tournament?):
@@ -123,6 +123,14 @@ public class TB_Shooter extends LinearOpMode {
                 iIntakeTimer.reset();
             } else if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 500) {
                 oIntakePower = (oIntakePower == 0) ? 1 : 0;
+                oIntakeTimer.reset();
+            }
+
+            if(gamepad2.right_trigger > 0 && iIntakeTimer.milliseconds() > 500) {
+                iIntakePower = (iIntakePower == 0) ? -1 : 0;
+                iIntakeTimer.reset();
+            } else if (gamepad2.left_trigger > 0 && oIntakeTimer.milliseconds() > 500) {
+                oIntakePower = (oIntakePower == 0) ? -1 : 0;
                 oIntakeTimer.reset();
             }
 

@@ -10,13 +10,12 @@ CONTROLS:
         LEFT STICK X: Strafes ROBOT
         RIGHT STICK X: Turns ROBOT
         RIGHT BUMPER: Sets speed to 1 (double speed)
-        LEFT BUMPER: Sets= speed to 0.25 (half speed)
-        LEFT BUMPER & RIGHT BUMPER: Sets= speed to 0.1 (1/5 speed)
+        LEFT BUMPER: Sets speed to 0.25 (half speed)
     GAMEPAD 2:
         DPAD UP: Adds 0.1 (1/10 power) to current shooter power
         DPAD DOWN: Subtracts 0.1 (1/10 power) to current shooter power
         DPAD RIGHT: Sets shooter power to 1 (full power) or 0 (no power)
-        A: Sets servo position to 0.5 (resting position) or 0.1 (launching position)
+        A: Sets servo position to 0.6 (resting position) or 0.1 (launching position)
         LEFT BUMPER: Sets outer intake power to 0 (no power) and 1 (full power)
         RIGHT BUMPER: Sets inner intake power to 0 (no power) and 1 (full power)
 
@@ -24,12 +23,13 @@ TO DO:  1.  Clean up our edge detection to use FTCLib .wasJustPressed method.  R
                 - driver.wasJustPressed(GamepadKeys.Button.A) is an example
         2.  Implement .setVelocity and PIDF for shooter.
         3.  Pick two or three "shooting spots", assign a button on the second controller for each, and code appropriate velocity levels.
+        5.  Add a reverse mode to the intakes
+        6.  Remove the reverse mode for the shooter
+        7.  Make one button for the servo to go to its launching position then go back to its resting position
 
 LONGER TO DO (Things to Try Before 2nd Tournament?):
         1.  Add webcam, vision portal, apriltag processor
         2.  Automate shooting velocity based on detected distance to AprilTag.
-
-
  */
 
 
@@ -53,20 +53,21 @@ public class TB_Shooter extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-
-
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime iIntakeTimer = new ElapsedTime();
     private ElapsedTime oIntakeTimer = new ElapsedTime();
-    private static final double MAX_SERVO = 0.6;
-    private static final double MIN_SERVO = 0.1;
+    private static final double RESTING_SERVO = 0.6;
+    private static final double LAUNCHING_SERVO = 0.1;
+    private final double NORMAL_SPEED = 0.75;
+    private final double SLOW_SPEED = 0.5;
+    private final double TURBO_SPEED = 1.0;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
 
     @Override
     public void runOpMode() {
         hardwareStart();
-        double speed = 0.5;
+        double speed = NORMAL_SPEED;
         double servoPosition = 0.6;
         double shooterPower = 0;
         double iIntakePower = 0;
@@ -94,13 +95,11 @@ public class TB_Shooter extends LinearOpMode {
             servo.setPosition(clampServo(servoPosition));
 
             if (gamepad1.right_bumper) {
-                speed = 1;
+                speed = TURBO_SPEED;
             } else if(gamepad1.left_bumper) {
-                speed = 0.25;
-            } else if(gamepad1.left_bumper && gamepad1.right_bumper) {
-                speed = 0.1;
+                speed = SLOW_SPEED;
             } else {
-                speed = 0.5;
+                speed = NORMAL_SPEED;
             }
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
@@ -115,7 +114,7 @@ public class TB_Shooter extends LinearOpMode {
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > 500) {
-                servoPosition = (servoPosition == MAX_SERVO) ? MIN_SERVO : MAX_SERVO;
+                servoPosition = (servoPosition == RESTING_SERVO) ? LAUNCHING_SERVO : RESTING_SERVO;
                 servoTimer.reset();
             }
 
@@ -127,9 +126,9 @@ public class TB_Shooter extends LinearOpMode {
                 oIntakeTimer.reset();
             }
 
-            shooter.setPower(clampFull(shooterPower));
-            iIntake.setPower(clampPos(iIntakePower));
-            oIntake.setPower(clampPos(oIntakePower));
+            shooter.setPower(clampPos(shooterPower));
+            iIntake.setPower(clampFull(iIntakePower));
+            oIntake.setPower(clampFull(oIntakePower));
 
             telemetry.addData("Shooter Power", shooterPower);
             telemetry.addData("Shooter Velocity",shooter.getVelocity());
@@ -179,7 +178,7 @@ public class TB_Shooter extends LinearOpMode {
         return Math.max(-1.0, Math.min(1.0, val));
     }
     private double clampServo(double val) {
-        return Math.max(MIN_SERVO, Math.min(MAX_SERVO, val));
+        return Math.max(LAUNCHING_SERVO, Math.min(RESTING_SERVO, val));
     }
     private double ticksPerSecondToRPM(double tps) { return tps * 60.0 / TICKS_PER_REV; }
 

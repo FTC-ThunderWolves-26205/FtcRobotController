@@ -29,7 +29,6 @@ LONGER TO DO (Things to Try Before 2nd Tournament?):
         1.  Add webcam, vision portal, apriltag processor
         2.  Automate shooting velocity based on detected distance to AprilTag.
 
-Testing showed that -0.2 power appears to work for intake mode on the shooter.
 
  */
 

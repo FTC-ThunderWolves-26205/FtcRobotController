@@ -1,3 +1,9 @@
+/*
+TELL US WHAT YOUR AUTO MODE DOES HERE
+
+ */
+
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;

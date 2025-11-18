@@ -10,27 +10,27 @@ CONTROLS:
         LEFT STICK X: Strafes ROBOT
         RIGHT STICK X: Turns ROBOT
         RIGHT BUMPER: Sets speed to 1 (double speed)
-        LEFT BUMPER: Sets speed to 0.25 (half speed)
+        LEFT BUMPER: Sets speed to 0.5 (half speed)
     GAMEPAD 2:
         DPAD UP: Adds 0.1 (1/10 power) to current shooter power
         DPAD DOWN: Subtracts 0.1 (1/10 power) to current shooter power
         DPAD RIGHT: Sets shooter power to 1 (full power) or 0 (no power)
-        A: Sets servo position to 0.6 (resting position) or 0.1 (launching position)
+        A: Sets servo position to launching position then back to resting position
         LEFT BUMPER: Sets outer intake power to 0 (no power) and 1 (full power)
         RIGHT BUMPER: Sets inner intake power to 0 (no power) and 1 (full power)
         LEFT TRIGGER: Sets outer intake motor speed to -1 (full reverse power) (Toggle)
-        RIGHT TRIGGER: Sets inner intake motor speed to -1 (ful reverse power) (Togglee)
+        RIGHT TRIGGER: Sets inner intake motor speed to -1 (ful reverse power) (Toggle)
 
 TO DO:  1.  Clean up our edge detection to use FTCLib .wasJustPressed method.  Remove all timers.
                 - driver.wasJustPressed(GamepadKeys.Button.A) is an example
         2.  Implement .setVelocity and PIDF for shooter.
         3.  Pick two or three "shooting spots", assign a button on the second controller for each, and code appropriate velocity levels.
-        7.  Make one button for the servo to go to its launching position then go back to its resting position
 
 LONGER TO DO (Things to Try Before 2nd Tournament?):
         1.  Add webcam, vision portal, apriltag processor
         2.  Automate shooting velocity based on detected distance to AprilTag.
- */
+
+*/
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -62,6 +62,7 @@ public class TB_Shooter extends LinearOpMode {
     private final double NORMAL_SPEED = 0.75;
     private final double SLOW_SPEED = 0.5;
     private final double TURBO_SPEED = 1.0;
+    private final double SERVO_DURATION = 500;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
 
     @Override
@@ -72,6 +73,7 @@ public class TB_Shooter extends LinearOpMode {
         double shooterPower = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
+        boolean isServo = false;
         waitForStart();
         shooterTimer.reset();
         servoTimer.reset();
@@ -113,9 +115,16 @@ public class TB_Shooter extends LinearOpMode {
                 shooterTimer.reset();
             }
 
-            if(gamepad2.a && servoTimer.milliseconds() > 500) {
-                servoPosition = (servoPosition == RESTING_SERVO) ? LAUNCHING_SERVO : RESTING_SERVO;
+            if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
+                servo.setPosition(LAUNCHING_SERVO);
                 servoTimer.reset();
+                isServo = true;
+            }
+
+            if(servoTimer.milliseconds() > SERVO_DURATION && isServo) {
+                servo.setPosition(RESTING_SERVO);
+                servoTimer.reset();
+                isServo = false;
             }
 
             if(gamepad2.right_bumper && iIntakeTimer.milliseconds() > 500) {

@@ -62,14 +62,14 @@ public class TB_Shooter extends LinearOpMode {
     private final double NORMAL_SPEED = 0.75;
     private final double SLOW_SPEED = 0.5;
     private final double TURBO_SPEED = 1.0;
-    private final double SERVO_DURATION = 500;
+    private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
 
     @Override
     public void runOpMode() {
         hardwareStart();
         double speed = NORMAL_SPEED;
-        double servoPosition = 0.6;
+        servo.setPosition(RESTING_SERVO);
         double shooterPower = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
@@ -94,7 +94,6 @@ public class TB_Shooter extends LinearOpMode {
             frontRight.setPower(clampFull(frontRightPower));
             backLeft.setPower(clampFull(backLeftPower));
             backRight.setPower(clampFull(backRightPower));
-            servo.setPosition(clampServo(servoPosition));
 
             if (gamepad1.right_bumper) {
                 speed = TURBO_SPEED;
@@ -149,11 +148,12 @@ public class TB_Shooter extends LinearOpMode {
 
             telemetry.addData("Shooter Power", shooterPower);
             telemetry.addData("Shooter Velocity",shooter.getVelocity());
-            telemetry.addData("Servo Position", servoPosition);
+            telemetry.addData("Servo Position", servo.getPosition());
             telemetry.addData("Inner Intake Power", iIntakePower);
             telemetry.addData("Outer Intake Power", oIntakePower);
             telemetry.addData("Shooter RPM", ticksPerSecondToRPM(shooter.getVelocity()));
             telemetry.addData("Battery Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
+            telemetry.addData("Servo Is Pressed", isServo);
             telemetry.update();
 
         }

@@ -16,6 +16,8 @@ CONTROLS:
         DPAD DOWN: Subtracts 0.1 (1/10 power) to current shooter power
         DPAD RIGHT: Sets shooter power to 1 (full power) or 0 (no power)
         A: Sets servo position to launching position then back to resting position
+        X: Sets shooter power to 0.85
+        Y: Sets shooter power to 0.7
         LEFT BUMPER: Sets outer intake power to 0 (no power) and 1 (full power)
         RIGHT BUMPER: Sets inner intake power to 0 (no power) and 1 (full power)
         LEFT TRIGGER: Sets outer intake power to 0 (no power) and -1 (reverse)
@@ -33,7 +35,6 @@ LONGER TO DO (Things to Try Before 2nd Tournament?):
 */
 
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,7 +45,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Basic TeleOp Mode", group = "Teleop")
 
-public class TB_Shooter extends LinearOpMode {
+public class TB_TeleOp extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -104,14 +105,22 @@ public class TB_Shooter extends LinearOpMode {
             }
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
-                shooterPower += 0.1;
+                shooterPower += 0.05;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
-                shooterPower -= 0.1;
+                shooterPower -= 0.05;
                 shooterTimer.reset();
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
                 shooterPower = (shooterPower == 0) ? 1 : 0;
                 shooterTimer.reset();
+            }
+
+            if(gamepad2.x) {
+                shooterPower = 0.85;
+            }
+
+            if(gamepad2.y) {
+                shooterPower = 0.7;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {

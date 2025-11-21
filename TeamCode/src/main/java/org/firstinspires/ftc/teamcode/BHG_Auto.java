@@ -1,5 +1,13 @@
 /*
-TELL US WHAT YOUR AUTO MODE DOES HERE
+My Autonomous code:
+
+turns on the shooter
+uses servo to kick up the first artifact up to the shooter
+turns on the intakes
+shoots the second artifact
+uses servo to kick up the third artifact up to the shooter
+strafes to the left
+stops everything
 
  */
 
@@ -32,20 +40,44 @@ public class BHG_Auto extends LinearOpMode {
 
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
-    private final double SERVO_DURATION = 500;
+    private final double SHOOTER_SPEED = 0.85;
+    private final long SERVO_DURATION = 750;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         hardwareStart();
-        double servoPosition = 0.6;
 
-
+        servo.setPosition(RESTING_SERVO);
 
         waitForStart();
 
+        if (opModeIsActive()) {
 
-        while (opModeIsActive()) {
+            shooter.setPower(SHOOTER_SPEED);
+
+            sleep(5000);
+
+            servoMovement();
+
+            intakePowers();
+
+            sleep(4000);
+
+            servoMovement();
+
+            shooter.setPower(0);
+
+            iIntake.setPower(0);
+
+            oIntake.setPower(0);
+
+            setPowers(-1, 1, 1, -1);
+
+            sleep(3000);
+
+            setPowers(0, 0, 0, 0);
 
         }
     }
@@ -77,5 +109,24 @@ public class BHG_Auto extends LinearOpMode {
 
         telemetry.addData("Status","Initialized");
         telemetry.update();
+    }
+    private void intakePowers() {
+        iIntake.setPower(1);
+        oIntake.setPower(1);
+    }
+    private void servoMovement() {
+        servo.setPosition(LAUNCHING_SERVO);
+
+        sleep(SERVO_DURATION);
+
+        servo.setPosition(RESTING_SERVO);
+    }
+    private void setPowers(double frontLeftPower, double frontRightPower, double
+             backLeftPower, double backRightPower) {
+
+        frontLeft.setPower(frontLeftPower);
+        frontRight.setPower(frontRightPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
     }
 }

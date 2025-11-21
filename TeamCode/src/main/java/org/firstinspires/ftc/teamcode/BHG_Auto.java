@@ -53,7 +53,7 @@ public class BHG_Auto extends LinearOpMode {
 
         waitForStart();
 
-        if (opModeIsActive()) {
+        while (opModeIsActive()) {
 
             shooter.setPower(SHOOTER_SPEED);
 
@@ -78,6 +78,8 @@ public class BHG_Auto extends LinearOpMode {
             sleep(3000);
 
             setPowers(0, 0, 0, 0);
+
+            break;
 
         }
     }

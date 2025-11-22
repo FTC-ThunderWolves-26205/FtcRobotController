@@ -190,7 +190,7 @@ public class TB_TeleOp extends LinearOpMode {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        oIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status","Initialized");

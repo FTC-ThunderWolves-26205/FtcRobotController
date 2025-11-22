@@ -37,7 +37,6 @@ public class BHG_Auto extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double SHOOTER_SPEED = 0.85;
@@ -106,7 +105,7 @@ public class BHG_Auto extends LinearOpMode {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        oIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status","Initialized");

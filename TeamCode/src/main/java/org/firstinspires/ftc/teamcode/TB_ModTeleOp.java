@@ -105,10 +105,10 @@ public class TB_ModTeleOp extends LinearOpMode {
             }
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
-                shooterPower += 100;
+                shooterPower += 20;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
-                shooterPower -= 100;
+                shooterPower -= 20;
                 shooterTimer.reset();
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
                 shooterPower = (shooterPower == 0) ? 2200 : 0;
@@ -119,8 +119,8 @@ public class TB_ModTeleOp extends LinearOpMode {
                 shooterPower = 1800;
             }
 
-            if(gamepad2.y) {
-                shooterPower = 1500;
+            if(gamepad2.b) {
+                shooterPower = 1520;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {

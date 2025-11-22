@@ -39,7 +39,7 @@ public class BHG_Auto extends LinearOpMode {
     private Servo servo;
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
-    private final double SHOOTER_SPEED = 0.85;
+    private final double SHOOTER_SPEED = 0.75;
     private final long SERVO_DURATION = 750;
 
 
@@ -62,7 +62,7 @@ public class BHG_Auto extends LinearOpMode {
 
             intakePowers();
 
-            sleep(4000);
+            sleep(3000);
 
             servoMovement();
 
@@ -72,9 +72,9 @@ public class BHG_Auto extends LinearOpMode {
 
             oIntake.setPower(0);
 
-            setPowers(-1, 1, 1, -1);
+            setPowers(-0.5, 0.5, 0.5, -0.5);
 
-            sleep(3000);
+            sleep(1000);
 
             setPowers(0, 0, 0, 0);
 
@@ -113,7 +113,7 @@ public class BHG_Auto extends LinearOpMode {
     }
     private void intakePowers() {
         iIntake.setPower(1);
-        oIntake.setPower(1);
+        oIntake.setPower(0.5);
     }
     private void servoMovement() {
         servo.setPosition(LAUNCHING_SERVO);

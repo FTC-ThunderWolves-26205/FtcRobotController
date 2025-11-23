@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "Ben's Auto", group = "Autonomous")
+@Autonomous(name = "Auto Move Left", group = "Autonomous")
 
 public class TB_Auto extends LinearOpMode {
     private DcMotor frontRight;

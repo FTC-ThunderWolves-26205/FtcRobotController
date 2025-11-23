@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 /*
 This code performs four basic functions:  basic mecanum drive + power-based shooter control + intakes on/off + servo increments.
- FBGDF
+ FBGDFtwtwrt3
 CONTROLS:
 
     GAMEPAD 1:
@@ -25,8 +25,7 @@ CONTROLS:
 
 TO DO:  1.  Clean up our edge detection to use FTCLib .wasJustPressed method.  Remove all timers.
                 - driver.wasJustPressed(GamepadKeys.Button.A) is an example
-        2.  Implement .setVelocity and PIDF for shooter.
-        3.  Pick two or three "shooting spots", assign a button on the second controller for each, and code appropriate velocity levels.
+
 
 LONGER TO DO (Things to Try Before 2nd Tournament?):
         1.  Add webcam, vision portal, apriltag processor
@@ -43,7 +42,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Basic TeleOp Mode", group = "Teleop")
+@TeleOp(name = "TeleOp Mode", group = "Teleop")
 
 public class TB_TeleOp extends LinearOpMode {
     private DcMotor frontRight;
@@ -84,7 +83,7 @@ public class TB_TeleOp extends LinearOpMode {
 
             double forward = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
-            double turn = gamepad1.right_stick_x/2;
+            double turn = gamepad1.right_stick_x;
 
             double frontLeftPower = (forward + strafe + turn) * speed;
             double backLeftPower = (forward - strafe + turn) * speed;
@@ -105,22 +104,22 @@ public class TB_TeleOp extends LinearOpMode {
             }
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
-                shooterPower += 0.05;
+                shooterPower += 20;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
-                shooterPower -= 0.05;
+                shooterPower -= 20;
                 shooterTimer.reset();
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
-                shooterPower = (shooterPower == 0) ? 1 : 0;
+                shooterPower = (shooterPower == 0) ? 2200 : 0;
                 shooterTimer.reset();
             }
 
             if(gamepad2.x) {
-                shooterPower = 0.85;
+                shooterPower = 1800;
             }
 
-            if(gamepad2.y) {
-                shooterPower = 0.7;
+            if(gamepad2.b) {
+                shooterPower = 1520;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
@@ -151,7 +150,7 @@ public class TB_TeleOp extends LinearOpMode {
                 oIntakeTimer.reset();
             }
 
-            shooter.setPower(clampPos(shooterPower));
+            shooter.setVelocity(clampShoot(shooterPower));
             iIntake.setPower(clampFull(iIntakePower));
             oIntake.setPower(clampFull(oIntakePower));
 
@@ -206,6 +205,7 @@ public class TB_TeleOp extends LinearOpMode {
     private double clampServo(double val) {
         return Math.max(LAUNCHING_SERVO, Math.min(RESTING_SERVO, val));
     }
+    private double clampShoot(double val) { return Math.max(0.0, Math.min(2200, val));}
     private double ticksPerSecondToRPM(double tps) { return tps * 60.0 / TICKS_PER_REV; }
 
 }

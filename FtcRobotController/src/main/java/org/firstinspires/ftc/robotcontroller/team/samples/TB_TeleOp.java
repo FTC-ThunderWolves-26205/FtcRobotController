@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples;
 
 /*
 This code performs four basic functions:  basic mecanum drive + power-based shooter control + intakes on/off + servo increments.
- FBGDFtwtwrt3
+ FBGDF
 CONTROLS:
 
     GAMEPAD 1:
@@ -35,6 +35,7 @@ LONGER TO DO (Things to Try Before 2nd Tournament?):
 */
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -42,10 +43,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+@Disabled
+@TeleOp(name = "Basic TeleOp Mode", group = "Teleop")
 
-@TeleOp(name = "Modified TeleOp Mode", group = "Teleop")
-
-public class TB_ModTeleOp extends LinearOpMode {
+public class TB_TeleOp extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -84,7 +85,7 @@ public class TB_ModTeleOp extends LinearOpMode {
 
             double forward = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
-            double turn = gamepad1.right_stick_x;
+            double turn = gamepad1.right_stick_x/2;
 
             double frontLeftPower = (forward + strafe + turn) * speed;
             double backLeftPower = (forward - strafe + turn) * speed;
@@ -105,22 +106,22 @@ public class TB_ModTeleOp extends LinearOpMode {
             }
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
-                shooterPower += 20;
+                shooterPower += 0.05;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
-                shooterPower -= 20;
+                shooterPower -= 0.05;
                 shooterTimer.reset();
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
-                shooterPower = (shooterPower == 0) ? 2200 : 0;
+                shooterPower = (shooterPower == 0) ? 1 : 0;
                 shooterTimer.reset();
             }
 
             if(gamepad2.x) {
-                shooterPower = 1800;
+                shooterPower = 0.85;
             }
 
-            if(gamepad2.b) {
-                shooterPower = 1520;
+            if(gamepad2.y) {
+                shooterPower = 0.7;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
@@ -151,7 +152,7 @@ public class TB_ModTeleOp extends LinearOpMode {
                 oIntakeTimer.reset();
             }
 
-            shooter.setVelocity(clampShoot(shooterPower));
+            shooter.setPower(clampPos(shooterPower));
             iIntake.setPower(clampFull(iIntakePower));
             oIntake.setPower(clampFull(oIntakePower));
 
@@ -206,7 +207,6 @@ public class TB_ModTeleOp extends LinearOpMode {
     private double clampServo(double val) {
         return Math.max(LAUNCHING_SERVO, Math.min(RESTING_SERVO, val));
     }
-    private double clampShoot(double val) { return Math.max(0.0, Math.min(2200, val));}
     private double ticksPerSecondToRPM(double tps) { return tps * 60.0 / TICKS_PER_REV; }
 
 }

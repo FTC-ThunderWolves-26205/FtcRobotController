@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -11,9 +11,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 
-@TeleOp(name = "Odometry Drive", group = "Teleop")
+@Autonomous(name = "Odometry Drive", group = "Teleop")
 
-public class JLG_OdometryTest extends LinearOpMode {
+public class BHG_Odometry_Auto extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -27,54 +27,31 @@ public class JLG_OdometryTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         hardwareStart();
-        double speed = 0.5;
         waitForStart();
 
         while(opModeIsActive()) {
-
             pinpoint.update();
 
-            double forward = -gamepad1.left_stick_y;
-            double strafe = gamepad1.left_stick_x;
-            double turn = gamepad1.right_stick_x;
-
-            double frontLeftPower = (forward + strafe + turn) * speed;
-            double backLeftPower = (forward - strafe + turn) * speed;
-            double frontRightPower = (forward - strafe - turn) * speed;
-            double backRightPower = (forward + strafe - turn) * speed;
-
-            frontLeft.setPower(frontLeftPower);
-            frontRight.setPower(frontRightPower);
-            backLeft.setPower(backLeftPower);
-            backRight.setPower(backRightPower);
-
-            if (gamepad1.dpad_left) {
-                strafe = -0.5;
-                sleep(5);
-                strafe = -gamepad1.left_stick_x;
-            } else if (gamepad1.dpad_right){
-                strafe = 0.5;
-                sleep(5);
-                strafe = -gamepad1.left_stick_x;
-            }
-
-            if (gamepad1.left_bumper) {
-                speed = 1; //turooo
-            } else if (gamepad1.right_bumper) {
-                speed = 0.25;
+            if(pinpoint.getPosX(DistanceUnit.INCH) > -35) {
+                pinpoint.update();
+                setPowers(0.5, 0.5, 0.5, 0.5);
             } else {
-                speed = 0.5;
+                pinpoint.update();
+                setPowers(0, 0, 0, 0);
             }
 
-            if(gamepad1.a) {
-                pinpoint.resetPosAndIMU();
+            if(pinpoint.getHeading(AngleUnit.DEGREES) < 90 && pinpoint.getPosX(DistanceUnit.INCH) <= -35) {
+                pinpoint.update();
+                setPowers(-0.5, 0.5, -0.5, 0.5);
+            } else {
+                pinpoint.update();
+                setPowers(0, 0, 0, 0);
             }
 
             telemetry.addData("X (in)", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y (in)", pinpoint.getPosY(DistanceUnit.INCH));
             telemetry.addData("Heading", pinpoint.getHeading(AngleUnit.DEGREES));
             telemetry.update();
-
 
         }
     }
@@ -89,13 +66,24 @@ public class JLG_OdometryTest extends LinearOpMode {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
 
 
+
         telemetry.addData("Status","Initialized");
-        //blow up world... just not this house
+    }
+    private void setPowers(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+        frontLeft.setPower(frontLeftPower);
+        frontRight.setPower(frontRightPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
     }
 }
 

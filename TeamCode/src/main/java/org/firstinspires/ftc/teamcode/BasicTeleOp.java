@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Modified Basic TeleOp Mode", group = "Teleop")
-
+@Disabled
 public class BasicTeleOp extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

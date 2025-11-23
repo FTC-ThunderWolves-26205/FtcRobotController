@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "Ben's Auto", group = "Autonomous")
-
+@Disabled
 public class BHG_Auto extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

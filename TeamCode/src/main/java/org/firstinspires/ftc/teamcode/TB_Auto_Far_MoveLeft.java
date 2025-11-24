@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "Auto Move Left", group = "Autonomous")
+@Autonomous(name = "Auto Far Move Left", group = "Autonomous")
 
 public class TB_Auto_Far_MoveLeft extends LinearOpMode {
     private DcMotor frontRight;

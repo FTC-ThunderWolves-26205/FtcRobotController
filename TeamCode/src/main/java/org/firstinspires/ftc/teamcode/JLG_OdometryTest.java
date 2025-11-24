@@ -97,5 +97,65 @@ public class JLG_OdometryTest extends LinearOpMode {
         telemetry.addData("Status","Initialized");
         //blow up world... just not this house
     }
+
+    // Move the robot to a target X/Y coordinate with a desired heading
+    private void goToPose(double targetX, double targetY, double targetHeading, double power) {
+        // Keep running until opmode ends
+        while (opModeIsActive()) {
+            // Refresh odometry readings from Pinpoint
+            pinpoint.update();
+
+            // Get current position and heading from odometry
+            double currentX = pinpoint.getX();
+            double currentY = pinpoint.getY();
+            double currentHeading = pinpoint.getHeading();
+
+            // Calculate error (difference) between target and current position
+            double dx = targetX - currentX;
+            double dy = targetY - currentY;
+
+            // If robot is close enough to target (within 0.5 in and 2°), stop
+            if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 &&
+                    Math.abs(currentHeading - targetHeading) < 2.0) {
+                setPowers(0, 0, 0, 0); // stop all motors
+                break;                 // exit loop
+            }
+
+            // Normalize direction vector (dx, dy) to unit length
+            double magnitude = Math.sqrt(dx*dx + dy*dy);
+            double xPower = (dx / magnitude) * power; // scaled X power
+            double yPower = (dy / magnitude) * power; // scaled Y power
+
+            // Heading correction: difference between target and current heading
+            double headingError = targetHeading - currentHeading;
+            headingError = normalizeHeading(headingError); // wrap to [-180, 180]
+
+            // Apply proportional correction (kH is tuning constant)
+            double kH = 0.02;
+            double turnPower = headingError * kH;
+
+            // Mecanum drive mixing:
+            // Combine forward/strafe (yPower/xPower) with rotation (turnPower)
+            double fl = yPower + xPower - turnPower; // front left
+            double fr = yPower - xPower + turnPower; // front right
+            double bl = yPower - xPower - turnPower; // back left
+            double br = yPower + xPower + turnPower; // back right
+
+            // Send calculated powers to motors
+            setPowers(fl, fr, bl, br);
+
+            // Telemetry for debugging: show target vs current pose
+            telemetry.addData("Target Pose", "(%.1f, %.1f, %.1f°)", targetX, targetY, targetHeading);
+            telemetry.addData("Current Pose", "(%.1f, %.1f, %.1f°)", currentX, currentY, currentHeading);
+            telemetry.update();
+        }
+    }
+
+    // Normalize heading error so it always falls between -180° and +180°
+    private double normalizeHeading(double heading) {
+        while (heading > 180) heading -= 360;
+        while (heading <= -180) heading += 360;
+        return heading;
+    }
 }
 

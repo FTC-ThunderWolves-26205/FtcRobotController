@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name = "Auto Move Left", group = "Autonomous")
 
-public class TB_Auto extends LinearOpMode {
+public class TB_Auto_Far_MoveLeft extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;

@@ -5,10 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
+
+import com.qualcomm.robotcore.hardware.PwmControl;
+
+
 
 
 @TeleOp(name = "Odometry Drive", group = "Teleop")
@@ -19,7 +27,13 @@ public class JLG_OdometryTest extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
 
+    private Servo lift;
+
     private GoBildaPinpointDriver pinpoint;
+
+    private ElapsedTime servoTimer = new ElapsedTime();
+
+    private double liftPosition;
 
 
 
@@ -28,6 +42,8 @@ public class JLG_OdometryTest extends LinearOpMode {
     public void runOpMode() {
         hardwareStart();
         double speed = 0.5;
+        lift.setPosition(0);
+        servoTimer.reset();
         waitForStart();
 
         while(opModeIsActive()) {
@@ -70,9 +86,29 @@ public class JLG_OdometryTest extends LinearOpMode {
                 pinpoint.resetPosAndIMU();
             }
 
+            if (gamepad1.dpad_up && servoTimer.milliseconds() > 500) {
+                lift.setPosition(0.5);
+                servoTimer.reset();
+            }
+
+            if (gamepad1.dpad_down && servoTimer.milliseconds() > 500) {
+                lift.setPosition(0.9);
+                servoTimer.reset();
+
+            }
+
+            if (gamepad1.dpad_left && servoTimer.milliseconds() > 500) {
+                lift.setPosition(0.2);
+                servoTimer.reset();
+            }
+
+
+
+
             telemetry.addData("X (in)", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y (in)", pinpoint.getPosY(DistanceUnit.INCH));
             telemetry.addData("Heading", pinpoint.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("Lift Position", lift.getPosition());
             telemetry.update();
 
 
@@ -91,6 +127,11 @@ public class JLG_OdometryTest extends LinearOpMode {
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
+
+        lift = hardwareMap.get(Servo.class, "lift");
+        //((PwmControl) lift).setPwmRange(new PwmControl.PwmRange(0.9, 2.1));
+
+
 
 
 

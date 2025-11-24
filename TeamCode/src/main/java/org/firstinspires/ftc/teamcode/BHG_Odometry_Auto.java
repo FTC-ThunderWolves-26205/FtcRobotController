@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 
-@Autonomous(name = "Odometry Drive", group = "Teleop")
+@Autonomous(name = "Ben's Odometry Drive", group = "Autonomous")
 
 public class BHG_Odometry_Auto extends LinearOpMode {
     private DcMotor frontRight;

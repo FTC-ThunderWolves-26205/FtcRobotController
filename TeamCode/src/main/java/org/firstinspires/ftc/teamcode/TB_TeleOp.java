@@ -70,7 +70,7 @@ public class TB_TeleOp extends LinearOpMode {
         hardwareStart();
         double speed = NORMAL_SPEED;
         servo.setPosition(RESTING_SERVO);
-        double shooterPower = 0;
+        double shooterSpeed = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
         boolean isServo = false;
@@ -104,22 +104,22 @@ public class TB_TeleOp extends LinearOpMode {
             }
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
-                shooterPower += 20;
+                shooterSpeed += 20;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
-                shooterPower -= 20;
+                shooterSpeed -= 20;
                 shooterTimer.reset();
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
-                shooterPower = (shooterPower == 0) ? 2200 : 0;
+                shooterSpeed = (shooterSpeed == 0) ? 2200 : 0;
                 shooterTimer.reset();
             }
 
             if(gamepad2.x) {
-                shooterPower = 1800;
+                shooterSpeed = 1800;
             }
 
             if(gamepad2.b) {
-                shooterPower = 1520;
+                shooterSpeed = 1520;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
@@ -150,11 +150,11 @@ public class TB_TeleOp extends LinearOpMode {
                 oIntakeTimer.reset();
             }
 
-            shooter.setVelocity(clampShoot(shooterPower));
+            shooter.setVelocity(clampShoot(shooterSpeed));
             iIntake.setPower(clampFull(iIntakePower));
             oIntake.setPower(clampFull(oIntakePower));
 
-            telemetry.addData("Shooter Power", shooterPower);
+            telemetry.addData("Shooter Power", shooterSpeed);
             telemetry.addData("Shooter Velocity",shooter.getVelocity());
             telemetry.addData("Servo Position", servo.getPosition());
             telemetry.addData("Inner Intake Power", iIntakePower);

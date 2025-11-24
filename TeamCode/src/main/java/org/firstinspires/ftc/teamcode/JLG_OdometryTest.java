@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,7 +20,7 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 
 
 
-@TeleOp(name = "Odometry Drive", group = "Teleop")
+@Autonomous(name = "Jason's Odometry Drive", group = "Autonomous")
 
 public class JLG_OdometryTest extends LinearOpMode {
     private DcMotor frontRight;
@@ -27,13 +28,8 @@ public class JLG_OdometryTest extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
 
-    private Servo lift;
+      private GoBildaPinpointDriver pinpoint;
 
-    private GoBildaPinpointDriver pinpoint;
-
-    private ElapsedTime servoTimer = new ElapsedTime();
-
-    private double liftPosition;
 
 
 
@@ -41,75 +37,28 @@ public class JLG_OdometryTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         hardwareStart();
-        double speed = 0.5;
-        lift.setPosition(0);
-        servoTimer.reset();
+
         waitForStart();
 
         while(opModeIsActive()) {
 
             pinpoint.update();
 
-            double forward = -gamepad1.left_stick_y;
-            double strafe = gamepad1.left_stick_x;
-            double turn = gamepad1.right_stick_x;
+            goToPose(30, 0, 0, 0.5);
 
-            double frontLeftPower = (forward + strafe + turn) * speed;
-            double backLeftPower = (forward - strafe + turn) * speed;
-            double frontRightPower = (forward - strafe - turn) * speed;
-            double backRightPower = (forward + strafe - turn) * speed;
+            sleep(1500);
 
-            frontLeft.setPower(frontLeftPower);
-            frontRight.setPower(frontRightPower);
-            backLeft.setPower(backLeftPower);
-            backRight.setPower(backRightPower);
+            pinpoint.resetPosAndIMU();
 
-            if (gamepad1.dpad_left) {
-                strafe = -0.5;
-                sleep(5);
-                strafe = -gamepad1.left_stick_x;
-            } else if (gamepad1.dpad_right){
-                strafe = 0.5;
-                sleep(5);
-                strafe = -gamepad1.left_stick_x;
-            }
+            goToPose(0, 0, 90, 0.5);
 
-            if (gamepad1.left_bumper) {
-                speed = 1; //turooo
-            } else if (gamepad1.right_bumper) {
-                speed = 0.25;
-            } else {
-                speed = 0.5;
-            }
+            sleep(1500);
 
-            if(gamepad1.a) {
-                pinpoint.resetPosAndIMU();
-            }
-
-            if (gamepad1.dpad_up && servoTimer.milliseconds() > 500) {
-                lift.setPosition(0.5);
-                servoTimer.reset();
-            }
-
-            if (gamepad1.dpad_down && servoTimer.milliseconds() > 500) {
-                lift.setPosition(0.9);
-                servoTimer.reset();
-
-            }
-
-            if (gamepad1.dpad_left && servoTimer.milliseconds() > 500) {
-                lift.setPosition(0.2);
-                servoTimer.reset();
-            }
+            break;
 
 
 
 
-            telemetry.addData("X (in)", pinpoint.getPosX(DistanceUnit.INCH));
-            telemetry.addData("Y (in)", pinpoint.getPosY(DistanceUnit.INCH));
-            telemetry.addData("Heading", pinpoint.getHeading(AngleUnit.DEGREES));
-            telemetry.addData("Lift Position", lift.getPosition());
-            telemetry.update();
 
 
         }
@@ -128,15 +77,10 @@ public class JLG_OdometryTest extends LinearOpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
-        lift = hardwareMap.get(Servo.class, "lift");
-        //((PwmControl) lift).setPwmRange(new PwmControl.PwmRange(0.9, 2.1));
-
-
-
 
 
         telemetry.addData("Status","Initialized");
-        //blow up world... just not this house
+
     }
 
     // Move the robot to a target X/Y coordinate with a desired heading
@@ -147,9 +91,9 @@ public class JLG_OdometryTest extends LinearOpMode {
             pinpoint.update();
 
             // Get current position and heading from odometry
-            double currentX = pinpoint.getX();
-            double currentY = pinpoint.getY();
-            double currentHeading = pinpoint.getHeading();
+            double currentX = pinpoint.getPosX(DistanceUnit.INCH);
+            double currentY = pinpoint.getPosY(DistanceUnit.INCH);
+            double currentHeading = pinpoint.getHeading(AngleUnit.DEGREES);
 
             // Calculate error (difference) between target and current position
             double dx = targetX - currentX;
@@ -159,11 +103,12 @@ public class JLG_OdometryTest extends LinearOpMode {
             if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 &&
                     Math.abs(currentHeading - targetHeading) < 2.0) {
                 setPowers(0, 0, 0, 0); // stop all motors
-                break;                 // exit loop
+                return;                 // exit loop
             }
 
             // Normalize direction vector (dx, dy) to unit length
             double magnitude = Math.sqrt(dx*dx + dy*dy);
+            if (magnitude < 0.01) magnitude = 0.01; // prevent divide by zero
             double xPower = (dx / magnitude) * power; // scaled X power
             double yPower = (dy / magnitude) * power; // scaled Y power
 
@@ -197,6 +142,15 @@ public class JLG_OdometryTest extends LinearOpMode {
         while (heading > 180) heading -= 360;
         while (heading <= -180) heading += 360;
         return heading;
+    }
+
+    private void setPowers(double frontLeftPower, double frontRightPower, double
+            backLeftPower, double backRightPower) {
+
+        frontLeft.setPower(frontLeftPower);
+        frontRight.setPower(frontRightPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
     }
 }
 

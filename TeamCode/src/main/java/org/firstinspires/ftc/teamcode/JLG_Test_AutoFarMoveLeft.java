@@ -62,6 +62,7 @@ public class JLG_Test_AutoFarMoveLeft extends LinearOpMode {
 
             if(atTargetSpeed(shooter.getVelocity(), TARGET_SPEED, RANGE) && stepOne && !stepTwo) {
                 intakeSet (1, 0.5);
+                sleep(1000);
                 stepTwo = true; }
 
             if(atTargetSpeed(shooter.getVelocity(), TARGET_SPEED, RANGE) && stepTwo && !stepThree) {

@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name = "TEST Auto Far Move Left", group = "Autonomous")
 
-public class JLG_Test_AutoFarMoveLeft extends LinearOpMode {
+public class TB_Test_AutoFarMoveLeft extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -34,19 +34,19 @@ public class JLG_Test_AutoFarMoveLeft extends LinearOpMode {
     private Servo servo;
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
-    private final double TARGET_SPEED = 1800;
+    private final double TARGET_VELOCITY = 1800;
+    private final double RANGE = 40;
     private final long SERVO_DURATION = 750;
 
-    private final double RANGE = 100;
 
-    private boolean stepOne = false;
-    private boolean stepTwo = false;
-    private boolean stepThree = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
+        boolean firstShot = false;
+        boolean secondShot = false;
+        boolean thirdShot = false;
 
         servo.setPosition(RESTING_SERVO);
 
@@ -54,32 +54,41 @@ public class JLG_Test_AutoFarMoveLeft extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            shooter.setVelocity(TARGET_SPEED);
+            shooter.setVelocity(TARGET_VELOCITY);
 
-            if(atTargetSpeed(shooter.getVelocity(), TARGET_SPEED, RANGE) && !stepOne) {
+            if(atTargetSpeed(shooter.getVelocity(), TARGET_VELOCITY, RANGE) && !firstShot) {
                 servoMovement();
-                stepOne = true;  }
+                sleep(500);
+                firstShot = true;
+            }
 
-            if(atTargetSpeed(shooter.getVelocity(), TARGET_SPEED, RANGE) && stepOne && !stepTwo) {
-                intakeSet (1, 0.5);
-                sleep(1000);
-                stepTwo = true; }
+            if(atTargetSpeed(shooter.getVelocity(), TARGET_VELOCITY, RANGE) && firstShot && !secondShot) {
+                intakeSet(1, 0.5);
+                sleep(2000);
+                secondShot = true;
+            }
 
-            if(atTargetSpeed(shooter.getVelocity(), TARGET_SPEED, RANGE) && stepTwo && !stepThree) {
-                intakeSet(0,0);
+            if(atTargetSpeed(shooter.getVelocity(), TARGET_VELOCITY, RANGE) && secondShot && !thirdShot) {
+                intakeSet(0, 0);
                 servoMovement();
-                stepThree = true; }
+                sleep(500);
+                thirdShot = true;
+            }
 
-            if(stepThree) {
+            if(thirdShot) {
                 shooter.setVelocity(0);
-                setPowers (-0.5, 0.5, 0.5, -0.5);
+                iIntake.setPower(0);
+                oIntake.setPower(0);
+                setPowers(-0.5, 0.5, 0.5, -0.5);
                 sleep(1000);
-                setPowers (0, 0, 0, 0);
-                break;
+                setPowers(0, 0, 0, 0);
+            }
 
 
+            break;
 
-            }}
+
+            }
         }
         private void hardwareStart() {
             frontRight = hardwareMap.get(DcMotor.class, "FR");

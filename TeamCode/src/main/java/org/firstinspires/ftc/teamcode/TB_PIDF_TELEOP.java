@@ -173,7 +173,7 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target Velocity", targetShooterVelocity);
-            packet.put("Actual Actual Velocity", shooter.getVelocity());
+            packet.put("Actual Velocity", shooter.getVelocity());
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 

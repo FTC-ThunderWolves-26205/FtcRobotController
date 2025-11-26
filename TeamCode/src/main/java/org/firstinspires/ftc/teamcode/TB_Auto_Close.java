@@ -44,6 +44,7 @@ public class TB_Auto_Close extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
+        boolean movement = false;
         boolean firstShot = false;
         boolean secondShot = false;
         boolean thirdShot = false;
@@ -54,13 +55,16 @@ public class TB_Auto_Close extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            setPowers(-1,-1,-1,-1);
-            sleep(1000);
-            setPowers(0,0,0,0);
-
             shooter.setVelocity(TARGET_VELOCITY);
 
-            if(atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && !firstShot) {
+            if (!movement) {
+                setPowers(-1, -1, -1, -1);
+                sleep(1000);
+                setPowers(0, 0, 0, 0);
+                movement = true;
+            }
+
+            if(atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && movement && !firstShot) {
                 servoMovement();
                 sleep(500);
                 firstShot = true;

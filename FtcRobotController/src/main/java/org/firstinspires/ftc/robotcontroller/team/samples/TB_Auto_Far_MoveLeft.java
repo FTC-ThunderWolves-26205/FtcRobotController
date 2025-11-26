@@ -1,20 +1,13 @@
 /*
-My Autonomous code:
-XCVS
-turns on the shooter
-uses servo to kick up the first artifact up to the shooter
-turns on the intakes
-shoots the second artifact
-uses servo to kick up the third artifact up to the shooter
-strafes to the left
-stops everything
+OLD CODE DO NOT USE
 
  */
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -22,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name = "Auto Far Move Left", group = "Autonomous")
-
+@Disabled
 public class TB_Auto_Far_MoveLeft extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

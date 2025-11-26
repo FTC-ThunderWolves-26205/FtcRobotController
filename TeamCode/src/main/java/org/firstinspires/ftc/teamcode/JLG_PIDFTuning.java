@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "Shooter PIDF Tuner", group = "Tuning")
 @Config
@@ -73,6 +74,7 @@ public class JLG_PIDFTuning extends LinearOpMode {
         //The reason we use RUN.WITHOUT.ENCODER here is to bypass the built-in PIDF controller
         // This does NOT disable the encoder (we can still read velocity), but does turn off the PIDF controller
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
         pidfController = new PIDFController(kP, kI, kD, kF);
         driver = new GamepadEx(gamepad1);
@@ -108,8 +110,6 @@ public class JLG_PIDFTuning extends LinearOpMode {
 
                 shooter.setPower(outputPower);
 
-            } else {
-                shooter.setPower(0);
             }
 
             //Here is us defining the "packet" of values to send to the Dashboard

@@ -34,7 +34,7 @@ public class TB_Test_AutoFarMoveLeft extends LinearOpMode {
     private Servo servo;
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
-    private final double TARGET_VELOCITY = 1800;
+    private final double TARGET_VELOCITY = 1750;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 750;
 
@@ -64,7 +64,7 @@ public class TB_Test_AutoFarMoveLeft extends LinearOpMode {
 
             if(atTargetSpeed(shooter.getVelocity(), TARGET_VELOCITY, RANGE) && firstShot && !secondShot) {
                 intakeSet(1, 0.5);
-                sleep(2000);
+                sleep(3000);
                 secondShot = true;
             }
 
@@ -79,13 +79,11 @@ public class TB_Test_AutoFarMoveLeft extends LinearOpMode {
                 shooter.setVelocity(0);
                 iIntake.setPower(0);
                 oIntake.setPower(0);
-                setPowers(-0.5, 0.5, 0.5, -0.5);
+                setPowers(0.75, 0.75, 0.75, 0.75);
                 sleep(1000);
                 setPowers(0, 0, 0, 0);
+                break;
             }
-
-
-            break;
 
 
             }

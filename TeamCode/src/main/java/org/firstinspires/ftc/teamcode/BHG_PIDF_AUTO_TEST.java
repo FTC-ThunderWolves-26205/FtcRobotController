@@ -85,7 +85,7 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
                 sleep(2000);
                 setPowers(0, 0, 0, 0);
                 movement = true;
-            }
+            }//gfsg
 
             if(atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && movement && !firstShot) {
                 servoMovement();

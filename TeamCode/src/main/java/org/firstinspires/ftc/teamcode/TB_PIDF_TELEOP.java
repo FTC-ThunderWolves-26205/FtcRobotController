@@ -163,7 +163,7 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
                 oIntakePower = (oIntakePower == 0) ? -1 : 0;
                 oIntakeTimer.reset();
             }
-
+//f
 
 
             double shooterVelocity = shooter.getVelocity();

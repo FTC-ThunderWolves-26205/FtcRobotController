@@ -34,6 +34,9 @@ LONGER TO DO (Things to Try Before 2nd Tournament?):
 */
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -44,6 +47,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "PIDF TeleOp Mode", group = "Teleop")
+@Config
 
 public class TB_PIDF_TELEOP extends LinearOpMode {
     private DcMotor frontRight;
@@ -66,10 +70,10 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
     private PIDFController shooterControl;
-    private static final double kP = 0.002;
-    private static final double kI = 0.0;
-    private static final double kD = 0.00001;
-    private static final double kF = 0.000195;
+    private static double kP = 0;
+    private static double kI = 0.0;
+    private static double kD = 0;
+    private static double kF = 0;
 
     @Override
     public void runOpMode() {
@@ -82,6 +86,7 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
         boolean isServo = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
         waitForStart();
         shooterTimer.reset();
         servoTimer.reset();
@@ -159,11 +164,19 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
             }
 
 
+
             double shooterVelocity = shooter.getVelocity();
             iIntake.setPower(clampFull(iIntakePower));
             oIntake.setPower(clampFull(oIntakePower));
             double output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
-            shooter.setPower(clampPos(output));
+            shooter.setPower(output);
+
+            TelemetryPacket packet = new TelemetryPacket();
+            packet.put("Target Velocity", targetShooterVelocity);
+            packet.put("Actual Actual Velocity", shooter.getVelocity());
+            packet.put("Output Power", output);
+            dashboard.sendTelemetryPacket(packet);
+
 
             telemetry.addData("Shooter Power", targetShooterVelocity);
             telemetry.addData("Shooter Velocity", shooterVelocity);

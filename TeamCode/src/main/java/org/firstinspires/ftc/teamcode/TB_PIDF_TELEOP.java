@@ -70,10 +70,10 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
     private PIDFController shooterControl;
-    private static double kP = 0;
-    private static double kI = 0.0;
-    private static double kD = 0;
-    private static double kF = 0;
+    public static double kP = 0;
+    public static double kI = 0.0;
+    public static double kD = 0;
+    public static double kF = 0;
 
     @Override
     public void runOpMode() {
@@ -168,8 +168,8 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
             double shooterVelocity = shooter.getVelocity();
             iIntake.setPower(clampFull(iIntakePower));
             oIntake.setPower(clampFull(oIntakePower));
-            double output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
-            shooter.setPower(output);
+            double output = shooterControl.calculate(targetShooterVelocity, shooterVelocity);
+            shooter.setPower(clampPos(output));
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target Velocity", targetShooterVelocity);

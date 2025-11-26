@@ -200,6 +200,8 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
         iIntake = hardwareMap.get(DcMotor.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
+        shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

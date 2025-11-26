@@ -34,7 +34,7 @@ public class TB_Auto_Close extends LinearOpMode {
     private Servo servo;
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
-    private final double TARGET_VELOCITY = 1500;
+    private final double TARGET_VELOCITY = 1460;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 750;
 
@@ -58,8 +58,8 @@ public class TB_Auto_Close extends LinearOpMode {
             shooter.setVelocity(TARGET_VELOCITY);
 
             if (!movement) {
-                setPowers(-1, -1, -1, -1);
-                sleep(1000);
+                setPowers(-0.5, -0.5, -0.5, -0.5);
+                sleep(2000);
                 setPowers(0, 0, 0, 0);
                 movement = true;
             }
@@ -85,6 +85,8 @@ public class TB_Auto_Close extends LinearOpMode {
                 shooter.setVelocity(0);
 
                 setPowers(0.5,-0.5,-0.5,0.5);
+                sleep(2000);
+                setPowers(0,0,0,0);
                 break;
             }
         }

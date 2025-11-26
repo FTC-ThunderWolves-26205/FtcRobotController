@@ -54,7 +54,7 @@ public class JLG_PIDFTuning extends LinearOpMode {
 //This is just a starting RPM.  We can edit it live in the dashboard.
     public static double targetRPM = 3000;
 
-    //We are using DcMotorEx so that we can .setVelocity and .getVelocity ;
+    //We are using DcMotorEx so that we can .setVelocity and .getVelocity  ;
     private DcMotorEx shooter;
 
     //This is creating the PIDF Controller

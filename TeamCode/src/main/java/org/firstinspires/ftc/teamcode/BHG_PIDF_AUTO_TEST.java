@@ -77,10 +77,6 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
-            telemetry.addData("Shooter Velocity", shooter.getVelocity());
-            telemetry.addData("Target Velocity", targetShooterVelocity);
-            telemetry.update();
-
             shooter.setPower(Math.abs(output));
 
 

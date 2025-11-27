@@ -54,10 +54,9 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
         hardwareStart();
         boolean movement = false;
         boolean thirdShot = false;
-        boolean firstShot = false;
-        boolean secondShot = false;
+        boolean firstTwoShot = false;
 
-        double targetShooterVelocity = 0;
+        double targetShooterVelocity = TARGET_VELOCITY;
         double output;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
@@ -72,44 +71,32 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
             double shooterVelocity = shooter.getVelocity();
             output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
 
-            shooter.setPower(Math.abs(output));
-
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target Velocity", targetShooterVelocity);
             packet.put("Actual Velocity", shooter.getVelocity());
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
-            if (!movement) {
-                setPowers(-0.5, -0.5, -0.5, -0.5);
-                sleep(2000);
-                setPowers(0, 0, 0, 0);
-                movement = true;
-            }//gfsg
+            telemetry.addData("Shooter Velocity", shooter.getVelocity());
+            telemetry.addData("Target Velocity", targetShooterVelocity);
+            telemetry.update();
 
-            if(atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && movement && !firstShot) {
-                servoMovement();
-                sleep(500);
-                firstShot = true;
-            }
-            if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && firstShot && !secondShot) {
-                intakeSet(1,0.5);
+            shooter.setPower(Math.abs(output));
+
+
+            if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && !firstTwoShot) {
+                intakeSet(1,1);
                 sleep(3000);
-                secondShot = true;
+                firstTwoShot = true;
             }
-            if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && secondShot && !thirdShot) {
-                intakeSet(0,0);
+            if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && firstTwoShot && !thirdShot) {
                 servoMovement();
-                sleep(500);
+                sleep(1000);
                 thirdShot = true;
 
             }
             if (thirdShot) {
-                shooter.setVelocity(0);
-
-                setPowers(0.5,-0.5,-0.5,0.5);
-                sleep(2000);
-                setPowers(0,0,0,0);
+                intakeSet(0,0);
                 break;
             }
 

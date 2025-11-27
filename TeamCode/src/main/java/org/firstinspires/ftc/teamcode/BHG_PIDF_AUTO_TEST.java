@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "PIDF Auto Test", group = "Autonomous")
 
@@ -45,6 +46,8 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
     public static double kI = 0.0;
     public static double kD = 0.00001;
     public static double kF = 0.00045;
+    private ElapsedTime timer = new ElapsedTime();
+    private ElapsedTime servoTimer = new ElapsedTime();
 
 
 
@@ -82,18 +85,19 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
 
             if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && !firstTwoShot) {
                 intakeSet(1,1);
-                sleep(3000);
+                timer.reset();
                 firstTwoShot = true;
             }
-            if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && firstTwoShot && !thirdShot) {
+            if (firstTwoShot && !thirdShot && timer.milliseconds() > 5000) {
+                telemetry.addData("Shooter Speed", shooter.getVelocity());
+                telemetry.update();
                 servoMovement();
-                sleep(1000);
                 thirdShot = true;
-
             }
-            if (thirdShot) {
+
+
+            if (thirdShot && servoTimer.milliseconds() > SERVO_DURATION) {
                 intakeSet(0,0);
-                break;
             }
 
         }
@@ -134,11 +138,9 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
         oIntake.setPower(oIntakePower);
     }
     private void servoMovement() {
+        // Kick the servo forward and start timing
         servo.setPosition(LAUNCHING_SERVO);
-
-        sleep(SERVO_DURATION);
-
-        servo.setPosition(RESTING_SERVO);
+        servoTimer.reset();
     }
     private void setPowers(double frontLeftPower, double frontRightPower, double
             backLeftPower, double backRightPower) {

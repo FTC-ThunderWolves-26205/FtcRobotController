@@ -82,23 +82,27 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
 
             shooter.setPower(Math.abs(output));
 
-
             if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && !firstTwoShot) {
                 intakeSet(1,1);
                 timer.reset();
                 firstTwoShot = true;
             }
-            if (firstTwoShot && !thirdShot && timer.milliseconds() > 5000) {
-                telemetry.addData("Shooter Speed", shooter.getVelocity());
-                telemetry.update();
+            if (firstTwoShot && !thirdShot && timer.milliseconds() > 2000) {
                 servoMovement();
                 thirdShot = true;
             }
 
 
             if (thirdShot && servoTimer.milliseconds() > SERVO_DURATION) {
+                servo.setPosition(RESTING_SERVO);
                 intakeSet(0,0);
+                sleep(400);
+                break;
             }
+
+            telemetry.addData("Target Shooter Speed", targetShooterVelocity);
+            telemetry.addData("Shooter Speed", shooter.getVelocity());
+            telemetry.update();
 
         }
     }

@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Ben's PIDF Auto Test", group = "Autonomous")
+@Autonomous(name = "Ben's PIDF Auto Test, Temporary", group = "Autonomous")
 
 public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
     private DcMotor frontRight;
@@ -57,7 +57,6 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
         hardwareStart();
 
         double targetShooterVelocity = TARGET_VELOCITY;
-        double output;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -121,7 +120,6 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
         oIntake.setPower(oIntakePower);
     }
     private void servoMovement() {
-        // Kick the servo forward and start timing
         servo.setPosition(LAUNCHING_SERVO);
         servoTimer.reset();
     }

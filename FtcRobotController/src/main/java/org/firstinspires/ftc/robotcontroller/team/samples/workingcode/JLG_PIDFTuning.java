@@ -24,7 +24,7 @@ We will want to implement this in the TeleOp code Ben wrote up.  That way we can
 
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -32,6 +32,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -40,6 +41,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "Shooter PIDF Tuner", group = "Tuning")
 @Config
+@Disabled
 
 public class JLG_PIDFTuning extends LinearOpMode {
 

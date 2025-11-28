@@ -12,9 +12,10 @@ stops everything
  */
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -22,7 +23,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name = "Auto Far", group = "Autonomous")
-
+@Disabled
 public class TB_Auto_Far extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

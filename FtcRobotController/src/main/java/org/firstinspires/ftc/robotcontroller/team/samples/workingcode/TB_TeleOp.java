@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 /*
 This code performs four basic functions:  basic mecanum drive + power-based shooter control + intakes on/off + servo increments.
@@ -34,6 +34,7 @@ LONGER TO DO (Things to Try Before 2nd Tournament?):
 */
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -43,7 +44,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "TeleOp Mode", group = "Teleop")
-
+@Disabled
 public class TB_TeleOp extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

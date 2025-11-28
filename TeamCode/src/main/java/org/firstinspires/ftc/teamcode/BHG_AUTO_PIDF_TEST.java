@@ -14,17 +14,16 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-@Disabled
+
 @Autonomous(name = "PIDF Auto Test", group = "Autonomous")
 
-public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
+public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -45,6 +44,10 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
     public static double kF = 0.00045;
     private ElapsedTime timer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
+    private double output;
+    private boolean firstTwoShot = false;
+    private boolean thirdShot = false;
+
 
 
 
@@ -52,12 +55,8 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
-        boolean movement = false;
-        boolean thirdShot = false;
-        boolean firstTwoShot = false;
 
         double targetShooterVelocity = TARGET_VELOCITY;
-        double output;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -94,7 +93,7 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
                 servo.setPosition(RESTING_SERVO);
                 intakeSet(0,0);
                 sleep(400);
-                break;
+                requestOpModeStop();
             }
 
             telemetry.addData("Target Shooter Speed", targetShooterVelocity);
@@ -139,7 +138,6 @@ public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
         oIntake.setPower(oIntakePower);
     }
     private void servoMovement() {
-        // Kick the servo forward and start timing
         servo.setPosition(LAUNCHING_SERVO);
         servoTimer.reset();
     }

@@ -1,13 +1,9 @@
 /*
 My Autonomous code:
-XCVS
-turns on the shooter
-uses servo to kick up the first artifact up to the shooter
 turns on the intakes
-shoots the second artifact
+shoots the first and second artifact
 uses servo to kick up the third artifact up to the shooter
-strafes to the left
-stops everything
+
 
  */
 

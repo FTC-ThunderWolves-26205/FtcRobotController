@@ -48,75 +48,74 @@ public class MCM_Auto extends LinearOpMode {
         hardwareStart();
         double servoPosition = 0.6;
 
-        pinpoint.update();
-
-        telemetry.addData("X", pinpoint.getPosX(DistanceUnit.INCH));
-        telemetry.addData("Y", pinpoint.getPosY(DistanceUnit.INCH));
-        telemetry.addData("Heading", pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
-        telemetry.update();
-
-
-        shooter.setPower(0.5);
-
-        setPowers(-0.5,-0.5,-0.5,-0.5);
-
-        wait(500);
-
-        setPowers(0,0,0,0);
-
-        pinpoint.update();
-
-        telemetry.addData("X", pinpoint.getPosX(DistanceUnit.INCH));
-        telemetry.addData("Y", pinpoint.getPosY(DistanceUnit.INCH));
-        telemetry.addData("Heading", pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
-        telemetry.update();
-
-        wait(500);
-
-        oIntake.setPower(0.2);
-        iIntake.setPower(0.2);
-
-        wait(500);
-
-        oIntake.setPower(0);
-        iIntake.setPower(0);
-
-        wait(500);
-
-        oIntake.setPower(0.2);
-        iIntake.setPower(0.2);
-
-        wait(700);
-
-        servoUp();
-
-        wait(300);
-
-        servoDown();
-
-        wait(500);
-        iIntake.setPower(0);
-        oIntake.setPower(0);
-        shooter.setPower(0);
-
-        setPowers(-0.5,0.5,0.5,-0.5);
-
-        wait(300);
-
-        setPowers(0,0,0,0); // move out of zone
-
-        pinpoint.update();
-
-        telemetry.addData("X", pinpoint.getPosX(DistanceUnit.INCH));
-        telemetry.addData("Y", pinpoint.getPosY(DistanceUnit.INCH));
-        telemetry.addData("Heading", pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
-        telemetry.update();
-
-        waitForStart();
-
-
         while (opModeIsActive()) {
+            pinpoint.resetPosAndIMU();
 
+            pinpoint.update();
+
+            telemetry.addData("X", pinpoint.getPosX(DistanceUnit.INCH));
+            telemetry.addData("Y", pinpoint.getPosY(DistanceUnit.INCH));
+            telemetry.addData("Heading", pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
+            telemetry.update();
+
+
+            shooter.setPower(0.5);
+
+            setPowers(-0.5,-0.5,-0.5,-0.5);
+
+            wait(500);
+
+            setPowers(0,0,0,0);
+
+            pinpoint.update();
+
+            telemetry.addData("X", pinpoint.getPosX(DistanceUnit.INCH));
+            telemetry.addData("Y", pinpoint.getPosY(DistanceUnit.INCH));
+            telemetry.addData("Heading", pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
+            telemetry.update();
+
+            wait(500);
+
+            oIntake.setPower(0.2);
+            iIntake.setPower(0.2);
+
+            wait(500);
+
+            oIntake.setPower(0);
+            iIntake.setPower(0);
+
+            wait(500);
+
+            oIntake.setPower(0.2);
+            iIntake.setPower(0.2);
+
+            wait(700);
+
+            servoUp();
+
+            wait(300);
+
+            servoDown();
+
+            wait(500);
+            iIntake.setPower(0);
+            oIntake.setPower(0);
+            shooter.setPower(0);
+
+            setPowers(-0.5,0.5,0.5,-0.5);
+
+            wait(300);
+
+            setPowers(0,0,0,0); // move out of zone
+
+            pinpoint.update();
+
+            telemetry.addData("X", pinpoint.getPosX(DistanceUnit.INCH));
+            telemetry.addData("Y", pinpoint.getPosY(DistanceUnit.INCH));
+            telemetry.addData("Heading", pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
+            telemetry.update();
+
+            waitForStart();
         }
     }
     private void hardwareStart() {

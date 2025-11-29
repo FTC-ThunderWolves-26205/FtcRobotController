@@ -49,7 +49,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 @TeleOp(name = "Maddie's TeleOp Mode", group = "Teleop")
 
-public class MCM_OdometryTeleOp extends LinearOpMode {
+public class MCM_OdometryTeleOpTests extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -70,13 +70,15 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
     private GoBildaPinpointDriver pinpoint;
+    enum shooterModes {FULL, FAR, CLOSE, OFF,CUSTOM}
+    shooterModes shooterMode = shooterModes.OFF;
+    private double shooterSpeed = 0;
 
     @Override
     public void runOpMode() {
         hardwareStart();
         double speed = NORMAL_SPEED;
         servo.setPosition(RESTING_SERVO);
-        double shooterSpeed = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
         boolean isServo = false;
@@ -218,10 +220,19 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
     private double clampFull(double val) {
         return Math.max(-1.0, Math.min(1.0, val));
     }
-    private double clampServo(double val) {
-        return Math.max(LAUNCHING_SERVO, Math.min(RESTING_SERVO, val));
-    }
+    private double clampServo(double val) {return Math.max(LAUNCHING_SERVO, Math.min(RESTING_SERVO, val));}
     private double clampShoot(double val) { return Math.max(0.0, Math.min(2200, val));}
     private double ticksPerSecondToRPM(double tps) { return tps * 60.0 / TICKS_PER_REV; }
+    private double getTargetVelocity() {
+        double tempReturn = 0;
+        switch (shooterMode) {
+            case OFF: tempReturn = 0;
+            case CLOSE: tempReturn = 1500; //idk what it should be
+            case FAR: tempReturn =  1800; //idk
+            case FULL: tempReturn =  2200; //idk
+            case CUSTOM: tempReturn = shooterSpeed;
+        }
+        return tempReturn;
+    }
 
 }

@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Disabled
 @Autonomous(name = "PIDF Auto Test", group = "Autonomous")
 
-public class BHG_PIDF_AUTO_TEST extends LinearOpMode {
+public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;

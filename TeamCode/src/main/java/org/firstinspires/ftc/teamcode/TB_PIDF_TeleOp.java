@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name = "PIDF TeleOp Mode", group = "Teleop")
 @Config
 
-public class TB_PIDF_TELEOP extends LinearOpMode {
+public class TB_PIDF_TeleOp extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -58,6 +58,7 @@ public class TB_PIDF_TELEOP extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
+
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime iIntakeTimer = new ElapsedTime();

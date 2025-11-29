@@ -51,6 +51,7 @@ public class TB_CloseMoveRight extends LinearOpMode {
     private double output;
     private boolean firstTwoShot = false;
     private boolean thirdShot = false;
+    private boolean finishedShots = false;
     private double targetShooterVelocity = 1460;
     private GoBildaPinpointDriver pinpoint;
 
@@ -63,6 +64,8 @@ public class TB_CloseMoveRight extends LinearOpMode {
         hardwareStart();
         boolean stepOne = false;
         boolean stepTwo = false;
+        boolean stepThree = false;
+        boolean stepFour = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -75,6 +78,8 @@ public class TB_CloseMoveRight extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            pinpoint.update();
+
             double shooterVelocity = shooter.getVelocity();
             output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
 
@@ -84,27 +89,62 @@ public class TB_CloseMoveRight extends LinearOpMode {
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
-            if(!stepOne && pinpoint.getPosX(DistanceUnit.INCH) < -48) {
-                pinpoint.update();
-                setPowers(-0.5, -0.5, -0.5, -0.5);
-            } else {
-                pinpoint.update();
-                setPowers(0,0,0,0);
-                stepOne = true;
-                shootThree();
-                pinpoint.resetPosAndIMU();
+            if(!stepOne) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) > -48) {
+                    setPowers(-0.5,-0.5,-0.5,-0.5);
+                } else{
+                    setPowers(0,0,0,0);
+                    shootThree();
+                    if(finishedShots) {
+                        stepOne = true;
+                        shooter.setPower(0);
+                    }
+                }
             }
 
-            if(stepOne && !stepTwo && pinpoint.getHeading(AngleUnit.DEGREES) < -48) {
-                pinpoint.update();
-                setPowers(0.5,0.5,-0.5,-0.5);
-            } else {
-                pinpoint.update();
-                setPowers(0,0,0,0);
-                stepTwo = true;
-                requestOpModeStop();
+            if(stepOne && !stepTwo) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > -48) {
+                    setPowers(0.75,0.75,-0.75,-0.75);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepTwo = true;
+                    pinpoint.resetPosAndIMU();
+                }
             }
 
+            if(stepTwo && !stepThree) {
+                intakeSet(0.75,0.95);
+                if (pinpoint.getPosX(DistanceUnit.INCH) < 41) {
+                    setPowers(0.4,0.4,0.4,0.4);
+                    timer.reset();
+                } else {
+                    setPowers(0,0,0,0);
+                    if (timer.milliseconds()>750) {
+                        intakeSet(0, 0);
+                        stepThree = true;
+                        pinpoint.resetPosAndIMU();
+                    }
+                }
+            }
+
+            if(stepThree && !stepFour) {
+                intakeSet(-0.5, 0);
+                timer.reset();
+                if(pinpoint.getPosX(DistanceUnit.INCH) > -41) {
+                    if(timer.milliseconds() > 250) {
+                        intakeSet(0,0);
+                    }
+                    setPowers(-0.4,-0.4,-0.4,-0.4);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepFour = true;
+                    requestOpModeStop();
+                }
+            }
+
+            telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
+            telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));
+            telemetry.addData("Theta Position", pinpoint.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Target Shooter Speed", targetShooterVelocity);
             telemetry.addData("Shooter Speed", shooter.getVelocity());
             telemetry.update();
@@ -183,7 +223,7 @@ public class TB_CloseMoveRight extends LinearOpMode {
         if (thirdShot && servoTimer.milliseconds() > SERVO_DURATION) {
             servo.setPosition(RESTING_SERVO);
             intakeSet(0,0);
-            sleep(400);
+            finishedShots = true;
         }
     }
 

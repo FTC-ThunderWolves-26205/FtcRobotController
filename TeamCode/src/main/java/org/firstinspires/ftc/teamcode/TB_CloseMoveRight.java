@@ -13,6 +13,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,9 +22,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "PIDF Auto Test", group = "Autonomous")
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
+@Autonomous(name = "Close Red Auto", group = "Autonomous")
+
+public class TB_CloseMoveRight extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -47,6 +52,7 @@ public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
     private boolean firstTwoShot = false;
     private boolean thirdShot = false;
     private double targetShooterVelocity = 1460;
+    private GoBildaPinpointDriver pinpoint;
 
 
 
@@ -55,10 +61,13 @@ public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
-        boolean firstThree = false;
+        boolean stepOne = false;
+        boolean stepTwo = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
+
+        pinpoint.resetPosAndIMU();
 
         servo.setPosition(RESTING_SERVO);
 
@@ -75,7 +84,26 @@ public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
+            if(!stepOne && pinpoint.getPosX(DistanceUnit.INCH) < -48) {
+                pinpoint.update();
+                setPowers(-0.5, -0.5, -0.5, -0.5);
+            } else {
+                pinpoint.update();
+                setPowers(0,0,0,0);
+                stepOne = true;
                 shootThree();
+                pinpoint.resetPosAndIMU();
+            }
+
+            if(stepOne && !stepTwo && pinpoint.getHeading(AngleUnit.DEGREES) < -48) {
+                pinpoint.update();
+                setPowers(0.5,0.5,-0.5,-0.5);
+            } else {
+                pinpoint.update();
+                setPowers(0,0,0,0);
+                stepTwo = true;
+                requestOpModeStop();
+            }
 
             telemetry.addData("Target Shooter Speed", targetShooterVelocity);
             telemetry.addData("Shooter Speed", shooter.getVelocity());
@@ -110,6 +138,9 @@ public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
         telemetry.addData("Status","Initialized");
         telemetry.update();
@@ -153,7 +184,6 @@ public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
             servo.setPosition(RESTING_SERVO);
             intakeSet(0,0);
             sleep(400);
-            requestOpModeStop();
         }
     }
 

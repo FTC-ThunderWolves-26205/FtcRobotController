@@ -129,6 +129,10 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
                 speed = NORMAL_SPEED;
             }
 
+            if(gamepad1.a) {
+                pinpoint.resetPosAndIMU();
+            }
+
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
                 targetShooterVelocity += 20;
                 shooterTimer.reset();
@@ -194,6 +198,10 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             packet.put("Target Velocity", targetShooterVelocity);
             packet.put("Actual Velocity", shooter.getVelocity());
             packet.put("Output Power", output);
+            packet.put("X Position", pinpoint.getPosX(DistanceUnit.INCH));
+            packet.put("Y Position", pinpoint.getPosY(DistanceUnit.INCH));
+            packet.put("Theta Position", pinpoint.getHeading(AngleUnit.DEGREES));
+
             dashboard.sendTelemetryPacket(packet);
 
             telemetry.addData("X (in)", pinpoint.getPosX(DistanceUnit.INCH));
@@ -205,9 +213,6 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             telemetry.addData("Servo Position", servo.getPosition());
             telemetry.addData("Inner Intake Power", iIntakePower);
             telemetry.addData("Outer Intake Power", oIntakePower);
-            telemetry.addData("Shooter RPM", ticksPerSecondToRPM(shooter.getVelocity()));
-            telemetry.addData("Battery Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
-            telemetry.addData("Servo Is Pressed", isServo);
             telemetry.update();
 
         }

@@ -8,23 +8,23 @@ uses servo to kick up the third artifact up to the shooter
  */
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+@Disabled
+@Autonomous(name = "PIDF Three Shot Auto", group = "Autonomous")
 
-@Autonomous(name = "PIDF Auto Test", group = "Autonomous")
-
-public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
+public class TB_PIDF_ThreeShotAUTO_OLD extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -35,8 +35,9 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
     private Servo servo;
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
+    private final double TARGET_VELOCITY = 1460;
     private final double RANGE = 40;
-    private final long SERVO_DURATION = 500;
+    private final long SERVO_DURATION = 750;
     private PIDFController shooterControl;
     public static double kP = 0.004;
     public static double kI = 0.0;
@@ -44,11 +45,6 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
     public static double kF = 0.00045;
     private ElapsedTime timer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
-    private double output;
-    private boolean firstTwoShot = false;
-    private boolean thirdShot = false;
-    private double targetShooterVelocity = 1460;
-
 
 
 
@@ -56,7 +52,12 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
-        boolean firstThree = false;
+        boolean movement = false;
+        boolean thirdShot = false;
+        boolean firstTwoShot = false;
+
+        double targetShooterVelocity = TARGET_VELOCITY;
+        double output;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -76,9 +77,25 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
-                shootThree();
+            shooter.setPower(Math.abs(output));
+
+            if (atTargetSpeed(shooter.getVelocity(),TARGET_VELOCITY,RANGE) && !firstTwoShot) {
+                intakeSet(1,1);
+                timer.reset();
+                firstTwoShot = true;
+            }
+            if (firstTwoShot && !thirdShot && timer.milliseconds() > 2000) {
+                servoMovement();
+                thirdShot = true;
+            }
 
 
+            if (thirdShot && servoTimer.milliseconds() > SERVO_DURATION) {
+                servo.setPosition(RESTING_SERVO);
+                intakeSet(0,0);
+                sleep(400);
+                break;
+            }
 
             telemetry.addData("Target Shooter Speed", targetShooterVelocity);
             telemetry.addData("Shooter Speed", shooter.getVelocity());
@@ -122,6 +139,7 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
         oIntake.setPower(oIntakePower);
     }
     private void servoMovement() {
+        // Kick the servo forward and start timing
         servo.setPosition(LAUNCHING_SERVO);
         servoTimer.reset();
     }
@@ -132,32 +150,6 @@ public class BHG_AUTO_PIDF_TEST extends LinearOpMode {
         frontRight.setPower(frontRightPower);
         backLeft.setPower(backLeftPower);
         backRight.setPower(backRightPower);
-    }
-
-    private void shootThree() {
-        shooter.setPower(Math.abs(output));
-
-        if(atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && firstTwoShot && timer.milliseconds() == 0) {
-            timer.reset();
-        }
-
-        if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity ,RANGE) && !firstTwoShot && timer.milliseconds() > 1000) {
-            intakeSet(1,1);
-            timer.reset();
-            firstTwoShot = true;
-        }
-        if (firstTwoShot && !thirdShot && timer.milliseconds() > 2000) {
-            servoMovement();
-            thirdShot = true;
-        }
-
-
-        if (thirdShot && servoTimer.milliseconds() > SERVO_DURATION) {
-            servo.setPosition(RESTING_SERVO);
-            intakeSet(0,0);
-            sleep(400);
-            requestOpModeStop();
-        }
     }
 
     public boolean atTargetSpeed(double shooterVelocity, double targetVelocity, double range) {

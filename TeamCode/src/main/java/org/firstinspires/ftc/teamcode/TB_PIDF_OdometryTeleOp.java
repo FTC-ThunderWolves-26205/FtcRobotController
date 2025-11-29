@@ -38,6 +38,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -45,6 +47,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 @TeleOp(name = "PIDF TeleOp - Odometry", group = "Teleop")
 @Config
@@ -76,6 +82,9 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
     public static double kD = 0.00001;
     public static double kF = 0.00045;
 
+    private GoBildaPinpointDriver pinpoint;
+
+
     @Override
     public void runOpMode() {
         hardwareStart();
@@ -95,6 +104,8 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
         iIntakeTimer.reset();
         oIntakeTimer.reset();
         while(opModeIsActive()) {
+
+            pinpoint.update();
 
             double forward = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
@@ -185,6 +196,9 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
+            telemetry.addData("X (in)", pinpoint.getPosX(DistanceUnit.INCH));
+            telemetry.addData("Y (in)", pinpoint.getPosY(DistanceUnit.INCH));
+            telemetry.addData("Theta", pinpoint.getHeading(AngleUnit.DEGREES));
 
             telemetry.addData("Target Velocity", targetShooterVelocity);
             telemetry.addData("Shooter Velocity", shooterVelocity);
@@ -225,6 +239,9 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
         telemetry.addData("Status","Initialized");
         telemetry.update();

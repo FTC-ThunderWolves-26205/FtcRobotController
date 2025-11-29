@@ -22,7 +22,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 @Disabled
-@Autonomous(name = "PIDF Auto Test", group = "Autonomous")
+@Autonomous(name = "PIDF Three Shot Auto", group = "Autonomous")
 
 public class TB_PIDF_ThreeShotAuto extends LinearOpMode {
     private DcMotor frontRight;

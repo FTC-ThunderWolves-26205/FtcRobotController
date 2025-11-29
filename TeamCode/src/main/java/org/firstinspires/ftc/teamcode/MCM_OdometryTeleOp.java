@@ -57,7 +57,6 @@ public class MCM_TeleOp extends LinearOpMode {
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime iIntakeTimer = new ElapsedTime();
     private ElapsedTime oIntakeTimer = new ElapsedTime();
-    private ElapsedTime rumbleTimer = new ElapsedTime();
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double NORMAL_SPEED = 0.75;
@@ -65,16 +64,13 @@ public class MCM_TeleOp extends LinearOpMode {
     private final double TURBO_SPEED = 1.0;
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
-    private  final double targetShooterVelocity = 500; // idk what it is
-    private enum shooterModes {OFF,CLOSE,FAR,FULL,CUSTOM};
-    public shooterModes shooterMode = shooterModes.OFF;
-    private double shooterSpeed = 0;
 
     @Override
     public void runOpMode() {
         hardwareStart();
         double speed = NORMAL_SPEED;
         servo.setPosition(RESTING_SERVO);
+        double shooterSpeed = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
         boolean isServo = false;
@@ -109,26 +105,22 @@ public class MCM_TeleOp extends LinearOpMode {
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
                 shooterSpeed += 20;
-                shooterMode = shooterModes.CUSTOM;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
                 shooterSpeed -= 20;
-                shooterMode = shooterModes.CUSTOM;
                 shooterTimer.reset();
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
                 shooterSpeed = (shooterSpeed == 0) ? 2200 : 0;
-                if (shooterSpeed == 0) {shooterMode = shooterModes.FULL;} else {shooterMode = shooterModes.OFF;}
                 shooterTimer.reset();
             }
 
             if(gamepad2.x) {
-                shooterMode = shooterModes.FAR;
+                shooterSpeed = 1800;
             }
 
             if(gamepad2.b) {
-                shooterMode = shooterModes.CLOSE;
+                shooterSpeed = 1520;
             }
-
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
                 servo.setPosition(LAUNCHING_SERVO);
@@ -156,12 +148,6 @@ public class MCM_TeleOp extends LinearOpMode {
             } else if (gamepad2.left_trigger > 0 && oIntakeTimer.milliseconds() > 500) {
                 oIntakePower = (oIntakePower == 0) ? -1 : 0;
                 oIntakeTimer.reset();
-            }
-
-            if (atTarget(50) && rumbleTimer.milliseconds() <= 500 ) {
-                gamepad2.rumble(500);
-            } else if (!atTarget(50)) {
-                rumbleTimer.reset();
             }
 
             shooter.setVelocity(clampShoot(shooterSpeed));
@@ -222,17 +208,4 @@ public class MCM_TeleOp extends LinearOpMode {
     private double clampShoot(double val) { return Math.max(0.0, Math.min(2200, val));}
     private double ticksPerSecondToRPM(double tps) { return tps * 60.0 / TICKS_PER_REV; }
 
-    private double getShooterTargetVelocity () {
-        if (shooterMode == shooterModes.OFF) {return 0;}
-        else if (shooterMode == shooterModes.FULL) {return 2200;}
-        else if (shooterMode == shooterModes.FAR) {return 1800;} //idk needs to cahnge
-        else  if (shooterMode == shooterModes.CLOSE) {return 1400;} //again, idk
-        else {return shooterSpeed;}
-
-
-    }
-    private boolean atTarget (double range) {
-        if (Math.abs(shooter.getVelocity()- getShooterTargetVelocity()) <= range) {return true;}
-        else {return false;}
-    }
 }

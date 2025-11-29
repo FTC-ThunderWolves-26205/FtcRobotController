@@ -50,8 +50,11 @@ public class TB_CloseMoveRight extends LinearOpMode {
     private ElapsedTime servoTimer = new ElapsedTime();
     private double output;
     private boolean firstTwoShot = false;
+    private boolean firstTwoShotX = false;
     private boolean thirdShot = false;
+    private boolean thirdShotX = false;
     private boolean finishedShots = false;
+    private boolean finishedShotsX = false;
     private double targetShooterVelocity = 1460;
     private GoBildaPinpointDriver pinpoint;
 
@@ -66,6 +69,7 @@ public class TB_CloseMoveRight extends LinearOpMode {
         boolean stepTwo = false;
         boolean stepThree = false;
         boolean stepFour = false;
+        boolean stepFive = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -104,7 +108,7 @@ public class TB_CloseMoveRight extends LinearOpMode {
 
             if(stepOne && !stepTwo) {
                 if(pinpoint.getHeading(AngleUnit.DEGREES) > -48) {
-                    setPowers(0.75,0.75,-0.75,-0.75);
+                    setPowers(0.5,-0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
                     stepTwo = true;
@@ -113,8 +117,8 @@ public class TB_CloseMoveRight extends LinearOpMode {
             }
 
             if(stepTwo && !stepThree) {
-                intakeSet(0.75,0.95);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 41) {
+                intakeSet(0.75,0.75);
+                if (pinpoint.getPosX(DistanceUnit.INCH) < 40) {
                     setPowers(0.4,0.4,0.4,0.4);
                     timer.reset();
                 } else {
@@ -128,17 +132,30 @@ public class TB_CloseMoveRight extends LinearOpMode {
             }
 
             if(stepThree && !stepFour) {
-                intakeSet(-0.5, 0);
+                intakeSet(-0.25, 0);
                 timer.reset();
+
+                if(timer.milliseconds() > 100) {
+                    intakeSet(0,0);
+                }
                 if(pinpoint.getPosX(DistanceUnit.INCH) > -41) {
-                    if(timer.milliseconds() > 250) {
-                        intakeSet(0,0);
-                    }
                     setPowers(-0.4,-0.4,-0.4,-0.4);
                 } else {
                     setPowers(0,0,0,0);
                     stepFour = true;
-                    requestOpModeStop();
+                }
+            }
+
+            if(stepFour && !stepFive) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < 48) {
+                    setPowers(-0.5, 0.5, -0.5, 0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    shootThreeMore();
+                    if(finishedShotsX) {
+                        stepFive = true;
+                        requestOpModeStop();
+                    }
                 }
             }
 
@@ -224,6 +241,31 @@ public class TB_CloseMoveRight extends LinearOpMode {
             servo.setPosition(RESTING_SERVO);
             intakeSet(0,0);
             finishedShots = true;
+        }
+    }
+
+    private void shootThreeMore() {
+        shooter.setPower(Math.abs(output));
+
+        if(!firstTwoShotX && timer.milliseconds() == 0) {
+            timer.reset();
+        }
+
+        if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity ,RANGE) && !firstTwoShotX && timer.milliseconds() > 1000) {
+            intakeSet(1,1);
+            timer.reset();
+            firstTwoShotX = true;
+        }
+        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 2000) {
+            servoMovement();
+            thirdShotX = true;
+        }
+
+
+        if (thirdShotX && servoTimer.milliseconds() > SERVO_DURATION) {
+            servo.setPosition(RESTING_SERVO);
+            intakeSet(0,0);
+            finishedShotsX = true;
         }
     }
 

@@ -156,6 +156,19 @@ public class MCM_Auto extends LinearOpMode {
         backLeft.setPower(bl);
         backRight.setPower(br);
     }
+    private enum autoStages {
+        ONE,TWO,THREE,FOUR,FIVE;
+        static private autoStages currentStage;
+        void setCurrentStage(autoStages wantedStage) {
+            currentStage = wantedStage;
+        }
+        autoStages getCurrentStage() {
+            return currentStage;
+        }
+        boolean ifStage(autoStages askingStage) {
+            return (currentStage == askingStage) ? true : false;
+        }
+    }
     private void servoUp () {
         servo.setPosition(0.6);
     }

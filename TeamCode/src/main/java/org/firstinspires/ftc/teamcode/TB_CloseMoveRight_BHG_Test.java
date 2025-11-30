@@ -165,7 +165,6 @@ public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
                     setPowers(-0.5,0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
-                    stepSix = true;
                     requestOpModeStop();
                 }
             }

@@ -55,6 +55,14 @@ public class BHG_AutoFarTest extends LinearOpMode {
     private boolean thirdShotX = false;
     private boolean finishedShots = false;
     private boolean finishedShotsX = false;
+    private final double SHOOT_ANGLE = -30;
+    private final double STEP_THREE_VAL = 36; // 3ft
+    private final double STEP_FOUR_VAL = -90; // 1/4 Rotation Right
+    private final double STEP_FIVE_VAL = 42; // 3 1/2ft
+    private final double STEP_SIX_VAL = -42; // -3 1/2ft
+    private final double STEP_SEVEN_VAL = 90; // 1/4 Rotation Left
+    private final double STEP_EIGHT_VAL = -36; // -3ft
+    private final double STEP_NINE_VAL = 12; // 1ft
     private double targetShooterVelocity = 1460;
     private GoBildaPinpointDriver pinpoint;
 
@@ -65,13 +73,18 @@ public class BHG_AutoFarTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
+
         boolean stepOne = false;
         boolean stepTwo = false;
         boolean stepThree = false;
         boolean stepFour = false;
         boolean stepFive = false;
+        boolean stepSix = false;
+        boolean stepSeven = false;
+        boolean stepEight = false;
+        boolean stepNine = false;
 
-        shooterControl = new PIDFController(kP, kI, kD, kF);
+                shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
 
         pinpoint.resetPosAndIMU();
@@ -79,7 +92,6 @@ public class BHG_AutoFarTest extends LinearOpMode {
         servo.setPosition(RESTING_SERVO);
 
         waitForStart();
-
         while (opModeIsActive()) {
 
             pinpoint.update();
@@ -94,7 +106,7 @@ public class BHG_AutoFarTest extends LinearOpMode {
             dashboard.sendTelemetryPacket(packet);
 
             if(!stepOne) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > -30) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
                     setPowers(0.5,-0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
@@ -102,21 +114,124 @@ public class BHG_AutoFarTest extends LinearOpMode {
                     if(finishedShots) {
                         shooter.setPower(0);
                         stepOne = true;
+                        pinpoint.resetPosAndIMU();
                     }
                 }
             }
 
             if(stepOne && !stepTwo) {
-                //This is where you write going forward
+                //This is where you write aligning yourself with the wall
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < 30) {
+                    setPowers(-0.5,0.5,-0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepTwo = true;
+                    pinpoint.resetPosAndIMU();
+                }
             }
 
             if(stepTwo && !stepThree) {
-                //This is where you write turning
+                //This is where you write moving forward
+                if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_THREE_VAL) {
+                    setPowers(0.5,0.5,0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepThree = true;
+                    pinpoint.resetPosAndIMU();
+                }
             }
 
             if(stepThree && !stepFour) {
-                //This is where you write driving forward and grabbing more artifacts
+                //This is where you write turning right
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > STEP_FOUR_VAL) {
+                    setPowers(0.5,-0.5,0.5,-0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepFour = true;
+                    pinpoint.resetPosAndIMU();
+                }
             }
+
+            if(stepFour && !stepFive) {
+                //This is where you write driving forward and picking up artifacts with intakes
+                intakeSet(0.75,0.75);
+                if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_FIVE_VAL) {
+                    setPowers(0.85,0.85,0.85,0.85); //Am doing stronger power to grab the balls faster
+                    timer.reset();
+                } else {
+                    setPowers(0,0,0,0);
+                    if(timer.milliseconds() > 750) {
+                        intakeSet(0,0);
+                        stepFive = true;
+                        pinpoint.resetPosAndIMU();
+                    }
+                }
+            }
+
+            if(stepFive && !stepSix) {
+                //This is where you write driving backwards and fixing artifact position
+                intakeSet(-0.25, -0.1);
+                timer.reset();
+
+                if(timer.milliseconds() > 100) {
+                    intakeSet(0,0);
+                }
+
+                if(pinpoint.getPosX(DistanceUnit.INCH) > STEP_SIX_VAL) {
+                    setPowers(-0.5,-0.5,-0.5,-0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepSix = true;
+                    pinpoint.resetPosAndIMU();
+                }
+            }
+
+            if(stepSix && !stepSeven) {
+                //This is where you turn back to align the robot to the wall
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < STEP_SEVEN_VAL) {
+                    setPowers(-0.5,0.5,-0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepSeven = true;
+                    pinpoint.resetPosAndIMU();
+                }
+            }
+
+            if(stepSeven && !stepEight) {
+                //This is where you drive back to the launch zone
+                if(pinpoint.getPosX(DistanceUnit.INCH) > STEP_EIGHT_VAL) {
+                    setPowers(-0.5,-0.5,-0.5,-0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepEight = true;
+                    pinpoint.resetPosAndIMU();
+                }
+            }
+
+            if(stepEight && !stepNine) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
+                    setPowers(0.5,-0.5,0.5,-0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    shootThreeMore();
+                    if(finishedShotsX) {
+                        shooter.setPower(0);
+                        stepNine = true;
+                        pinpoint.resetPosAndIMU();
+                    }
+                }
+            }
+
+            if(stepNine) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_NINE_VAL) {
+                    setPowers(0.5,0.5,0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    requestOpModeStop();
+                }
+            }
+
+
 
             //I'm too lazy to write the rest but you need to write code to go back to the shooting spot, use 'shootThreeMore();' method,
             //then drive forward

@@ -135,16 +135,17 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
             }
 
             if(stepThree && !stepFour) {
+                timer.reset();
                 if(!intakeReverse) {
                     intakeSet(-0.25, -0.1);
-                    timer.reset();
 
-                    if (timer.milliseconds() > 100) {
+                    if (!intakeReverse && timer.milliseconds() > 100) {
                         intakeSet(0, 0);
+                        intakeReverse = true;
                     }
                 }
                 if(pinpoint.getPosX(DistanceUnit.INCH) > -41) {
-                    setPowers(-0.4,-0.4,-0.4,-0.4);
+                    setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
                     stepFour = true;

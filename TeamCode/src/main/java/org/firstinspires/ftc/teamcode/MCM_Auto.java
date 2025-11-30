@@ -93,9 +93,11 @@ public class MCM_Auto extends LinearOpMode {
 
             servoUp();
 
+
             wait(300);
 
             servoDown();
+
 
             wait(500);
             iIntake.setPower(0);
@@ -159,13 +161,13 @@ public class MCM_Auto extends LinearOpMode {
     private enum autoStages {
         ONE,TWO,THREE,FOUR,FIVE;
         static private autoStages currentStage;
-        void setCurrentStage(autoStages wantedStage) {
+        static void setCurrentStage(autoStages wantedStage) {
             currentStage = wantedStage;
         }
-        autoStages getCurrentStage() {
+        static autoStages getCurrentStage() {
             return currentStage;
         }
-        boolean ifStage(autoStages askingStage) {
+        static boolean ifStage(autoStages askingStage) {
             return (currentStage == askingStage) ? true : false;
         }
     }
@@ -174,5 +176,18 @@ public class MCM_Auto extends LinearOpMode {
     }
     private void servoDown() {
         servo.setPosition(0.1);
+    }
+    private enum autoStages {
+        ONE,TWO,THREE,FOUR,FIVE;
+        static private autoStages currentStage;
+        static void setCurrentStage(autoStages wantedStage) {
+            currentStage = wantedStage;
+        }
+        static autoStages getCurrentStage() {
+            return currentStage;
+        }
+        static boolean ifStage(autoStages askingStage) {
+            return (currentStage == askingStage) ? true : false;
+        }
     }
 }

@@ -26,9 +26,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Close Red Auto", group = "Autonomous")
+@Autonomous(name = "Ben's Auto Red Far Test", group = "Autonomous")
 
-public class BHG_AutoFarTest extends LinearOpMode {
+public class BHG_AutoRedFarTest extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -230,11 +230,6 @@ public class BHG_AutoFarTest extends LinearOpMode {
                     requestOpModeStop();
                 }
             }
-
-
-
-            //I'm too lazy to write the rest but you need to write code to go back to the shooting spot, use 'shootThreeMore();' method,
-            //then drive forward
 
             telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));

@@ -13,22 +13,18 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+@Disabled
+@Autonomous(name = "PIDF Auto Test", group = "Autonomous")
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-
-@Autonomous(name = "Close Red Auto", group = "Autonomous")
-
-public class TB_CloseMoveRight extends LinearOpMode {
+public class TB_PIDF_WorkingShootThreeMethod extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -50,13 +46,8 @@ public class TB_CloseMoveRight extends LinearOpMode {
     private ElapsedTime servoTimer = new ElapsedTime();
     private double output;
     private boolean firstTwoShot = false;
-    private boolean firstTwoShotX = false;
     private boolean thirdShot = false;
-    private boolean thirdShotX = false;
-    private boolean finishedShots = false;
-    private boolean finishedShotsX = false;
     private double targetShooterVelocity = 1460;
-    private GoBildaPinpointDriver pinpoint;
 
 
 
@@ -65,24 +56,16 @@ public class TB_CloseMoveRight extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
-        boolean stepOne = false;
-        boolean stepTwo = false;
-        boolean stepThree = false;
-        boolean stepFour = false;
-        boolean stepFive = false;
+        boolean firstThree = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
-
-        pinpoint.resetPosAndIMU();
 
         servo.setPosition(RESTING_SERVO);
 
         waitForStart();
 
         while (opModeIsActive()) {
-
-            pinpoint.update();
 
             double shooterVelocity = shooter.getVelocity();
             output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
@@ -93,75 +76,8 @@ public class TB_CloseMoveRight extends LinearOpMode {
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
-            if(!stepOne) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -48) {
-                    setPowers(-0.5,-0.5,-0.5,-0.5);
-                } else{
-                    setPowers(0,0,0,0);
-                    shootThree();
-                    if(finishedShots) {
-                        shooter.setPower(0);
-                        stepOne = true;
-                    }
-                }
-            }
+                shootThree();
 
-            if(stepOne && !stepTwo) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > -48) {
-                    setPowers(0.5,-0.5,0.5,-0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    stepTwo = true;
-                    pinpoint.resetPosAndIMU();
-                }
-            }
-
-            if(stepTwo && !stepThree) {
-                intakeSet(0.75,0.75);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 40) {
-                    setPowers(0.4,0.4,0.4,0.4);
-                    timer.reset();
-                } else {
-                    setPowers(0,0,0,0);
-                    if (timer.milliseconds()>750) {
-                        intakeSet(0, 0);
-                        stepThree = true;
-                        pinpoint.resetPosAndIMU();
-                    }
-                }
-            }
-
-            if(stepThree && !stepFour) {
-                intakeSet(-0.25, 0);
-                timer.reset();
-
-                if(timer.milliseconds() > 100) {
-                    intakeSet(0,0);
-                }
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -41) {
-                    setPowers(-0.4,-0.4,-0.4,-0.4);
-                } else {
-                    setPowers(0,0,0,0);
-                    stepFour = true;
-                }
-            }
-
-            if(stepFour && !stepFive) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 48) {
-                    setPowers(-0.5, 0.5, -0.5, 0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    shootThreeMore();
-                    if(finishedShotsX) {
-                        stepFive = true;
-                        requestOpModeStop();
-                    }
-                }
-            }
-
-            telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
-            telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));
-            telemetry.addData("Theta Position", pinpoint.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Target Shooter Speed", targetShooterVelocity);
             telemetry.addData("Shooter Speed", shooter.getVelocity());
             telemetry.update();
@@ -195,9 +111,6 @@ public class TB_CloseMoveRight extends LinearOpMode {
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
         telemetry.addData("Status","Initialized");
         telemetry.update();
@@ -240,32 +153,8 @@ public class TB_CloseMoveRight extends LinearOpMode {
         if (thirdShot && servoTimer.milliseconds() > SERVO_DURATION) {
             servo.setPosition(RESTING_SERVO);
             intakeSet(0,0);
-            finishedShots = true;
-        }
-    }
-
-    private void shootThreeMore() {
-        shooter.setPower(Math.abs(output));
-
-        if(!firstTwoShotX && timer.milliseconds() == 0) {
-            timer.reset();
-        }
-
-        if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity ,RANGE) && !firstTwoShotX && timer.milliseconds() > 1000) {
-            intakeSet(1,1);
-            timer.reset();
-            firstTwoShotX = true;
-        }
-        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 2000) {
-            servoMovement();
-            thirdShotX = true;
-        }
-
-
-        if (thirdShotX && servoTimer.milliseconds() > SERVO_DURATION) {
-            servo.setPosition(RESTING_SERVO);
-            intakeSet(0,0);
-            finishedShotsX = true;
+            sleep(400);
+            requestOpModeStop();
         }
     }
 

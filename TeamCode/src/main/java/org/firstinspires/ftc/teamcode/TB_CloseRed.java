@@ -26,9 +26,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Ben's Close Red Auto Test", group = "Autonomous")
+@Autonomous(name = "Close Red Auto", group = "Autonomous")
 
-public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
+public class TB_CloseRed extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -70,7 +70,6 @@ public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
         boolean stepThree = false;
         boolean stepFour = false;
         boolean stepFive = false;
-        boolean stepSix = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -133,7 +132,7 @@ public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
             }
 
             if(stepThree && !stepFour) {
-                intakeSet(-0.25, -0.1);
+                intakeSet(-0.25, 0);
                 timer.reset();
 
                 if(timer.milliseconds() > 100) {
@@ -148,24 +147,15 @@ public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
             }
 
             if(stepFour && !stepFive) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 40) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < 48) {
                     setPowers(-0.5, 0.5, -0.5, 0.5);
                 } else {
                     setPowers(0,0,0,0);
                     shootThreeMore();
                     if(finishedShotsX) {
                         stepFive = true;
-                        pinpoint.resetPosAndIMU();
+                        requestOpModeStop();
                     }
-                }
-            }
-
-            if(stepFive && !stepSix) {
-                if(pinpoint.getPosY(DistanceUnit.INCH) < 10) {
-                    setPowers(-0.5,0.5,0.5,-0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    requestOpModeStop();
                 }
             }
 

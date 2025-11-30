@@ -209,6 +209,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
             }
 
             if(stepEight && !stepNine) {
+                //This is where
                 if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
                     setPowers(0.5,-0.5,0.5,-0.5);
                 } else {

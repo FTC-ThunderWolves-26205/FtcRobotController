@@ -48,6 +48,7 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
     public static double kF = 0.00045;
     private ElapsedTime timer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
+    private ElapsedTime shooterTimer = new ElapsedTime();
     private double output;
     private boolean firstTwoShot = false;
     private boolean firstTwoShotX = false;
@@ -71,6 +72,7 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
         boolean stepFour = false;
         boolean stepFive = false;
         boolean stepSix = false;
+        boolean intakeReverse = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -119,7 +121,7 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
 
             if(stepTwo && !stepThree) {
                 intakeSet(0.75,0.75);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 40) {
+                if (pinpoint.getPosX(DistanceUnit.INCH) < 39) {
                     setPowers(0.4,0.4,0.4,0.4);
                     timer.reset();
                 } else {
@@ -133,11 +135,13 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
             }
 
             if(stepThree && !stepFour) {
-                intakeSet(-0.25, -0.1);
-                timer.reset();
+                if(!intakeReverse) {
+                    intakeSet(-0.25, -0.1);
+                    timer.reset();
 
-                if(timer.milliseconds() > 100) {
-                    intakeSet(0,0);
+                    if (timer.milliseconds() > 100) {
+                        intakeSet(0, 0);
+                    }
                 }
                 if(pinpoint.getPosX(DistanceUnit.INCH) > -41) {
                     setPowers(-0.4,-0.4,-0.4,-0.4);
@@ -148,7 +152,7 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
             }
 
             if(stepFour && !stepFive) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 40) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < 38) {
                     setPowers(-0.5, 0.5, -0.5, 0.5);
                 } else {
                     setPowers(0,0,0,0);
@@ -161,8 +165,8 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
             }
 
             if(stepFive && !stepSix) {
-                if(pinpoint.getPosY(DistanceUnit.INCH) < 10) {
-                    setPowers(-0.5,0.5,0.5,-0.5);
+                if(pinpoint.getPosY(DistanceUnit.INCH) < 18) {
+                    setPowers(0.5,-0.5,-0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
                     requestOpModeStop();
@@ -241,7 +245,7 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
             timer.reset();
             firstTwoShot = true;
         }
-        if (firstTwoShot && !thirdShot && timer.milliseconds() > 2000) {
+        if (firstTwoShot && !thirdShot && timer.milliseconds() > 2500) {
             servoMovement();
             thirdShot = true;
         }
@@ -257,16 +261,16 @@ public class TB_CloseRed_BHG_Test extends LinearOpMode {
     private void shootThreeMore() {
         shooter.setPower(Math.abs(output));
 
-        if(!firstTwoShotX && timer.milliseconds() == 0) {
-            timer.reset();
+        if(!firstTwoShotX && shooterTimer.milliseconds() == 0) {
+            shooterTimer.reset();
         }
 
-        if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity ,RANGE) && !firstTwoShotX && timer.milliseconds() > 1000) {
+        if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity ,RANGE) && !firstTwoShotX && shooterTimer.milliseconds() > 1000) {
             intakeSet(1,1);
-            timer.reset();
+            shooterTimer.reset();
             firstTwoShotX = true;
         }
-        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 2000) {
+        if (firstTwoShotX && !thirdShotX && shooterTimer.milliseconds() > 2500) {
             servoMovement();
             thirdShotX = true;
         }

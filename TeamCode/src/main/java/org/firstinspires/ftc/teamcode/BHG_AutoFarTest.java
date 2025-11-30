@@ -26,9 +26,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Ben's Close Red Auto Test", group = "Autonomous")
+@Autonomous(name = "Close Red Auto", group = "Autonomous")
 
-public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
+public class BHG_AutoFarTest extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -70,7 +70,6 @@ public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
         boolean stepThree = false;
         boolean stepFour = false;
         boolean stepFive = false;
-        boolean stepSix = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -95,9 +94,9 @@ public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
             dashboard.sendTelemetryPacket(packet);
 
             if(!stepOne) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -48) {
-                    setPowers(-0.5,-0.5,-0.5,-0.5);
-                } else{
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > -30) {
+                    setPowers(0.5,-0.5,0.5,-0.5);
+                } else {
                     setPowers(0,0,0,0);
                     shootThree();
                     if(finishedShots) {
@@ -108,67 +107,19 @@ public class TB_CloseMoveRight_BHG_Test extends LinearOpMode {
             }
 
             if(stepOne && !stepTwo) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > -48) {
-                    setPowers(0.5,-0.5,0.5,-0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    stepTwo = true;
-                    pinpoint.resetPosAndIMU();
-                }
+                //This is where you write going forward
             }
 
             if(stepTwo && !stepThree) {
-                intakeSet(0.75,0.75);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 40) {
-                    setPowers(0.4,0.4,0.4,0.4);
-                    timer.reset();
-                } else {
-                    setPowers(0,0,0,0);
-                    if (timer.milliseconds()>750) {
-                        intakeSet(0, 0);
-                        stepThree = true;
-                        pinpoint.resetPosAndIMU();
-                    }
-                }
+                //This is where you write turning
             }
 
             if(stepThree && !stepFour) {
-                intakeSet(-0.25, -0.1);
-                timer.reset();
-
-                if(timer.milliseconds() > 100) {
-                    intakeSet(0,0);
-                }
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -41) {
-                    setPowers(-0.4,-0.4,-0.4,-0.4);
-                } else {
-                    setPowers(0,0,0,0);
-                    stepFour = true;
-                }
+                //This is where you write driving forward and grabbing more artifacts
             }
 
-            if(stepFour && !stepFive) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 40) {
-                    setPowers(-0.5, 0.5, -0.5, 0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    shootThreeMore();
-                    if(finishedShotsX) {
-                        stepFive = true;
-                        pinpoint.resetPosAndIMU();
-                    }
-                }
-            }
-
-            if(stepFive && !stepSix) {
-                if(pinpoint.getPosY(DistanceUnit.INCH) < 10) {
-                    setPowers(-0.5,0.5,0.5,-0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    stepSix = true;
-                    requestOpModeStop();
-                }
-            }
+            //I'm too lazy to write the rest but you need to write code to go back to the shooting spot, use 'shootThreeMore();' method,
+            //then drive forward
 
             telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));

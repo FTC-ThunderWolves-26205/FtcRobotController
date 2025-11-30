@@ -100,8 +100,8 @@ public class TB_CloseMoveRight extends LinearOpMode {
                     setPowers(0,0,0,0);
                     shootThree();
                     if(finishedShots) {
-                        stepOne = true;
                         shooter.setPower(0);
+                        stepOne = true;
                     }
                 }
             }

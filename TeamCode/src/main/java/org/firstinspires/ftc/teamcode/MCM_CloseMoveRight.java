@@ -84,6 +84,8 @@ public class MCM_CloseMoveRight extends LinearOpMode {
 
             pinpoint.update();
 
+            autoStages.setCurrentStage(autoStages.ONE);
+
             double shooterVelocity = shooter.getVelocity();
             output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
 
@@ -93,7 +95,7 @@ public class MCM_CloseMoveRight extends LinearOpMode {
             packet.put("Output Power", output);
             dashboard.sendTelemetryPacket(packet);
 
-            if(!stepOne) {
+            if(autoStages.ifStage(autoStages.ONE)) {
                 if(pinpoint.getPosX(DistanceUnit.INCH) > -48) {
                     setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else{
@@ -101,22 +103,22 @@ public class MCM_CloseMoveRight extends LinearOpMode {
                     shootThree();
                     if(finishedShots) {
                         shooter.setPower(0);
-                        stepOne = true;
+                        autoStages.setCurrentStage(autoStages.TWO);
                     }
                 }
             }
 
-            if(stepOne && !stepTwo) {
+            if(autoStages.ifStage(autoStages.TWO)) {
                 if(pinpoint.getHeading(AngleUnit.DEGREES) > -48) {
                     setPowers(0.5,-0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
-                    stepTwo = true;
+                    autoStages.setCurrentStage(autoStages.THREE);
                     pinpoint.resetPosAndIMU();
                 }
             }
 
-            if(stepTwo && !stepThree) {
+            if(autoStages.ifStage(autoStages.THREE)) {
                 intakeSet(0.75,0.75);
                 if (pinpoint.getPosX(DistanceUnit.INCH) < 40) {
                     setPowers(0.4,0.4,0.4,0.4);
@@ -125,13 +127,13 @@ public class MCM_CloseMoveRight extends LinearOpMode {
                     setPowers(0,0,0,0);
                     if (timer.milliseconds()>750) {
                         intakeSet(0, 0);
-                        stepThree = true;
+                        autoStages.setCurrentStage(autoStages.FOUR);
                         pinpoint.resetPosAndIMU();
                     }
                 }
             }
 
-            if(stepThree && !stepFour) {
+            if(autoStages.ifStage(autoStages.FIVE)) {
                 intakeSet(-0.25, 0);
                 timer.reset();
 
@@ -146,14 +148,14 @@ public class MCM_CloseMoveRight extends LinearOpMode {
                 }
             }
 
-            if(stepFour && !stepFive) {
+            if(autoStages.ifStage(autoStages.SIX)) {
                 if(pinpoint.getHeading(AngleUnit.DEGREES) < 48) {
                     setPowers(-0.5, 0.5, -0.5, 0.5);
                 } else {
                     setPowers(0,0,0,0);
                     shootThreeMore();
                     if(finishedShotsX) {
-                        stepFive = true;
+                        autoStages.setCurrentStage(autoStages.SEVEN);
                         requestOpModeStop();
                     }
                 }
@@ -271,5 +273,18 @@ public class MCM_CloseMoveRight extends LinearOpMode {
 
     public boolean atTargetSpeed(double shooterVelocity, double targetVelocity, double range) {
         return Math.abs(shooterVelocity - targetVelocity) <= range;
+    }
+    private enum autoStages {
+        ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT;
+        static private autoStages currentStage;
+        static void setCurrentStage(autoStages wantedStage) {
+            currentStage = wantedStage;
+        }
+        static autoStages getCurrentStage() {
+            return currentStage;
+        }
+        static boolean ifStage(autoStages askingStage) {
+            return (currentStage == askingStage) ? true : false;
+        }
     }
 }

@@ -237,7 +237,7 @@ public class MCM_CloseRedEnums extends LinearOpMode {
     private void shootThree() {
         shooter.setPower(Math.abs(output));
 
-        if(!firstTwoShot && timer.milliseconds() == 0) {
+        if(!firstTwoShot && timer.milliseconds() >= 0) {
             timer.reset();
         }
 

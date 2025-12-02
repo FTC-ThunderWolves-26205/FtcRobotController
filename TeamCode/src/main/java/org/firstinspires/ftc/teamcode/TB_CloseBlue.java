@@ -26,9 +26,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Close Blue Auto - Test", group = "Autonomous")
+@Autonomous(name = "Close Blue Auto", group = "Autonomous")
 
-public class TB_CloseBlue_Test extends LinearOpMode {
+public class TB_CloseBlue extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;

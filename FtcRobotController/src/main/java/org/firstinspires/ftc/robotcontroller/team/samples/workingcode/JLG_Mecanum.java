@@ -1,4 +1,7 @@
-package org.firstinspires.ftc.robotcontroller.team.samples;
+//Basic TeleOp Mode for Ben's Bot
+//Controls match main bot
+
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,12 +15,17 @@ public class JLG_Mecanum extends LinearOpMode{
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
+
+    private final double NORMAL_SPEED = 0.75;
+    private final double SLOW_SPEED = 0.5;
+    private final double TURBO_SPEED = 1.0;
     // Servo servo;
     //DistanceSensor distanceSensor;
 
     @Override
     public void runOpMode() {
         hardwareStart();
+        double speed = NORMAL_SPEED;
         //double speed = 0.5;
         //double servoPosition = 0;
         //boolean isPosition = false;
@@ -28,19 +36,27 @@ public class JLG_Mecanum extends LinearOpMode{
             //distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
 
             double forward = gamepad1.left_stick_y;
-            double turn = -gamepad1.right_stick_x;
-            double strafe = -gamepad1.left_stick_x;
+            double strafe = -gamepad1.right_stick_x;
+            double turn = -gamepad1.left_stick_x;
 
-            double frontLeftPower = (forward + turn + strafe) /2;
-            double frontRightPower = (forward - turn - strafe) /2;
-            double backLeftPower = (forward - turn + strafe) /2;
-            double backRightPower = (forward + turn - strafe) /2;
+            double frontLeftPower = (forward + strafe + turn) * speed;
+            double backLeftPower = (forward - strafe + turn) * speed;
+            double frontRightPower = (forward - strafe - turn) * speed;
+            double backRightPower = (forward + strafe - turn) * speed;
 
-            frontLeft.setPower(frontLeftPower);
-            frontRight.setPower(frontRightPower);
-            backLeft.setPower(backLeftPower);
-            backRight.setPower(backRightPower);
+            frontLeft.setPower(clampFull(frontLeftPower));
+            frontRight.setPower(clampFull(frontRightPower));
+            backLeft.setPower(clampFull(backLeftPower));
+            backRight.setPower(clampFull(backRightPower));
 
+
+            if (gamepad1.right_bumper) {
+                speed = TURBO_SPEED;
+            } else if(gamepad1.left_bumper) {
+                speed = SLOW_SPEED;
+            } else {
+                speed = NORMAL_SPEED;
+            }
             if (gamepad1.a) {
                 frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -65,6 +81,10 @@ public class JLG_Mecanum extends LinearOpMode{
             telemetry.update();
 
         }
+    }
+
+    private double clampFull(double val) {
+        return Math.max(-1.0, Math.min(1.0, val));
     }
     private void hardwareStart() {
         frontLeft = hardwareMap.get(DcMotor.class, "FL");

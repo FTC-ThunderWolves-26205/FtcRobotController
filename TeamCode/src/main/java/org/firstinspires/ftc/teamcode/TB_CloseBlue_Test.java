@@ -97,7 +97,7 @@ public class TB_CloseBlue_Test extends LinearOpMode {
             dashboard.sendTelemetryPacket(packet);
 
             if(!stepOne) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -48) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) > -48.5) {
                     setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else{
                     setPowers(0,0,0,0);
@@ -110,7 +110,7 @@ public class TB_CloseBlue_Test extends LinearOpMode {
             }
 
             if(stepOne && !stepTwo) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 48) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < 43) {
                     setPowers(-0.5,0.5,-0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
@@ -121,7 +121,7 @@ public class TB_CloseBlue_Test extends LinearOpMode {
 
             if(stepTwo && !stepThree) {
                 intakeSet(0.75,0.75);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 40.5) {
+                if (pinpoint.getPosX(DistanceUnit.INCH) < 43.5) {
                     setPowers(0.4,0.4,0.4,0.4);
                     timer.reset();
                 } else {
@@ -135,7 +135,7 @@ public class TB_CloseBlue_Test extends LinearOpMode {
             }
 
             if(stepThree && !stepFour) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -40.5) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) > -40) {
                     setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
@@ -153,7 +153,7 @@ public class TB_CloseBlue_Test extends LinearOpMode {
             }
 
             if(stepFour && !stepFive) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > -39) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > -43) {
                     setPowers(0.5, -0.5, 0.5, -0.5);
                 } else {
                     setPowers(0,0,0,0);
@@ -166,7 +166,7 @@ public class TB_CloseBlue_Test extends LinearOpMode {
             }
 
             if(stepFive && !stepSix) {
-                if(pinpoint.getPosY(DistanceUnit.INCH) > -18) {
+                if(pinpoint.getPosY(DistanceUnit.INCH) > -24) {
                     setPowers(-0.5,0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
@@ -237,7 +237,7 @@ public class TB_CloseBlue_Test extends LinearOpMode {
     private void shootThree() {
         shooter.setPower(Math.abs(output));
 
-        if(!firstTwoShot && timer.milliseconds() >= 0) {
+        if(!firstTwoShot && timer.milliseconds() == 0) {
             timer.reset();
         }
 

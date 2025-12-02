@@ -122,7 +122,7 @@ public class TB_CloseRed extends LinearOpMode {
             if(stepTwo && !stepThree) {
                 intakeSet(0.75,0.75);
                 if (pinpoint.getPosX(DistanceUnit.INCH) < 39) {
-                    setPowers(0.4,0.4,0.4,0.4);
+                    setPowers(0.3,0.3,0.3,0.3);
                     timer.reset();
                 } else {
                     setPowers(0,0,0,0);
@@ -237,7 +237,7 @@ public class TB_CloseRed extends LinearOpMode {
     private void shootThree() {
         shooter.setPower(Math.abs(output));
 
-        if(!firstTwoShot && timer.milliseconds() >= 0) {
+        if(!firstTwoShot && timer.milliseconds() == 0) {
             timer.reset();
         }
 

@@ -55,13 +55,13 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private boolean thirdShotX = false;
     private boolean finishedShots = false;
     private boolean finishedShotsX = false;
-    private final double SHOOT_ANGLE = -30;
-    private final double STEP_THREE_VAL = 36; // 3ft
-    private final double STEP_FOUR_VAL = -90; // 1/4 Rotation Right
-    private final double STEP_FIVE_VAL = 42; // 3 1/2ft
-    private final double STEP_SIX_VAL = -42; // -3 1/2ft
-    private final double STEP_SEVEN_VAL = 90; // 1/4 Rotation Left
-    private final double STEP_EIGHT_VAL = -36; // -3ft
+    private final double SHOOT_ANGLE = -27;
+    private final double STEP_THREE_VAL = 25;
+    private final double STEP_FOUR_VAL = -57;
+    private final double STEP_FIVE_VAL = 41;
+    private final double STEP_SIX_VAL = -23;
+    private final double STEP_SEVEN_VAL = 61;
+    private final double STEP_EIGHT_VAL = -10;
     private final double STEP_NINE_VAL = 12; // 1ft
     private double targetShooterVelocity = 1460;
     private GoBildaPinpointDriver pinpoint;
@@ -75,6 +75,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
         hardwareStart();
 
         boolean stepOne = false;
+        boolean forgottenStep = false;
         boolean stepTwo = false;
         boolean stepThree = false;
         boolean stepFour = false;
@@ -106,6 +107,16 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
             dashboard.sendTelemetryPacket(packet);
 
             if(!stepOne) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) < 5) {
+                    setPowers(0.5,0.5,0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepOne = true;
+                    pinpoint.resetPosAndIMU();
+                }
+            }
+
+            if(!stepTwo && stepOne) {
                 if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
                     setPowers(0.5,-0.5,0.5,-0.5);
                 } else {
@@ -113,20 +124,9 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                     shootThree();
                     if(finishedShots) {
                         shooter.setPower(0);
-                        stepOne = true;
+                        stepTwo = true;
                         pinpoint.resetPosAndIMU();
                     }
-                }
-            }
-
-            if(stepOne && !stepTwo) {
-                //This is where you write aligning yourself with the wall
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 30) {
-                    setPowers(-0.5,0.5,-0.5,0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    stepTwo = true;
-                    pinpoint.resetPosAndIMU();
                 }
             }
 
@@ -170,11 +170,11 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
 
             if(stepFive && !stepSix) {
                 //This is where you write driving backwards and fixing artifact position
-                intakeSet(-0.25, -0.1);
+                shooter.setPower(-0.2);
                 timer.reset();
 
                 if(timer.milliseconds() > 100) {
-                    intakeSet(0,0);
+                    shooter.setPower(0);
                 }
 
                 if(pinpoint.getPosX(DistanceUnit.INCH) > STEP_SIX_VAL) {
@@ -203,32 +203,12 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                     setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
-                    stepEight = true;
-                    pinpoint.resetPosAndIMU();
-                }
-            }
-
-            if(stepEight && !stepNine) {
-                //This is where
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
-                    setPowers(0.5,-0.5,0.5,-0.5);
-                } else {
-                    setPowers(0,0,0,0);
                     shootThreeMore();
                     if(finishedShotsX) {
                         shooter.setPower(0);
-                        stepNine = true;
-                        pinpoint.resetPosAndIMU();
+                        stepEight = true;
+                        requestOpModeStop();
                     }
-                }
-            }
-
-            if(stepNine) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_NINE_VAL) {
-                    setPowers(0.5,0.5,0.5,0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    requestOpModeStop();
                 }
             }
 

@@ -111,7 +111,6 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                 } else {
                     setPowers(0,0,0,0);
                     stepOne = true;
-                    pinpoint.resetPosAndIMU();
                 }
             }
 /*
@@ -127,7 +126,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                         pinpoint.resetPosAndIMU();
                     }
                 }
-            }
+            } */
 
             if(stepTwo && !stepThree) {
                 //This is where you write moving forward
@@ -209,7 +208,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                         requestOpModeStop();
                     }
                 }
-            } */
+            }
 
             telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));

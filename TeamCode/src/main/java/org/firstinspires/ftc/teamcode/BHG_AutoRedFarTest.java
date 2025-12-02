@@ -56,10 +56,10 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private boolean thirdShotX = false;
     private boolean finishedShots = false;
     private boolean finishedShotsX = false;
-    private final double SHOOT_ANGLE = -23;
-    private final double STEP_THREE_VAL = 21;
+    private final double SHOOT_ANGLE = -22;
+    private final double STEP_THREE_VAL = 19;
     private final double STEP_FOUR_VAL = -57;
-    private final double STEP_FIVE_VAL = 40;
+    private final double STEP_FIVE_VAL = 36;
     private final double STEP_SIX_VAL = -23;
     private final double STEP_SEVEN_VAL = 61;
     private final double STEP_EIGHT_VAL = -10;
@@ -75,6 +75,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
 
         hardwareStart();
 
+        boolean stepZero = false;
         boolean stepOne = false;
         boolean stepTwo = false;
         boolean stepThree = false;
@@ -183,11 +184,10 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                         }
                     }
                     stepSix = true;
-                    pinpoint.resetPosAndIMU();
                 }
             }
 
-            /*
+
             if(stepSix && !stepSeven) {
                 //This is where you turn back to align the robot to the wall
                 if(pinpoint.getHeading(AngleUnit.DEGREES) < STEP_SEVEN_VAL) {
@@ -212,7 +212,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                         requestOpModeStop();
                     }
                 }
-            }*/
+            }
 
             telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));

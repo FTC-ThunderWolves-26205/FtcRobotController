@@ -75,7 +75,6 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
         hardwareStart();
 
         boolean stepOne = false;
-        boolean forgottenStep = false;
         boolean stepTwo = false;
         boolean stepThree = false;
         boolean stepFour = false;
@@ -115,7 +114,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                     pinpoint.resetPosAndIMU();
                 }
             }
-
+/*
             if(!stepTwo && stepOne) {
                 if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
                     setPowers(0.5,-0.5,0.5,-0.5);
@@ -210,7 +209,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                         requestOpModeStop();
                     }
                 }
-            }
+            } */
 
             telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));

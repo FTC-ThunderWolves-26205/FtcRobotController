@@ -49,21 +49,22 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private ElapsedTime timer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
     private double output;
+    private boolean timerStarted = false;
     private boolean firstTwoShot = false;
     private boolean firstTwoShotX = false;
     private boolean thirdShot = false;
     private boolean thirdShotX = false;
     private boolean finishedShots = false;
     private boolean finishedShotsX = false;
-    private final double SHOOT_ANGLE = -27;
-    private final double STEP_THREE_VAL = 25;
+    private final double SHOOT_ANGLE = -23;
+    private final double STEP_THREE_VAL = 21;
     private final double STEP_FOUR_VAL = -57;
-    private final double STEP_FIVE_VAL = 41;
+    private final double STEP_FIVE_VAL = 40;
     private final double STEP_SIX_VAL = -23;
     private final double STEP_SEVEN_VAL = 61;
     private final double STEP_EIGHT_VAL = -10;
     private final double STEP_NINE_VAL = 12; // 1ft
-    private double targetShooterVelocity = 1460;
+    private double targetShooterVelocity = 1750;
     private GoBildaPinpointDriver pinpoint;
 
 
@@ -80,6 +81,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
         boolean stepFour = false;
         boolean stepFive = false;
         boolean stepSix = false;
+        boolean intakeReverse = false;
         boolean stepSeven = false;
         boolean stepEight = false;
         boolean stepNine = false;
@@ -113,7 +115,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                     stepOne = true;
                 }
             }
-/*
+
             if(!stepTwo && stepOne) {
                 if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
                     setPowers(0.5,-0.5,0.5,-0.5);
@@ -126,16 +128,15 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                         pinpoint.resetPosAndIMU();
                     }
                 }
-            } */
+            }
 
-            if(stepTwo && !stepThree) {
+           if(stepTwo && !stepThree) {
                 //This is where you write moving forward
                 if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_THREE_VAL) {
                     setPowers(0.5,0.5,0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
                     stepThree = true;
-                    pinpoint.resetPosAndIMU();
                 }
             }
 
@@ -154,7 +155,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                 //This is where you write driving forward and picking up artifacts with intakes
                 intakeSet(0.75,0.75);
                 if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_FIVE_VAL) {
-                    setPowers(0.85,0.85,0.85,0.85); //Am doing stronger power to grab the balls faster
+                    setPowers(0.4,0.4,0.4,0.4);
                     timer.reset();
                 } else {
                     setPowers(0,0,0,0);
@@ -168,22 +169,25 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
 
             if(stepFive && !stepSix) {
                 //This is where you write driving backwards and fixing artifact position
-                shooter.setPower(-0.2);
-                timer.reset();
-
-                if(timer.milliseconds() > 100) {
-                    shooter.setPower(0);
-                }
-
                 if(pinpoint.getPosX(DistanceUnit.INCH) > STEP_SIX_VAL) {
                     setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
+                    timer.reset();
+                    if(!intakeReverse) {
+                        intakeSet(-0.25, -0.1);
+
+                        if (!intakeReverse && timer.milliseconds() > 100) {
+                            intakeSet(0, 0);
+                            intakeReverse = true;
+                        }
+                    }
                     stepSix = true;
                     pinpoint.resetPosAndIMU();
                 }
             }
 
+            /*
             if(stepSix && !stepSeven) {
                 //This is where you turn back to align the robot to the wall
                 if(pinpoint.getHeading(AngleUnit.DEGREES) < STEP_SEVEN_VAL) {
@@ -208,7 +212,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                         requestOpModeStop();
                     }
                 }
-            }
+            }*/
 
             telemetry.addData("X Position", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("Y Position", pinpoint.getPosY(DistanceUnit.INCH));
@@ -273,7 +277,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private void shootThree() {
         shooter.setPower(Math.abs(output));
 
-        if(!firstTwoShot && timer.milliseconds() >= 0) {
+        if(!firstTwoShot && timer.milliseconds() == 0) {
             timer.reset();
         }
 

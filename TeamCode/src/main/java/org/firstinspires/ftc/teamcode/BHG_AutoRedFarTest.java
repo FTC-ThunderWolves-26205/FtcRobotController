@@ -60,9 +60,9 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private final double STEP_THREE_VAL = 19;
     private final double STEP_FOUR_VAL = -57;
     private final double STEP_FIVE_VAL = 36;
-    private final double STEP_SIX_VAL = -23;
-    private final double STEP_SEVEN_VAL = 61;
-    private final double STEP_EIGHT_VAL = -10;
+    private final double STEP_SIX_VAL = -39; //-40,59,-24 //-39, 60, -22 //-39, 60, -20
+    private final double STEP_SEVEN_VAL = 60;
+    private final double STEP_EIGHT_VAL = -20;
     private final double STEP_NINE_VAL = 12; // 1ft
     private double targetShooterVelocity = 1750;
     private GoBildaPinpointDriver pinpoint;
@@ -160,7 +160,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                     timer.reset();
                 } else {
                     setPowers(0,0,0,0);
-                    if(timer.milliseconds() > 750) {
+                    if(timer.milliseconds() > 700) {
                         intakeSet(0,0);
                         stepFive = true;
                         pinpoint.resetPosAndIMU();
@@ -209,8 +209,17 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                     if(finishedShotsX) {
                         shooter.setPower(0);
                         stepEight = true;
-                        requestOpModeStop();
+                        pinpoint.resetPosAndIMU();
                     }
+                }
+            }
+
+            if(stepEight) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) < 12) {
+                    setPowers(0.5,0.5,0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    requestOpModeStop();
                 }
             }
 

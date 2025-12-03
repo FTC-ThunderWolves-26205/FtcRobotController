@@ -28,7 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 @Autonomous(name = "Close Red Auto - MCM Test", group = "Autonomous")
 
-public class MCM_CloseMoveRight extends LinearOpMode {
+public class MCM_CloseRedEnumsV2 extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;

@@ -113,8 +113,8 @@ public class MCM_CloseMoveRight extends LinearOpMode {
                     setPowers(0.5,-0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
-                    autoStages.setCurrentStage(autoStages.THREE);
                     pinpoint.resetPosAndIMU();
+                    autoStages.setCurrentStage(autoStages.THREE);
                 }
             }
 
@@ -127,8 +127,8 @@ public class MCM_CloseMoveRight extends LinearOpMode {
                     setPowers(0,0,0,0);
                     if (timer.milliseconds()>750) {
                         intakeSet(0, 0);
-                        autoStages.setCurrentStage(autoStages.FOUR);
                         pinpoint.resetPosAndIMU();
+                        autoStages.setCurrentStage(autoStages.FOUR);
                     }
                 }
             }
@@ -144,7 +144,7 @@ public class MCM_CloseMoveRight extends LinearOpMode {
                     setPowers(-0.4,-0.4,-0.4,-0.4);
                 } else {
                     setPowers(0,0,0,0);
-                    stepFour = true;
+                    autoStages.setCurrentStage(autoStages.SIX);
                 }
             }
 
@@ -155,7 +155,6 @@ public class MCM_CloseMoveRight extends LinearOpMode {
                     setPowers(0,0,0,0);
                     shootThreeMore();
                     if(finishedShotsX) {
-                        autoStages.setCurrentStage(autoStages.SEVEN);
                         requestOpModeStop();
                     }
                 }

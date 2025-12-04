@@ -1,8 +1,6 @@
 /*
 My Autonomous code:
-turns on the intakes
-shoots the first and second artifact
-uses servo to kick up the third artifact up to the shooter
+tries to shoot six
 
 
  */

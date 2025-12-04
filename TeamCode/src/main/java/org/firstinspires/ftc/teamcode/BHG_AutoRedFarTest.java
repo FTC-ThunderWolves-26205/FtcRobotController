@@ -40,7 +40,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double RANGE = 40;
-    private final long SERVO_DURATION = 500;
+    private final long SERVO_DURATION = 600;
     private PIDFController shooterControl;
     public static double kP = 0.004;
     public static double kI = 0.0;
@@ -61,10 +61,10 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private final double STEP_FOUR_VAL = -57;
     private final double STEP_FIVE_VAL = 36;
     private final double STEP_SIX_VAL = -39; //-40,59,-24 //-39, 60, -22 //-39, 60, -20
-    private final double STEP_SEVEN_VAL = 60;
-    private final double STEP_EIGHT_VAL = -20;
-    private final double STEP_NINE_VAL = 12; // 1ft
-    private double targetShooterVelocity = 1750;
+    private final double STEP_SEVEN_VAL = 61;
+    private final double STEP_EIGHT_VAL = -19;
+    private final double STEP_NINE_VAL = 12;
+    private double targetShooterVelocity = 1710;
     private GoBildaPinpointDriver pinpoint;
 
 
@@ -178,7 +178,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                     if(!intakeReverse) {
                         intakeSet(-0.25, -0.1);
 
-                        if (!intakeReverse && timer.milliseconds() > 100) {
+                        if (!intakeReverse && timer.milliseconds() > 75) {
                             intakeSet(0, 0);
                             intakeReverse = true;
                         }

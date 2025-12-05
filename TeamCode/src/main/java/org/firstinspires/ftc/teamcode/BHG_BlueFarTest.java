@@ -39,7 +39,7 @@ public class BHG_BlueFarTest extends LinearOpMode {
     private static final double RESTING_SERVO = 0.6;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double RANGE = 40;
-    private final long SERVO_DURATION = 600;
+    private final long SERVO_DURATION = 650;
     private PIDFController shooterControl;
     public static double kP = 0.004;
     public static double kI = 0.0;
@@ -55,15 +55,15 @@ public class BHG_BlueFarTest extends LinearOpMode {
     private boolean thirdShotX = false;
     private boolean finishedShots = false;
     private boolean finishedShotsX = false;
-    private final double SHOOT_ANGLE = 22;
+    private final double SHOOT_ANGLE = 15;
     private final double STEP_THREE_VAL = 19;
-    private final double STEP_FOUR_VAL = 57;
-    private final double STEP_FIVE_VAL = 36;
+    private final double STEP_FOUR_VAL = 54;
+    private final double STEP_FIVE_VAL = 35;
     private final double STEP_SIX_VAL = -39; //-40,59,-24 //-39, 60, -22 //-39, 60, -20
     private final double STEP_SEVEN_VAL = -61;
-    private final double STEP_EIGHT_VAL = -19;
+    private final double STEP_EIGHT_VAL = -17;
     private final double STEP_NINE_VAL = 12;
-    private double targetShooterVelocity = 1710;
+    private double targetShooterVelocity = 1720;
     private GoBildaPinpointDriver pinpoint;
 
 
@@ -159,7 +159,7 @@ public class BHG_BlueFarTest extends LinearOpMode {
                     timer.reset();
                 } else {
                     setPowers(0,0,0,0);
-                    if(timer.milliseconds() > 700) {
+                    if(timer.milliseconds() > 500) {
                         intakeSet(0,0);
                         stepFive = true;
                         pinpoint.resetPosAndIMU();

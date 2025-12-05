@@ -25,9 +25,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Ben's Auto Red Far Test", group = "Autonomous")
+@Autonomous(name = "Ben's Far Blue Auto Test", group = "Autonomous")
 
-public class BHG_AutoRedFarTest extends LinearOpMode {
+public class BHG_BlueFarTest extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -55,12 +55,12 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
     private boolean thirdShotX = false;
     private boolean finishedShots = false;
     private boolean finishedShotsX = false;
-    private final double SHOOT_ANGLE = -22;
+    private final double SHOOT_ANGLE = 22;
     private final double STEP_THREE_VAL = 19;
-    private final double STEP_FOUR_VAL = -57;
+    private final double STEP_FOUR_VAL = 57;
     private final double STEP_FIVE_VAL = 36;
     private final double STEP_SIX_VAL = -39; //-40,59,-24 //-39, 60, -22 //-39, 60, -20
-    private final double STEP_SEVEN_VAL = 61;
+    private final double STEP_SEVEN_VAL = -61;
     private final double STEP_EIGHT_VAL = -19;
     private final double STEP_NINE_VAL = 12;
     private double targetShooterVelocity = 1710;
@@ -86,7 +86,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
         boolean stepEight = false;
         boolean stepNine = false;
 
-                shooterControl = new PIDFController(kP, kI, kD, kF);
+        shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
 
         pinpoint.resetPosAndIMU();
@@ -117,8 +117,8 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
             }
 
             if(!stepTwo && stepOne) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
-                    setPowers(0.5,-0.5,0.5,-0.5);
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < SHOOT_ANGLE) {
+                    setPowers(-0.5,0.5,-0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
                     shootThree();
@@ -130,7 +130,7 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
                 }
             }
 
-           if(stepTwo && !stepThree) {
+            if(stepTwo && !stepThree) {
                 //This is where you write moving forward
                 if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_THREE_VAL) {
                     setPowers(0.5,0.5,0.5,0.5);
@@ -142,8 +142,8 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
 
             if(stepThree && !stepFour) {
                 //This is where you write turning right
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > STEP_FOUR_VAL) {
-                    setPowers(0.5,-0.5,0.5,-0.5);
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < STEP_FOUR_VAL) {
+                    setPowers(-0.5,0.5,-0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
                     stepFour = true;
@@ -189,8 +189,8 @@ public class BHG_AutoRedFarTest extends LinearOpMode {
 
             if(stepSix && !stepSeven) {
                 //This is where you turn back to align the robot to the wall
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < STEP_SEVEN_VAL) {
-                    setPowers(-0.5,0.5,-0.5,0.5);
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > STEP_SEVEN_VAL) {
+                    setPowers(0.5,-0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
                     stepSeven = true;

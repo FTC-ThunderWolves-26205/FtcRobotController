@@ -246,7 +246,7 @@ public class TB_CloseBlue extends LinearOpMode {
             timer.reset();
             firstTwoShot = true;
         }
-        if (firstTwoShot && !thirdShot && timer.milliseconds() > 2500) {
+        if (firstTwoShot && !thirdShot && timer.milliseconds() > 3000) {
             servoMovement();
             thirdShot = true;
         }
@@ -271,7 +271,7 @@ public class TB_CloseBlue extends LinearOpMode {
             shooterTimer.reset();
             firstTwoShotX = true;
         }
-        if (firstTwoShotX && !thirdShotX && shooterTimer.milliseconds() > 2500) {
+        if (firstTwoShotX && !thirdShotX && shooterTimer.milliseconds() > 3000) {
             servoMovement();
             thirdShotX = true;
         }

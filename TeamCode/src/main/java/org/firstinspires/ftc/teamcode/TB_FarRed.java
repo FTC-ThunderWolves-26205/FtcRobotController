@@ -60,7 +60,7 @@ public class TB_FarRed extends LinearOpMode {
     private final double STEP_FOUR_VAL = -57;
     private final double STEP_FIVE_VAL = 36;
     private final double STEP_SIX_VAL = -39; //-40,59,-24 //-39, 60, -22 //-39, 60, -20
-    private final double STEP_SEVEN_VAL = 61;
+    private final double STEP_SEVEN_VAL = 58;
     private final double STEP_EIGHT_VAL = -19;
     private final double STEP_NINE_VAL = 12;
     private double targetShooterVelocity = 1710;
@@ -294,7 +294,7 @@ public class TB_FarRed extends LinearOpMode {
             timer.reset();
             firstTwoShot = true;
         }
-        if (firstTwoShot && !thirdShot && timer.milliseconds() > 2000) {
+        if (firstTwoShot && !thirdShot && timer.milliseconds() > 3000) {
             servoMovement();
             thirdShot = true;
         }
@@ -319,7 +319,7 @@ public class TB_FarRed extends LinearOpMode {
             timer.reset();
             firstTwoShotX = true;
         }
-        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 2000) {
+        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 3000) {
             servoMovement();
             thirdShotX = true;
         }

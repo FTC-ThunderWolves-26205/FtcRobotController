@@ -294,7 +294,7 @@ public class BHG_BlueFarTest extends LinearOpMode {
             timer.reset();
             firstTwoShot = true;
         }
-        if (firstTwoShot && !thirdShot && timer.milliseconds() > 2000) {
+        if (firstTwoShot && !thirdShot && timer.milliseconds() > 3000) {
             servoMovement();
             thirdShot = true;
         }
@@ -319,7 +319,7 @@ public class BHG_BlueFarTest extends LinearOpMode {
             timer.reset();
             firstTwoShotX = true;
         }
-        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 2000) {
+        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 3000) {
             servoMovement();
             thirdShotX = true;
         }

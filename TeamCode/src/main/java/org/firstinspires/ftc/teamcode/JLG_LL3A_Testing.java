@@ -48,6 +48,7 @@ public class JLG_LL3A_Testing extends LinearOpMode{
         //double servoPosition = 0;
         //boolean isPosition = false;
         limelight.start();
+        pinpoint.resetPosAndIMU();
 
         waitForStart();
 

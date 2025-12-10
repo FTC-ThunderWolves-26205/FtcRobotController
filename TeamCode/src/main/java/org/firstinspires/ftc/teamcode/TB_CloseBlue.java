@@ -37,7 +37,7 @@ public class TB_CloseBlue extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.6;
+    private static final double RESTING_SERVO = 0.7;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;

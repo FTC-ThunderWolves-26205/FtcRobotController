@@ -37,7 +37,7 @@ public class TB_CloseRed extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.6;
+    private static final double RESTING_SERVO = 0.7;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
@@ -121,7 +121,7 @@ public class TB_CloseRed extends LinearOpMode {
 
             if(stepTwo && !stepThree) {
                 intakeSet(0.75,0.75);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 39) {
+                if (pinpoint.getPosX(DistanceUnit.INCH) < 36.5) {
                     setPowers(0.3,0.3,0.3,0.3);
                     timer.reset();
                 } else {

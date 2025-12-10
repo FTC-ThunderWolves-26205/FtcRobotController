@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.autonomous;
+package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -69,10 +69,14 @@ public class JLG_PedroTesting extends LinearOpMode {
             // We don't need pinpoint.update(); since pedro handles for us
 
             follower.update();
-            autonomousPathUpdate();
 
             double shooterVelocity = shooter.getVelocity();
             output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
+
+
+            autonomousPathUpdate(); // This calls our state machine.  It's all we need in the main loop
+
+
 
 
 
@@ -144,9 +148,10 @@ public class JLG_PedroTesting extends LinearOpMode {
 
 
 
-    private void update() {
+    //NEED TO ADD OUR SHOOTING METHOD HERE SO WE CAN CALL IT IN OUR STATE MACHINE.
+    //I WANT TO UPDATE OUR SHOOTING METHOD TO REMOVE BOOLEANS AND USE ENUMS/CASE/SWITCH INSTEAD
 
-    }
+
     private void hardwareStart() {
 
         shooter = hardwareMap.get(DcMotorEx.class, "SD");

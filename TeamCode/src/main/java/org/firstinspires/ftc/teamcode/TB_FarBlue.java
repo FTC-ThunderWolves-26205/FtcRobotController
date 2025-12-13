@@ -29,7 +29,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class TB_FarBlue extends LinearOpMode {
     private DcMotor frontRight;
-    private DcMotor frontLeft;
+    private DcMotor frontLeft;//fdwtw
     private DcMotor backRight;
     private DcMotor backLeft;
     private DcMotorEx shooter;

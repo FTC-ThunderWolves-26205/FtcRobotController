@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 /*
 This code performs four basic functions:  basic mecanum drive + power-based shooter control + intakes on/off + servo increments.
-
+ FBGDFtwtwrt3
 CONTROLS:
 
     GAMEPAD 1:
@@ -34,6 +34,11 @@ LONGER TO DO (Things to Try Before 2nd Tournament?):
 */
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -47,7 +52,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@TeleOp(name = "Maddie's TeleOp Mode", group = "Teleop")
+@TeleOp(name = "PIDF TeleOp - Odometry", group = "Teleop")
+@Config
 
 public class MCM_OdometryTeleOp extends LinearOpMode {
     private DcMotor frontRight;
@@ -58,28 +64,40 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
+
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime iIntakeTimer = new ElapsedTime();
     private ElapsedTime oIntakeTimer = new ElapsedTime();
-    private static final double RESTING_SERVO = 0.6;
+    private static final double RESTING_SERVO = 0.7;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double NORMAL_SPEED = 0.75;
-    private final double SLOW_SPEED = 0.5;
+    private final double SLOW_SPEED = 0.25;
     private final double TURBO_SPEED = 1.0;
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
+    private PIDFController shooterControl;
+    public static double kP = 0.004;
+    public static double kI = 0.0;
+    public static double kD = 0.00001;
+    public static double kF = 0.00045;
+
     private GoBildaPinpointDriver pinpoint;
+
 
     @Override
     public void runOpMode() {
         hardwareStart();
         double speed = NORMAL_SPEED;
         servo.setPosition(RESTING_SERVO);
-        double shooterSpeed = 0;
+        double targetShooterVelocity = 0;
         double iIntakePower = 0;
         double oIntakePower = 0;
         boolean isServo = false;
+        double output;
+
+        shooterControl = new PIDFController(kP, kI, kD, kF);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
         waitForStart();
         shooterTimer.reset();
         servoTimer.reset();
@@ -88,12 +106,6 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
         while(opModeIsActive()) {
 
             pinpoint.update();
-
-            telemetry.addData("X", pinpoint.getPosX(DistanceUnit.INCH));
-            telemetry.addData("Y",pinpoint.getPosY(DistanceUnit.INCH));
-            telemetry.addData("Theta",pinpoint.getHeading(AngleUnit.DEGREES));
-            telemetry.update();
-
 
             double forward = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
@@ -117,23 +129,27 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
                 speed = NORMAL_SPEED;
             }
 
+            if(gamepad1.a) {
+                pinpoint.resetPosAndIMU();
+            }
+
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {
-                shooterSpeed += 20;
+                targetShooterVelocity += 20;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
-                shooterSpeed -= 20;
+                targetShooterVelocity -= 20;
                 shooterTimer.reset();
             } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
-                shooterSpeed = (shooterSpeed == 0) ? 2200 : 0;
+                targetShooterVelocity = (targetShooterVelocity == 0) ? 2200 : 0;
                 shooterTimer.reset();
             }
 
             if(gamepad2.x) {
-                shooterSpeed = 1800;
+                targetShooterVelocity = 1800;
             }
 
             if(gamepad2.b) {
-                shooterSpeed = 1520;
+                targetShooterVelocity = 1520;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
@@ -164,18 +180,39 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
                 oIntakeTimer.reset();
             }
 
-            shooter.setVelocity(clampShoot(shooterSpeed));
+
+
+            double shooterVelocity = shooter.getVelocity();
             iIntake.setPower(clampFull(iIntakePower));
             oIntake.setPower(clampFull(oIntakePower));
 
-            telemetry.addData("Shooter Power", shooterSpeed);
-            telemetry.addData("Shooter Velocity",shooter.getVelocity());
+            if(targetShooterVelocity == 0) {
+                output = 0;
+            } else {
+                output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
+            }
+
+            shooter.setPower(Math.abs(output));
+
+            TelemetryPacket packet = new TelemetryPacket();
+            packet.put("Target Velocity", targetShooterVelocity);
+            packet.put("Actual Velocity", shooter.getVelocity());
+            packet.put("Output Power", output);
+            packet.put("X Position", pinpoint.getPosX(DistanceUnit.INCH));
+            packet.put("Y Position", pinpoint.getPosY(DistanceUnit.INCH));
+            packet.put("Theta Position", pinpoint.getHeading(AngleUnit.DEGREES));
+
+            dashboard.sendTelemetryPacket(packet);
+
+            telemetry.addData("X (in)", pinpoint.getPosX(DistanceUnit.INCH));
+            telemetry.addData("Y (in)", pinpoint.getPosY(DistanceUnit.INCH));
+            telemetry.addData("Theta", pinpoint.getHeading(AngleUnit.DEGREES));
+
+            telemetry.addData("Target Velocity", targetShooterVelocity);
+            telemetry.addData("Shooter Velocity", shooterVelocity);
             telemetry.addData("Servo Position", servo.getPosition());
             telemetry.addData("Inner Intake Power", iIntakePower);
             telemetry.addData("Outer Intake Power", oIntakePower);
-            telemetry.addData("Shooter RPM", ticksPerSecondToRPM(shooter.getVelocity()));
-            telemetry.addData("Battery Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
-            telemetry.addData("Servo Is Pressed", isServo);
             telemetry.update();
 
         }
@@ -190,7 +227,7 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
         iIntake = hardwareMap.get(DcMotor.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
+        shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -207,6 +244,9 @@ public class MCM_OdometryTeleOp extends LinearOpMode {
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
         iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
         telemetry.addData("Status","Initialized");
         telemetry.update();

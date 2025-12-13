@@ -83,9 +83,10 @@ public class TB_LimelightTesting extends LinearOpMode{
                 distance = getDistance(result.getTa());
 
                 telemetry.addData("LL Distance", distance);
-                telemetry.addData("Ll Tx", result.getTx());
+                telemetry.addData("LL Tx", result.getTx());
                 telemetry.addData("LL Ty", result.getTy());
-                telemetry.addData("ll Ta", result.getTa());
+                telemetry.addData("LL Ta", result.getTa());
+             
             }
 
 

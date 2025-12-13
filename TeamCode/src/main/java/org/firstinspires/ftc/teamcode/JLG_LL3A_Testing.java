@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @TeleOp(name = "JLG_Limelight Testing", group = "Teleop")
-@Disabled
+
 public class JLG_LL3A_Testing extends LinearOpMode{
     public DcMotor frontLeft;
     public DcMotor frontRight;

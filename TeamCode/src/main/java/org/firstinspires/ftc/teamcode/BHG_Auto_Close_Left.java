@@ -16,6 +16,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -29,8 +30,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import dalvik.system.DelegateLastClassLoader;
 
-@Autonomous(name = "Auto Far Move Left", group = "Autonomous")
 
+
+@Autonomous(name = "Auto Far Move Left", group = "Autonomous")
+@Disabled
 public class BHG_Auto_Close_Left extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

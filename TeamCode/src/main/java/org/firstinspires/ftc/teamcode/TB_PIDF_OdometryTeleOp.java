@@ -69,7 +69,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime iIntakeTimer = new ElapsedTime();
     private ElapsedTime oIntakeTimer = new ElapsedTime();
-    private static final double RESTING_SERVO = 0.6;
+    private static final double RESTING_SERVO = 0.7;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double NORMAL_SPEED = 0.75;
     private final double SLOW_SPEED = 0.25;

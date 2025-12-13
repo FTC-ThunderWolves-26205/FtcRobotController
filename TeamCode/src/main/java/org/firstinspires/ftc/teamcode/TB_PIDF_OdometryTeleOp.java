@@ -61,8 +61,8 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
     private DcMotorEx shooter;
-    private DcMotor iIntake;
-    private DcMotor oIntake;
+    private DcMotorEx iIntake;
+    private DcMotorEx oIntake;
     private Servo servo;
 
     private ElapsedTime shooterTimer = new ElapsedTime();
@@ -165,15 +165,15 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             }
 
             if(gamepad2.right_bumper && iIntakeTimer.milliseconds() > 500) {
-                iIntakePower = (iIntakePower == 0) ? 1 : 0;
+                iIntakePower = (iIntakePower == 0) ? 1272 : 0;
                 iIntakeTimer.reset();
             } else if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 500) {
-                oIntakePower = (oIntakePower == 0) ? 1 : 0;
+                oIntakePower = (oIntakePower == 0) ? 1: 0;
                 oIntakeTimer.reset();
             }
 
             if(gamepad2.right_trigger > 0 && iIntakeTimer.milliseconds() > 500) {
-                iIntakePower = (iIntakePower == 0) ? -1 : 0;
+                iIntakePower = (iIntakePower == 0) ? -1272 : 0;
                 iIntakeTimer.reset();
             } else if (gamepad2.left_trigger > 0 && oIntakeTimer.milliseconds() > 500) {
                 oIntakePower = (oIntakePower == 0) ? -1 : 0;
@@ -183,7 +183,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
 
 
             double shooterVelocity = shooter.getVelocity();
-            iIntake.setPower(clampFull(iIntakePower));
+            iIntake.setVelocity(iIntakePower);
             oIntake.setPower(clampFull(oIntakePower));
 
             if(targetShooterVelocity == 0) {
@@ -211,7 +211,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             telemetry.addData("Target Velocity", targetShooterVelocity);
             telemetry.addData("Shooter Velocity", shooterVelocity);
             telemetry.addData("Servo Position", servo.getPosition());
-            telemetry.addData("Inner Intake Power", iIntakePower);
+            telemetry.addData("Inner Intake Velocity", iIntake.getVelocity());
             telemetry.addData("Outer Intake Power", oIntakePower);
             telemetry.update();
 
@@ -223,8 +223,8 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "BR");
         backLeft = hardwareMap.get(DcMotor.class, "BL");
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
-        oIntake = hardwareMap.get(DcMotor.class,"OID");
-        iIntake = hardwareMap.get(DcMotor.class,"IID");
+        oIntake = hardwareMap.get(DcMotorEx.class,"OID");
+        iIntake = hardwareMap.get(DcMotorEx.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

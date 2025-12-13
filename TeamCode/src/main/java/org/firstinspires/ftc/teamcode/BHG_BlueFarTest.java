@@ -25,7 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Ben's Far Blue Auto Test", group = "Autonomous")
+@Autonomous(name = "Far Blue Auto", group = "Autonomous")
 
 public class BHG_BlueFarTest extends LinearOpMode {
     private DcMotor frontRight;

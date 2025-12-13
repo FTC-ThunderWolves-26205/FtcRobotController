@@ -55,8 +55,8 @@ public class TB_PIDF_TeleOp extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
     private DcMotorEx shooter;
-    private DcMotor iIntake;
-    private DcMotor oIntake;
+    private DcMotorEx iIntake;
+    private DcMotorEx oIntake;
     private Servo servo;
 
     private ElapsedTime shooterTimer = new ElapsedTime();
@@ -153,7 +153,7 @@ public class TB_PIDF_TeleOp extends LinearOpMode {
                 iIntakePower = (iIntakePower == 0) ? 1 : 0;
                 iIntakeTimer.reset();
             } else if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 500) {
-                oIntakePower = (oIntakePower == 0) ? 1 : 0;
+                oIntakePower = (oIntakePower == 0) ? 0.25 : (oIntakePower == 0.25) ? 0.5 : (oIntakePower == 0.5) ? 0.75 : (oIntakePower == 0.75) ? 1 : 0;
                 oIntakeTimer.reset();
             }
 
@@ -190,10 +190,10 @@ public class TB_PIDF_TeleOp extends LinearOpMode {
             telemetry.addData("Shooter Velocity", shooterVelocity);
             telemetry.addData("Servo Position", servo.getPosition());
             telemetry.addData("Inner Intake Power", iIntakePower);
+            telemetry.addData("Inner Intake Velocity", iIntake.getVelocity());
+            telemetry.addData("Outer Intake Velocity", oIntake.getVelocity());
             telemetry.addData("Outer Intake Power", oIntakePower);
             telemetry.addData("Shooter RPM", ticksPerSecondToRPM(shooter.getVelocity()));
-            telemetry.addData("Battery Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
-            telemetry.addData("Servo Is Pressed", isServo);
             telemetry.update();
 
         }
@@ -204,8 +204,8 @@ public class TB_PIDF_TeleOp extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "BR");
         backLeft = hardwareMap.get(DcMotor.class, "BL");
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
-        oIntake = hardwareMap.get(DcMotor.class,"OID");
-        iIntake = hardwareMap.get(DcMotor.class,"IID");
+        oIntake = hardwareMap.get(DcMotorEx.class,"OID");
+        iIntake = hardwareMap.get(DcMotorEx.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

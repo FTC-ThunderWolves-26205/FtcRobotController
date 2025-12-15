@@ -129,7 +129,7 @@ public class JLG_LL3A_Testing extends LinearOpMode{
     }
 
     private double getDistance(double ta){
-        double scale = 1;
+        double scale = 47620.07;
         double distance = (scale / ta);
         return distance;
     }
@@ -143,7 +143,7 @@ public class JLG_LL3A_Testing extends LinearOpMode{
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(8);
+        limelight.pipelineSwitch(0);
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);

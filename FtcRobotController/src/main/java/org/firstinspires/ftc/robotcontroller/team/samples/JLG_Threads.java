@@ -12,7 +12,6 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class JLG_Threads extends LinearOpMode {
-    @Disabled
     private DcMotor leftDrive;
     private DcMotor rightDrive;
     private DistanceSensor distanceSensor;

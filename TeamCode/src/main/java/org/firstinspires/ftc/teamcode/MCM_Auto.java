@@ -177,17 +177,5 @@ public class MCM_Auto extends LinearOpMode {
     private void servoDown() {
         servo.setPosition(0.1);
     }
-    private enum autoStages {
-        ONE,TWO,THREE,FOUR,FIVE;
-        static private autoStages currentStage;
-        static void setCurrentStage(autoStages wantedStage) {
-            currentStage = wantedStage;
-        }
-        static autoStages getCurrentStage() {
-            return currentStage;
-        }
-        static boolean ifStage(autoStages askingStage) {
-            return (currentStage == askingStage) ? true : false;
-        }
-    }
+
 }

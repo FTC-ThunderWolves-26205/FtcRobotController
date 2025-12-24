@@ -61,8 +61,8 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
     private DcMotorEx shooter;
-    private DcMotorEx iIntake;
-    private DcMotorEx oIntake;
+    private DcMotor iIntake;
+    private DcMotor oIntake;
     private Servo servo;
 
     private ElapsedTime shooterTimer = new ElapsedTime();
@@ -164,18 +164,20 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
                 isServo = false;
             }
 
-            if(gamepad2.right_bumper && iIntakeTimer.milliseconds() > 500) {
-                iIntakePower = (iIntakePower == 0) ? 1272 : 0;
+            if(gamepad2.right_bumper && iIntakeTimer.milliseconds() > 250) {
+                iIntakePower = (iIntakePower == 0) ? 1 : 0;
                 iIntakeTimer.reset();
-            } else if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 500) {
-                oIntakePower = (oIntakePower == 0) ? 1: 0;
+            }
+            if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 250) {
+                oIntakePower = (oIntakePower == 0) ? 1 : 0;
                 oIntakeTimer.reset();
             }
 
-            if(gamepad2.right_trigger > 0 && iIntakeTimer.milliseconds() > 500) {
-                iIntakePower = (iIntakePower == 0) ? -1272 : 0;
+            if(gamepad2.right_trigger > 0 && iIntakeTimer.milliseconds() > 250) {
+                iIntakePower = (iIntakePower == 0) ? -1 : 0;
                 iIntakeTimer.reset();
-            } else if (gamepad2.left_trigger > 0 && oIntakeTimer.milliseconds() > 500) {
+            }
+            if (gamepad2.left_trigger > 0 && oIntakeTimer.milliseconds() > 250) {
                 oIntakePower = (oIntakePower == 0) ? -1 : 0;
                 oIntakeTimer.reset();
             }
@@ -183,7 +185,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
 
 
             double shooterVelocity = shooter.getVelocity();
-            iIntake.setVelocity(iIntakePower);
+            iIntake.setPower(iIntakePower);
             oIntake.setPower(clampFull(oIntakePower));
 
             if(targetShooterVelocity == 0) {
@@ -201,6 +203,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             packet.put("X Position", pinpoint.getPosX(DistanceUnit.INCH));
             packet.put("Y Position", pinpoint.getPosY(DistanceUnit.INCH));
             packet.put("Theta Position", pinpoint.getHeading(AngleUnit.DEGREES));
+            packet.put("Inner Intake Power", iIntake.getPower());
 
             dashboard.sendTelemetryPacket(packet);
 
@@ -211,8 +214,8 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             telemetry.addData("Target Velocity", targetShooterVelocity);
             telemetry.addData("Shooter Velocity", shooterVelocity);
             telemetry.addData("Servo Position", servo.getPosition());
-            telemetry.addData("Inner Intake Velocity", iIntake.getVelocity());
-            telemetry.addData("Outer Intake Power", oIntakePower);
+            telemetry.addData("Inner Intake Power", iIntake.getPower());
+            telemetry.addData("Outer Intake Power", oIntake.getPower());
             telemetry.update();
 
         }
@@ -223,8 +226,8 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "BR");
         backLeft = hardwareMap.get(DcMotor.class, "BL");
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
-        oIntake = hardwareMap.get(DcMotorEx.class,"OID");
-        iIntake = hardwareMap.get(DcMotorEx.class,"IID");
+        oIntake = hardwareMap.get(DcMotor.class,"OID");
+        iIntake = hardwareMap.get(DcMotor.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -243,7 +246,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        iIntake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));

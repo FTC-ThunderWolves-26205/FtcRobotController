@@ -209,7 +209,7 @@ public class TB_CloseRed extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        iIntake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));

@@ -14,8 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.arcrobotics.ftclib.controller.PIDFController;
+
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -43,6 +42,19 @@ public class JLG_PedroTesting extends LinearOpMode {
     private double targetShooterVelocity = 1460;
 
     private GoBildaPinpointDriver pinpoint;
+
+    private Follower follower;
+    private Timer pathTimer;
+    private int pathState;
+
+    // Start Pose
+    private final Pose startPose = new Pose(56, 8, Math.toRadians(90)); // Start position
+
+    // Trajectory Poses
+    private final Pose path1Pose = new Pose(56, 36, Math.toRadians(180)); // Path 1
+    private final Pose path2Pose = new Pose(35.788, 84.514, Math.toRadians(0)); // Path 2
+
+    private PathChain path1Path, path2Path;
 
 
 
@@ -96,18 +108,7 @@ public class JLG_PedroTesting extends LinearOpMode {
         pathTimer.resetTimer();
     }
 
-    private Follower follower;
-    private Timer pathTimer;
-    private int pathState;
 
-    // Start Pose
-    private final Pose startPose = new Pose(56, 8, Math.toRadians(90)); // Start position
-
-    // Trajectory Poses
-    private final Pose path1Pose = new Pose(56, 36, Math.toRadians(180)); // Path 1
-    private final Pose path2Pose = new Pose(35.788, 84.514, Math.toRadians(0)); // Path 2
-
-    private PathChain path1Path, path2Path;
 
     public void buildPaths() {
         path1Path = follower.pathBuilder()
@@ -144,8 +145,9 @@ public class JLG_PedroTesting extends LinearOpMode {
     private void initialize() {
         pathTimer = new Timer();
         follower = Constants.createFollower(hardwareMap);
-        buildPaths();
         follower.setStartingPose(startPose);
+        buildPaths();
+
     }
 
 

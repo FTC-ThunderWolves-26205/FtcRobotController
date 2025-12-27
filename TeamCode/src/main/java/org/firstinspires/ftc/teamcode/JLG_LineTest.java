@@ -66,8 +66,9 @@ public class JLG_LineTest extends LinearOpMode {
                 if (!follower.isBusy()) {
                     follower.followPath(path2Path);
                     setPathState(2);
+                    break;
                 }
-                break;
+
 
             case 2:
                 // Done

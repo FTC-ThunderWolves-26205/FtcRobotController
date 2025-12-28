@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Pedro Close Blue Auto Test", group = "Teleop")
-public class BHG_CloseBlue_Pedro extends LinearOpMode {
+public class BHG_CloseBlue_Pedro_Dont_Use extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();

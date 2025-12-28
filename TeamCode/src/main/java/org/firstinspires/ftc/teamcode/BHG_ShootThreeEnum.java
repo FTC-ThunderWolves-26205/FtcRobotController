@@ -33,7 +33,7 @@ public class BHG_ShootThreeEnum extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.6;
+    private static final double RESTING_SERVO = 0.7;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
@@ -117,7 +117,7 @@ public class BHG_ShootThreeEnum extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        iIntake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         telemetry.addData("Status","Initialized");
         telemetry.update();

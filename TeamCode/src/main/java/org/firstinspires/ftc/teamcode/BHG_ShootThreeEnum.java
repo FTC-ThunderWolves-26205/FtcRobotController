@@ -64,7 +64,6 @@ public class BHG_ShootThreeEnum extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
-        boolean firstThree = false;
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();

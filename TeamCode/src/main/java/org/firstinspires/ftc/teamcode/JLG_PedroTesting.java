@@ -1,10 +1,13 @@
+//In theory, back up, shoot 3, intake first set.  stop
+//start bot centered on the line for blue goal
+
+
 package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -14,6 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -21,15 +25,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous
-@Disabled
+@Autonomous(name = "Pedro Testing", group = "Autonomous")
+
 public class JLG_PedroTesting extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.6;
+    private static final double RESTING_SERVO = 0.7;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
@@ -43,18 +47,39 @@ public class JLG_PedroTesting extends LinearOpMode {
 
     private GoBildaPinpointDriver pinpoint;
 
+    private ElapsedTime timer = new ElapsedTime();
+    private ElapsedTime servoTimer = new ElapsedTime();
+
     private Follower follower;
-    private Timer pathTimer;
-    private int pathState;
 
-    // Start Pose
-    private final Pose startPose = new Pose(56, 8, Math.toRadians(90)); // Start position
 
-    // Trajectory Poses
-    private final Pose path1Pose = new Pose(56, 36, Math.toRadians(180)); // Path 1
-    private final Pose path2Pose = new Pose(35.788, 84.514, Math.toRadians(0)); // Path 2
+    // POSES GO HERE
+    private final Pose startPose = new Pose(25, 119, Math.toRadians(145)); // Start position
+    private final Pose firstShotPose = new Pose(57, 86, Math.toRadians(145)); // Path 1
+    private final Pose path2Pose = new Pose(19, 86, Math.toRadians(180)); // Path 2
 
-    private PathChain path1Path, path2Path;
+    //RENAME THESE
+    private PathChain firstShotPath, firstIntakePath;
+
+
+
+    private enum AutoState {
+        START_PATH1,
+        WAIT_PATH1,
+        SHOOT,
+        WAIT_PATH2,
+        END
+    }
+
+    private enum ShooterState {
+        IDLE,
+        SHOOT_TWO,
+        SHOOT_THIRD,
+        STOP_INTAKES,
+        END
+    }
+    private AutoState autoState = AutoState.START_PATH1;
+    private ShooterState shooterState = ShooterState.IDLE;
 
 
 
@@ -75,7 +100,7 @@ public class JLG_PedroTesting extends LinearOpMode {
 
         waitForStart();
 
-        setPathState(0);
+
 
 
         while (opModeIsActive()) {
@@ -95,7 +120,7 @@ public class JLG_PedroTesting extends LinearOpMode {
 
 
 
-            telemetry.addData("path state", pathState);
+
             telemetry.addData("x", follower.getPose().getX());
             telemetry.addData("y", follower.getPose().getY());
             telemetry.addData("heading", follower.getPose().getHeading());
@@ -103,47 +128,104 @@ public class JLG_PedroTesting extends LinearOpMode {
 
         }
     }
-    private void setPathState(int pState) {
-        pathState = pState;
-        pathTimer.resetTimer();
-    }
 
 
 
+//BUILD PATHS HERE
     public void buildPaths() {
-        path1Path = follower.pathBuilder()
-                .addPath(new BezierLine(startPose, path1Pose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), path1Pose.getHeading())
+        firstShotPath = follower.pathBuilder()
+                .addPath(new BezierLine(startPose, firstShotPose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), firstShotPose.getHeading())
                 .build();
 
-        path2Path = follower.pathBuilder()
-                .addPath(new BezierLine(path1Pose, path2Pose))
-                .setLinearHeadingInterpolation(path1Pose.getHeading(), path2Pose.getHeading())
+        firstIntakePath = follower.pathBuilder()
+                .addPath(new BezierLine(firstShotPose, path2Pose))
+                .setLinearHeadingInterpolation(firstShotPose.getHeading(), path2Pose.getHeading())
                 .build();
     }
 
     public void autonomousPathUpdate() {
-        switch (pathState) {
-            case 0:
-                follower.followPath(path1Path);
-                setPathState(1);
+        switch (autoState) {
+
+            case START_PATH1:
+                follower.followPath(firstShotPath);
+                autoState = AutoState.WAIT_PATH1;
                 break;
 
-            case 1:
+            case WAIT_PATH1:
                 if (!follower.isBusy()) {
-                    follower.followPath(path2Path);
-                    setPathState(2);
+                    shooterState = ShooterState.IDLE;   // reset shooter FSM
+                    autoState = AutoState.SHOOT;
                 }
                 break;
 
-            case 2:
-                // Done
+            case SHOOT:
+                shootThree();
+
+                if (shooterState == ShooterState.END) {
+                    intakeSet(0.5, 0.5);
+                    follower.followPath(firstIntakePath);
+                    autoState = AutoState.WAIT_PATH2;
+                }
+                break;
+
+
+            case WAIT_PATH2:
+                if (!follower.isBusy()) {
+                    intakeSet(0, 0);
+                    autoState = AutoState.END;
+                }
+                break;
+
+            case END:
+                // Autonomous complete
+                break;
+        }
+    }
+
+    private void shootThree() {
+        shooter.setPower(Math.abs(output));
+
+        switch (shooterState) {
+
+            case IDLE:
+                timer.reset();
+                shooterState = ShooterState.SHOOT_TWO;
+                break;
+
+
+            case SHOOT_TWO:
+
+                if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && timer.milliseconds() > 1000) {
+                    intakeSet(1, 1);
+                    timer.reset();
+                    shooterState = ShooterState.SHOOT_THIRD;
+                }
+                break;
+
+            case SHOOT_THIRD:
+                if (timer.milliseconds() > 2000) {
+                    servoMovement();
+                    shooterState = ShooterState.STOP_INTAKES;
+                }
+                break;
+
+            case STOP_INTAKES:
+                if (servoTimer.milliseconds() > SERVO_DURATION) {
+                    servo.setPosition(RESTING_SERVO);
+                    intakeSet(0, 0);
+                    shooterState = ShooterState.END;
+                }
+                break;
+
+            case END:
+
                 break;
         }
     }
 
     private void initialize() {
-        pathTimer = new Timer();
+
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
         buildPaths();
@@ -151,9 +233,6 @@ public class JLG_PedroTesting extends LinearOpMode {
     }
 
 
-
-    //NEED TO ADD OUR SHOOTING METHOD HERE SO WE CAN CALL IT IN OUR STATE MACHINE.
-    //I WANT TO UPDATE OUR SHOOTING METHOD TO REMOVE BOOLEANS AND USE ENUMS/CASE/SWITCH INSTEAD
 
 
     private void hardwareStart() {
@@ -179,6 +258,19 @@ public class JLG_PedroTesting extends LinearOpMode {
 
         telemetry.addData("Status","Initialized");
         telemetry.update();
+    }
+
+    private void intakeSet(double iIntakePower, double oIntakePower) {
+        iIntake.setPower(iIntakePower);
+        oIntake.setPower(oIntakePower);
+    }
+    private void servoMovement() {
+        servo.setPosition(LAUNCHING_SERVO);
+        servoTimer.reset();
+    }
+
+    public boolean atTargetSpeed(double shooterVelocity, double targetVelocity, double range) {
+        return Math.abs(shooterVelocity - targetVelocity) <= range;
     }
 }
 

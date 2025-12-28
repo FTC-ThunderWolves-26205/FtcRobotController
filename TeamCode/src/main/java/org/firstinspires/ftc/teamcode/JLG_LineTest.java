@@ -8,6 +8,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -66,12 +67,16 @@ public class JLG_LineTest extends LinearOpMode {
                 if (!follower.isBusy()) {
                     follower.followPath(path2Path);
                     setPathState(2);
-                    break;
-                }
 
+                }
+                break;
 
             case 2:
-                // Done
+                if (!follower.isBusy()) {
+                    follower.breakFollowing();
+
+
+                }
                 break;
         }
     }

@@ -164,6 +164,7 @@ public class JLG_PedroTesting extends LinearOpMode {
                 if (shooterState == ShooterState.END) {
                     intakeSet(0.5, 0.5);
                     follower.followPath(firstIntakePath);
+                    shooterState = ShooterState.IDLE;
                     autoState = AutoState.WAIT_PATH2;
                 }
                 break;
@@ -189,6 +190,8 @@ public class JLG_PedroTesting extends LinearOpMode {
 
             case IDLE:
                 timer.reset();
+                servoTimer.reset();
+                targetShooterVelocity = 1460;
                 shooterState = ShooterState.SHOOT_TWO;
                 break;
 
@@ -218,7 +221,10 @@ public class JLG_PedroTesting extends LinearOpMode {
                 break;
 
             case END:
-
+                targetShooterVelocity = 0;
+                timer.reset();
+                servoTimer.reset();
+                shooterState = ShooterState.IDLE;
                 break;
         }
     }

@@ -24,7 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Pedro Testing", group = "Autonomous")
+@Autonomous(name = "JLG Close Blue Test", group = "Autonomous")
 
 public class JLG_PedroTesting extends LinearOpMode {
 
@@ -54,8 +54,8 @@ public class JLG_PedroTesting extends LinearOpMode {
 
     // POSES GO HERE
     private final Pose startPose = new Pose(25, 119, Math.toRadians(145)); // Start position
-    private final Pose firstShotPose = new Pose(57, 86, Math.toRadians(145)); // Path 1
-    private final Pose intakeFirst = new Pose(19, 86, Math.toRadians(180)); // Path 2
+    private final Pose firstShotPose = new Pose(57, 86, Math.toRadians(145)); // Pose for First Shot
+    private final Pose intakeFirst = new Pose(19, 86, Math.toRadians(180)); // Pose for Intake 3 more
 
     //RENAME THESE
     private PathChain firstShotPath, firstIntakePath;
@@ -108,11 +108,11 @@ public class JLG_PedroTesting extends LinearOpMode {
 
             follower.update();
 
-            double shooterVelocity = shooter.getVelocity();
-            output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
+
 
 
             autonomousPathUpdate(); // This calls our state machine.  It's all we need in the main loop
+            //Ben wants to put the state machine here instead and just get rid of autonomousPathUpdate().  Considering it...
 
 
 
@@ -184,7 +184,16 @@ public class JLG_PedroTesting extends LinearOpMode {
     }
 
     private void shootThree() {
-        shooter.setPower(Math.abs(output));
+        double shooterVelocity = shooter.getVelocity();
+        output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
+
+        if (targetShooterVelocity > 0) {
+            shooter.setPower(output);
+        } else {
+            shooter.setPower(0);
+        }
+
+
 
         switch (shooterState) {
 
@@ -222,9 +231,6 @@ public class JLG_PedroTesting extends LinearOpMode {
 
             case END:
                 targetShooterVelocity = 0;
-                timer.reset();
-                servoTimer.reset();
-                shooterState = ShooterState.IDLE;
                 break;
         }
     }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+//import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Disabled
 @Autonomous(name = "Pedro Close Blue Auto Test", group = "Teleop")
 public class BHG_CloseBlue_Pedro_Dont_Use extends LinearOpMode {
@@ -91,7 +91,7 @@ public class BHG_CloseBlue_Pedro_Dont_Use extends LinearOpMode {
 
     private void initialize() {
         pathTimer = new Timer();
-        follower = Constants.createFollower(hardwareMap);
+        //follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
     }

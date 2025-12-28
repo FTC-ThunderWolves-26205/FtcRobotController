@@ -10,7 +10,6 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -56,7 +55,7 @@ public class JLG_PedroTesting extends LinearOpMode {
     // POSES GO HERE
     private final Pose startPose = new Pose(25, 119, Math.toRadians(145)); // Start position
     private final Pose firstShotPose = new Pose(57, 86, Math.toRadians(145)); // Path 1
-    private final Pose path2Pose = new Pose(19, 86, Math.toRadians(180)); // Path 2
+    private final Pose intakeFirst = new Pose(19, 86, Math.toRadians(180)); // Path 2
 
     //RENAME THESE
     private PathChain firstShotPath, firstIntakePath;
@@ -139,8 +138,8 @@ public class JLG_PedroTesting extends LinearOpMode {
                 .build();
 
         firstIntakePath = follower.pathBuilder()
-                .addPath(new BezierLine(firstShotPose, path2Pose))
-                .setLinearHeadingInterpolation(firstShotPose.getHeading(), path2Pose.getHeading())
+                .addPath(new BezierLine(firstShotPose, intakeFirst))
+                .setLinearHeadingInterpolation(firstShotPose.getHeading(), intakeFirst.getHeading())
                 .build();
     }
 

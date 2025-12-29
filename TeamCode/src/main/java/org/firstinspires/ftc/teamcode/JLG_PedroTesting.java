@@ -52,16 +52,21 @@ public class JLG_PedroTesting extends LinearOpMode {
     private Follower follower;
 
 
-    // POSES GO HERE
+    /*
+    POSES GO HERE.
+    ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
+     */
     private final Pose startPose = new Pose(25, 119, Math.toRadians(145)); // Start position
     private final Pose firstShotPose = new Pose(57, 86, Math.toRadians(145)); // Pose for First Shot
     private final Pose intakeFirst = new Pose(19, 86, Math.toRadians(180)); // Pose for Intake 3 more
 
-    //RENAME THESE
+    //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath;
 
 
 
+    //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
+    //THE WAIT STEP MUST INCLUDE A CHECK TO SEE IF FOLLOWER.ISBUSY IS FALSE
     private enum AutoState {
         START_PATH1,
         WAIT_PATH1,
@@ -69,7 +74,7 @@ public class JLG_PedroTesting extends LinearOpMode {
         WAIT_PATH2,
         END
     }
-
+    //ENUM DEFINING STATES FOR SHOOTER.  DON'T MODIFY THIS AS IT TIES TO OUR SHOOTTHREE METHOD.
     private enum ShooterState {
         IDLE,
         SHOOT_TWO,
@@ -77,6 +82,8 @@ public class JLG_PedroTesting extends LinearOpMode {
         STOP_INTAKES,
         END
     }
+
+    //SETTING STATES FOR OUR TWO FSM'S
     private AutoState autoState = AutoState.START_PATH1;
     private ShooterState shooterState = ShooterState.IDLE;
 
@@ -85,12 +92,12 @@ public class JLG_PedroTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        hardwareStart();
+        hardwareStart();  //Initializing all our non-movement hardware.
 
-        initialize();
+        initialize();  //Initializing Pedro, Building Paths
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
-        FtcDashboard dashboard = FtcDashboard.getInstance();
+        FtcDashboard dashboard = FtcDashboard.getInstance();  //not using dashboard but keep for now in case we do
 
         pinpoint.resetPosAndIMU();
 
@@ -130,7 +137,9 @@ public class JLG_PedroTesting extends LinearOpMode {
 
 
 
-//BUILD PATHS HERE
+    //BUILD PATHS HERE
+    //EACH MUST BE INTRODUCED ABOVE IN THE PATHCHAIN FIRST
+    //USE DESCRIPTIVE NAME, ACTION OR DESTINATION
     public void buildPaths() {
         firstShotPath = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, firstShotPose))
@@ -143,46 +152,54 @@ public class JLG_PedroTesting extends LinearOpMode {
                 .build();
     }
 
+    /*
+    Here is our main FSM for the auto.
+    We MUST add a wait after ANY movement.  The wait should include a check to see if the follower.isBusy() is false.
+    Leave comment describing what you are doing on each path.
+     */
     public void autonomousPathUpdate() {
         switch (autoState) {
 
-            case START_PATH1:
+            case START_PATH1:  //Back up from starting position.
                 follower.followPath(firstShotPath);
                 autoState = AutoState.WAIT_PATH1;
                 break;
 
-            case WAIT_PATH1:
+            case WAIT_PATH1:  //Wait after movement.
                 if (!follower.isBusy()) {
                     shooterState = ShooterState.IDLE;   // reset shooter FSM
                     autoState = AutoState.SHOOT;
                 }
                 break;
 
-            case SHOOT:
+            case SHOOT:  //Shoot Three, then turn on intakes and move to first set to intake.
                 shootThree();
 
                 if (shooterState == ShooterState.END) {
                     intakeSet(0.5, 0.5);
                     follower.followPath(firstIntakePath);
-                    shooterState = ShooterState.IDLE;
+                    shooterState = ShooterState.IDLE; //Resetting shooter state for the next shootThree()
                     autoState = AutoState.WAIT_PATH2;
                 }
                 break;
 
 
-            case WAIT_PATH2:
+            case WAIT_PATH2:  //Wait after movement.  Stop intakes.
                 if (!follower.isBusy()) {
                     intakeSet(0, 0);
                     autoState = AutoState.END;
                 }
                 break;
 
-            case END:
-                // Autonomous complete
+            case END: //Always have an END.  Seems to be recommended to keep it empty.
+
                 break;
         }
     }
 
+    /*
+    Here is our FSM for shooting three.
+     */
     private void shootThree() {
         double shooterVelocity = shooter.getVelocity();
         output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
@@ -226,11 +243,12 @@ public class JLG_PedroTesting extends LinearOpMode {
                     servo.setPosition(RESTING_SERVO);
                     intakeSet(0, 0);
                     shooterState = ShooterState.END;
+                    targetShooterVelocity = 0;
                 }
                 break;
 
             case END:
-                targetShooterVelocity = 0;
+
                 break;
         }
     }

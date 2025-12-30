@@ -67,7 +67,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @TeleOp(name = "PIDF TeleOp - Panels", group = "Teleop")
 @Config
 public class JLG_PanelsTeleOp extends LinearOpMode {
-    // ... (Your motor and servo variables are all correct)
+
     private DcMotor frontRight, frontLeft, backRight, backLeft, iIntake, oIntake;
     private DcMotorEx shooter;
     private Servo servo;
@@ -80,13 +80,12 @@ public class JLG_PanelsTeleOp extends LinearOpMode {
     private TelemetryManager telemetryM;
     private FieldManager fieldManager;
 
-    // ** THIS IS THE CORRECTED STYLE SETUP **
-    // Based on your Tuning.java, the Style constructor takes (name, color, alpha)
+
     private final Style robotStyle = new Style("", "#3F51B5", 0.75); // Blue robot
     private final Style pathStyle = new Style("", "#4CAF50", 0.75); // Green path
     private final double ROBOT_RADIUS = 8.0; // Define robot radius separately
 
-    // ... (Your timers and constants are all correct)
+
     private ElapsedTime shooterTimer = new ElapsedTime(), servoTimer = new ElapsedTime(), iIntakeTimer = new ElapsedTime(), oIntakeTimer = new ElapsedTime(), posTimer = new ElapsedTime();
     private static final double RESTING_SERVO = 0.7, LAUNCHING_SERVO = 0.1;
     private final double NORMAL_SPEED = 0.75, SLOW_SPEED = 0.25, TURBO_SPEED = 1.0, SERVO_DURATION = 750;

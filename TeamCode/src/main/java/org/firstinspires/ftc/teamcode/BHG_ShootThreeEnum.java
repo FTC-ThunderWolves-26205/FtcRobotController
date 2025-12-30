@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "Shoot Three Enum Test", group = "Autonomous")
-
+@Disabled
 public class BHG_ShootThreeEnum extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;

@@ -46,6 +46,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
     private double output;
     private double targetShooterVelocity = 1460;
     private boolean intakeReverse = false;
+    private boolean intakeReverseStarted = false;
 
     private GoBildaPinpointDriver pinpoint;
 
@@ -69,7 +70,6 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
     private PathChain firstShotPath, firstIntakePath, secondShotPath;
 
 
-
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
     //THE WAIT STEP MUST INCLUDE A CHECK TO SEE IF FOLLOWER.ISBUSY IS FALSE
     private enum AutoState {
@@ -81,6 +81,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
         SHOOT2,
         END
     }
+
     //ENUM DEFINING STATES FOR SHOOTER.  DON'T MODIFY THIS AS IT TIES TO OUR SHOOTTHREE METHOD.
     private enum ShooterState {
         IDLE,
@@ -93,7 +94,6 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
     //SETTING STATES FOR OUR TWO FSM'S
     private AutoState autoState = AutoState.MOVE_TO_SHOOT1;
     private ShooterState shooterState = ShooterState.IDLE;
-
 
 
     @Override
@@ -112,8 +112,6 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
         waitForStart();
 
 
-
-
         while (opModeIsActive()) {
 
             // We don't need pinpoint.update(); since pedro handles for us
@@ -121,15 +119,8 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
             follower.update();
 
 
-
-
             autonomousPathUpdate(); // This calls our state machine.  It's all we need in the main loop
             //Ben wants to put the state machine here instead and just get rid of autonomousPathUpdate().  Considering it...
-
-
-
-
-
 
 
             telemetry.addData("x", follower.getPose().getX());
@@ -139,7 +130,6 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
 
         }
     }
-
 
 
     //BUILD PATHS HERE
@@ -184,7 +174,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
-                    intakeSet(1,1);
+                    intakeSet(1, 1);
                     autoState = AutoState.INTAKE1;
                 }
 
@@ -192,7 +182,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
 
             case INTAKE1:  //Move and get the three artifacts
                 follower.followPath(firstIntakePath);
-                autoState = AutoState.WAIT1 ;
+                autoState = AutoState.WAIT1;
                 break;
 
             case WAIT1:  //Wait after movement. Stop intakes.
@@ -204,27 +194,33 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
 
             case MOVE_TO_SHOOT2:  //Move back to shooting position
                 follower.followPath(secondShotPath);
+                shooterState = ShooterState.IDLE;
+                intakeReverse = false;
+                intakeReverseStarted = false;
                 autoState = AutoState.SHOOT2;
                 break;
 
             case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
-                if(!follower.isBusy()) {
-                    intakeTimer.reset();
-                    if(!intakeReverse) {
-                        intakeSet(-0.25, -0.1);
-
-                        if (!intakeReverse && intakeTimer.milliseconds() > 100) {
+                if (!follower.isBusy()) {
+                    if (!intakeReverse) {
+                        intakeSet(-0.25,-0.1);
+                        if(!intakeReverseStarted) {
+                            intakeTimer.reset();
+                            intakeReverseStarted = true;
+                        }
+                        if (intakeTimer.milliseconds() > 100) {
                             intakeSet(0, 0);
                             intakeReverse = true;
                         }
                     }
-                    if(intakeReverse) {
+                    if (intakeReverse) {
                         shootThree();
                     }
-                    if(shooterState == ShooterState.END) {
+                    if (shooterState == ShooterState.END) {
                         autoState = AutoState.END;
                     }
                 }
+                break;
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 
@@ -244,7 +240,6 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
         } else {
             shooter.setPower(0);
         }
-
 
 
         switch (shooterState) {
@@ -297,13 +292,11 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
     }
 
 
-
-
     private void hardwareStart() {
 
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
-        oIntake = hardwareMap.get(DcMotor.class,"OID");
-        iIntake = hardwareMap.get(DcMotor.class,"IID");
+        oIntake = hardwareMap.get(DcMotor.class, "OID");
+        iIntake = hardwareMap.get(DcMotor.class, "IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -320,7 +313,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
-        telemetry.addData("Status","Initialized");
+        telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
@@ -328,6 +321,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
         iIntake.setPower(iIntakePower);
         oIntake.setPower(oIntakePower);
     }
+
     private void servoMovement() {
         servo.setPosition(LAUNCHING_SERVO);
         servoTimer.reset();

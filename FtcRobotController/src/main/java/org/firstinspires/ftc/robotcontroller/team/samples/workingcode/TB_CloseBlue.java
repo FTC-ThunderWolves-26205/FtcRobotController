@@ -8,13 +8,14 @@ uses servo to kick up the third artifact up to the shooter
  */
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -26,9 +27,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Close Red Auto", group = "Autonomous")
-
-public class TB_CloseRed extends LinearOpMode {
+@Autonomous(name = "Close Blue Auto", group = "Autonomous")
+@Disabled
+public class                  TB_CloseBlue extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -46,6 +47,7 @@ public class TB_CloseRed extends LinearOpMode {
     public static double kI = 0.0;
     public static double kD = 0.00001;
     public static double kF = 0.00045;
+
     private ElapsedTime timer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime shooterTimer = new ElapsedTime();
@@ -97,7 +99,7 @@ public class TB_CloseRed extends LinearOpMode {
             dashboard.sendTelemetryPacket(packet);
 
             if(!stepOne) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -48) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) > -48.5) {
                     setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else{
                     setPowers(0,0,0,0);
@@ -110,8 +112,8 @@ public class TB_CloseRed extends LinearOpMode {
             }
 
             if(stepOne && !stepTwo) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > -48) {
-                    setPowers(0.5,-0.5,0.5,-0.5);
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < 43) {
+                    setPowers(-0.5,0.5,-0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
                     stepTwo = true;
@@ -121,8 +123,8 @@ public class TB_CloseRed extends LinearOpMode {
 
             if(stepTwo && !stepThree) {
                 intakeSet(0.75,0.75);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 36.5) {
-                    setPowers(0.3,0.3,0.3,0.3);
+                if (pinpoint.getPosX(DistanceUnit.INCH) < 43.5) {
+                    setPowers(0.4,0.4,0.4,0.4);
                     timer.reset();
                 } else {
                     setPowers(0,0,0,0);
@@ -135,7 +137,7 @@ public class TB_CloseRed extends LinearOpMode {
             }
 
             if(stepThree && !stepFour) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -41) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) > -40) {
                     setPowers(-0.5,-0.5,-0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
@@ -153,8 +155,8 @@ public class TB_CloseRed extends LinearOpMode {
             }
 
             if(stepFour && !stepFive) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 38) {
-                    setPowers(-0.5, 0.5, -0.5, 0.5);
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > -43) {
+                    setPowers(0.5, -0.5, 0.5, -0.5);
                 } else {
                     setPowers(0,0,0,0);
                     shootThreeMore();
@@ -166,8 +168,8 @@ public class TB_CloseRed extends LinearOpMode {
             }
 
             if(stepFive && !stepSix) {
-                if(pinpoint.getPosY(DistanceUnit.INCH) < 18) {
-                    setPowers(0.5,-0.5,-0.5,0.5);
+                if(pinpoint.getPosY(DistanceUnit.INCH) > -24) {
+                    setPowers(-0.5,0.5,0.5,-0.5);
                 } else {
                     setPowers(0,0,0,0);
                     requestOpModeStop();

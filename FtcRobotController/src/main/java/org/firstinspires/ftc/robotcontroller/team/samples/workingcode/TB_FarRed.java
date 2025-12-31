@@ -1,20 +1,20 @@
 /*
 My Autonomous code:
-turns on the intakes
-shoots the first and second artifact
-uses servo to kick up the third artifact up to the shooter
+tries to shoot six
+this is so i can commit this - ben
 
 
  */
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples.workingcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -26,9 +26,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "Close Blue Auto", group = "Autonomous")
-
-public class                  TB_CloseBlue extends LinearOpMode {
+@Autonomous(name = "Far Red Auto", group = "Autonomous")
+@Disabled
+public class TB_FarRed extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -40,24 +40,31 @@ public class                  TB_CloseBlue extends LinearOpMode {
     private static final double RESTING_SERVO = 0.7;
     private static final double LAUNCHING_SERVO = 0.1;
     private final double RANGE = 40;
-    private final long SERVO_DURATION = 500;
+    private final long SERVO_DURATION = 600;
     private PIDFController shooterControl;
     public static double kP = 0.004;
     public static double kI = 0.0;
     public static double kD = 0.00001;
     public static double kF = 0.00045;
-
     private ElapsedTime timer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
-    private ElapsedTime shooterTimer = new ElapsedTime();
     private double output;
+    private boolean timerStarted = false;
     private boolean firstTwoShot = false;
     private boolean firstTwoShotX = false;
     private boolean thirdShot = false;
     private boolean thirdShotX = false;
     private boolean finishedShots = false;
     private boolean finishedShotsX = false;
-    private double targetShooterVelocity = 1460;
+    private final double SHOOT_ANGLE = -22;
+    private final double STEP_THREE_VAL = 19;
+    private final double STEP_FOUR_VAL = -57;
+    private final double STEP_FIVE_VAL = 36;
+    private final double STEP_SIX_VAL = -39; //-40,59,-24 //-39, 60, -22 //-39, 60, -20
+    private final double STEP_SEVEN_VAL = 58;
+    private final double STEP_EIGHT_VAL = -19;
+    private final double STEP_NINE_VAL = 12;
+    private double targetShooterVelocity = 1710;
     private GoBildaPinpointDriver pinpoint;
 
 
@@ -67,6 +74,8 @@ public class                  TB_CloseBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         hardwareStart();
+
+        boolean stepZero = false;
         boolean stepOne = false;
         boolean stepTwo = false;
         boolean stepThree = false;
@@ -74,8 +83,11 @@ public class                  TB_CloseBlue extends LinearOpMode {
         boolean stepFive = false;
         boolean stepSix = false;
         boolean intakeReverse = false;
+        boolean stepSeven = false;
+        boolean stepEight = false;
+        boolean stepNine = false;
 
-        shooterControl = new PIDFController(kP, kI, kD, kF);
+                shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
 
         pinpoint.resetPosAndIMU();
@@ -83,7 +95,6 @@ public class                  TB_CloseBlue extends LinearOpMode {
         servo.setPosition(RESTING_SERVO);
 
         waitForStart();
-
         while (opModeIsActive()) {
 
             pinpoint.update();
@@ -98,68 +109,59 @@ public class                  TB_CloseBlue extends LinearOpMode {
             dashboard.sendTelemetryPacket(packet);
 
             if(!stepOne) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -48.5) {
-                    setPowers(-0.5,-0.5,-0.5,-0.5);
-                } else{
+                if(pinpoint.getPosX(DistanceUnit.INCH) < 5) {
+                    setPowers(0.5,0.5,0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepOne = true;
+                }
+            }
+
+            if(!stepTwo && stepOne) {
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > SHOOT_ANGLE) {
+                    setPowers(0.5,-0.5,0.5,-0.5);
+                } else {
                     setPowers(0,0,0,0);
                     shootThree();
                     if(finishedShots) {
                         shooter.setPower(0);
-                        stepOne = true;
-                    }
-                }
-            }
-
-            if(stepOne && !stepTwo) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) < 43) {
-                    setPowers(-0.5,0.5,-0.5,0.5);
-                } else {
-                    setPowers(0,0,0,0);
-                    stepTwo = true;
-                    pinpoint.resetPosAndIMU();
-                }
-            }
-
-            if(stepTwo && !stepThree) {
-                intakeSet(0.75,0.75);
-                if (pinpoint.getPosX(DistanceUnit.INCH) < 43.5) {
-                    setPowers(0.4,0.4,0.4,0.4);
-                    timer.reset();
-                } else {
-                    setPowers(0,0,0,0);
-                    if (timer.milliseconds()>750) {
-                        intakeSet(0, 0);
-                        stepThree = true;
+                        stepTwo = true;
                         pinpoint.resetPosAndIMU();
                     }
                 }
             }
 
-            if(stepThree && !stepFour) {
-                if(pinpoint.getPosX(DistanceUnit.INCH) > -40) {
-                    setPowers(-0.5,-0.5,-0.5,-0.5);
+           if(stepTwo && !stepThree) {
+                //This is where you write moving forward
+                if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_THREE_VAL) {
+                    setPowers(0.5,0.5,0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
-                    timer.reset();
-                    if(!intakeReverse) {
-                        intakeSet(-0.25, -0.1);
+                    stepThree = true;
+                }
+            }
 
-                        if (!intakeReverse && timer.milliseconds() > 100) {
-                            intakeSet(0, 0);
-                            intakeReverse = true;
-                        }
-                    }
+            if(stepThree && !stepFour) {
+                //This is where you write turning right
+                if(pinpoint.getHeading(AngleUnit.DEGREES) > STEP_FOUR_VAL) {
+                    setPowers(0.5,-0.5,0.5,-0.5);
+                } else {
+                    setPowers(0,0,0,0);
                     stepFour = true;
+                    pinpoint.resetPosAndIMU();
                 }
             }
 
             if(stepFour && !stepFive) {
-                if(pinpoint.getHeading(AngleUnit.DEGREES) > -43) {
-                    setPowers(0.5, -0.5, 0.5, -0.5);
+                //This is where you write driving forward and picking up artifacts with intakes
+                intakeSet(0.75,0.75);
+                if(pinpoint.getPosX(DistanceUnit.INCH) < STEP_FIVE_VAL) {
+                    setPowers(0.4,0.4,0.4,0.4);
+                    timer.reset();
                 } else {
                     setPowers(0,0,0,0);
-                    shootThreeMore();
-                    if(finishedShotsX) {
+                    if(timer.milliseconds() > 700) {
+                        intakeSet(0,0);
                         stepFive = true;
                         pinpoint.resetPosAndIMU();
                     }
@@ -167,8 +169,54 @@ public class                  TB_CloseBlue extends LinearOpMode {
             }
 
             if(stepFive && !stepSix) {
-                if(pinpoint.getPosY(DistanceUnit.INCH) > -24) {
-                    setPowers(-0.5,0.5,0.5,-0.5);
+                //This is where you write driving backwards and fixing artifact position
+                if(pinpoint.getPosX(DistanceUnit.INCH) > STEP_SIX_VAL) {
+                    setPowers(-0.5,-0.5,-0.5,-0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    timer.reset();
+                    if(!intakeReverse) {
+                        intakeSet(-0.25, -0.1);
+
+                        if (!intakeReverse && timer.milliseconds() > 75) {
+                            intakeSet(0, 0);
+                            intakeReverse = true;
+                        }
+                    }
+                    stepSix = true;
+                }
+            }
+
+
+            if(stepSix && !stepSeven) {
+                //This is where you turn back to align the robot to the wall
+                if(pinpoint.getHeading(AngleUnit.DEGREES) < STEP_SEVEN_VAL) {
+                    setPowers(-0.5,0.5,-0.5,0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    stepSeven = true;
+                    pinpoint.resetPosAndIMU();
+                }
+            }
+
+            if(stepSeven && !stepEight) {
+                //This is where you drive back to the launch zone
+                if(pinpoint.getPosX(DistanceUnit.INCH) > STEP_EIGHT_VAL) {
+                    setPowers(-0.5,-0.5,-0.5,-0.5);
+                } else {
+                    setPowers(0,0,0,0);
+                    shootThreeMore();
+                    if(finishedShotsX) {
+                        shooter.setPower(0);
+                        stepEight = true;
+                        pinpoint.resetPosAndIMU();
+                    }
+                }
+            }
+
+            if(stepEight) {
+                if(pinpoint.getPosX(DistanceUnit.INCH) < 12) {
+                    setPowers(0.5,0.5,0.5,0.5);
                 } else {
                     setPowers(0,0,0,0);
                     requestOpModeStop();
@@ -263,16 +311,16 @@ public class                  TB_CloseBlue extends LinearOpMode {
     private void shootThreeMore() {
         shooter.setPower(Math.abs(output));
 
-        if(!firstTwoShotX && shooterTimer.milliseconds() == 0) {
-            shooterTimer.reset();
+        if(!firstTwoShotX && timer.milliseconds() == 0) {
+            timer.reset();
         }
 
-        if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity ,RANGE) && !firstTwoShotX && shooterTimer.milliseconds() > 1000) {
+        if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity ,RANGE) && !firstTwoShotX && timer.milliseconds() > 1000) {
             intakeSet(1,1);
-            shooterTimer.reset();
+            timer.reset();
             firstTwoShotX = true;
         }
-        if (firstTwoShotX && !thirdShotX && shooterTimer.milliseconds() > 3000) {
+        if (firstTwoShotX && !thirdShotX && timer.milliseconds() > 3000) {
             servoMovement();
             thirdShotX = true;
         }

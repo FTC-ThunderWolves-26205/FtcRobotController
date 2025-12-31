@@ -68,7 +68,7 @@ public class JLG_CurveTest extends LinearOpMode {
 
     private void initialize() {
         pathTimer = new Timer();
-        follower = Constants.createFollower(hardwareMap);
+//        follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
 

@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+//import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Disabled
 @Autonomous(name = "JLG Line Test", group = "JLG Curve Test")
 public class JLG_LineTest extends LinearOpMode {
@@ -82,7 +82,7 @@ public class JLG_LineTest extends LinearOpMode {
 
     private void initialize() {
         pathTimer = new Timer();
-        follower = Constants.createFollower(hardwareMap);
+//        follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
     }

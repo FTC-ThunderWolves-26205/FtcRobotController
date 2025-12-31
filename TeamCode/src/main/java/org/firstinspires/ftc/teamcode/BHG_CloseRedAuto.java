@@ -20,15 +20,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Close Blue - BEN", group = "Autonomous")
+@Autonomous(name = "Close Red - BEN", group = "Autonomous")
 
-public class BHG_CloseBlueAuto extends LinearOpMode {
+public class BHG_CloseRedAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;
@@ -61,10 +60,10 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    private final Pose startPose = new Pose(25, 129, Math.toRadians(143)); // Start position
-    private final Pose firstShotPose = new Pose(50, 96, Math.toRadians(135)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(18, 84, Math.toRadians(185)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(50.49, 96, Math.toRadians(135)); // Pose for Second Group of Shots
+    private final Pose startPose = new Pose(123, 123, Math.toRadians(37)); // Start position
+    private final Pose firstShotPose = new Pose(94, 92, Math.toRadians(43)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(125, 83, Math.toRadians(355)); // Pose for Intake 3 more
+    private final Pose secondShotPose = new Pose(94, 92, Math.toRadians(43)); // Pose for Second Group of Shots
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath;
@@ -144,7 +143,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
         firstIntakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(
                         firstShotPose,
-                        new Pose(75.99, 99, Math.toRadians(0)),  // CONTROL POINT
+                        new Pose(67, 80, Math.toRadians(0)),  // CONTROL POINT
                         firstIntakePose
                 ))
                 .setLinearHeadingInterpolation(firstShotPose.getHeading(), firstIntakePose.getHeading())

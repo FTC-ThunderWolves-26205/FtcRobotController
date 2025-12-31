@@ -32,8 +32,8 @@ public class JLG_PedroTesting extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.7;
-    private static final double LAUNCHING_SERVO = 0.1;
+    private static final double RESTING_SERVO = 0.5;
+    private static final double LAUNCHING_SERVO = 0.05;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
     private PIDFController shooterControl;
@@ -98,8 +98,6 @@ public class JLG_PedroTesting extends LinearOpMode {
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();  //not using dashboard but keep for now in case we do
-
-        pinpoint.resetPosAndIMU();
 
         servo.setPosition(RESTING_SERVO);
 
@@ -242,8 +240,8 @@ public class JLG_PedroTesting extends LinearOpMode {
                 if (servoTimer.milliseconds() > SERVO_DURATION) {
                     servo.setPosition(RESTING_SERVO);
                     intakeSet(0, 0);
-                    shooterState = ShooterState.END;
                     targetShooterVelocity = 0;
+                    shooterState = ShooterState.END;
                 }
                 break;
 
@@ -280,7 +278,7 @@ public class JLG_PedroTesting extends LinearOpMode {
 
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         oIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        iIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        iIntake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));

@@ -70,8 +70,8 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
     private ElapsedTime iIntakeTimer = new ElapsedTime();
     private ElapsedTime oIntakeTimer = new ElapsedTime();
     private ElapsedTime posTimer = new ElapsedTime();
-    private static final double RESTING_SERVO = 0.7;
-    private static final double LAUNCHING_SERVO = 0.1;
+    private static final double RESTING_SERVO = 0.5;
+    private static final double LAUNCHING_SERVO = 0.05;
     private final double NORMAL_SPEED = 0.75;
     private final double SLOW_SPEED = 0.25;
     private final double TURBO_SPEED = 1.0;
@@ -134,6 +134,15 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             if(gamepad1.a && posTimer.milliseconds() > 2000) {
                 pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 39, 33, AngleUnit.DEGREES, 90));
                 posTimer.reset();
+            }
+
+            if(gamepad1.dpad_up && servoTimer.milliseconds() > 750) {
+                servo.setPosition(servo.getPosition()+0.05);
+                servoTimer.reset();
+            }
+            if(gamepad1.dpad_down && servoTimer.milliseconds() > 750) {
+                servo.setPosition(servo.getPosition()-0.05);
+                servoTimer.reset();
             }
 
             if (gamepad2.dpad_up && shooterTimer.milliseconds() > 500) {

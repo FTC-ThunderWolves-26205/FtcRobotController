@@ -235,13 +235,13 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
                 }
                 break;
 
-            case INTAKE2:
+            case INTAKE2: //  Turn on Intakes, drives to get the middle three
                 intakeSet(1, 0.85);
                 follower.setMaxPower(0.8);
                 follower.followPath(secondIntakePath);
                 autoState = AutoState.WAIT2;
 
-            case WAIT2:
+            case WAIT2: //  Wait after movement
                 if(!follower.isBusy()) {
                     intakeSet(0,0);
                     autoState = AutoState.END;

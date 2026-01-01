@@ -97,9 +97,18 @@ public class BHG_FarRedAuto extends LinearOpMode {
         END
     }
 
+    private enum ReverseIntakes {
+        IDLE,
+        START_TIMER,
+        STOP_INTAKES,
+        END
+
+    }
+
     //SETTING STATES FOR OUR TWO FSM'S
     private AutoState autoState = AutoState.MOVE_TO_SHOOT1;
     private ShooterState shooterState = ShooterState.IDLE;
+    private ReverseIntakes reverseIntakes = ReverseIntakes.IDLE;
 
 
     @Override
@@ -345,6 +354,29 @@ public class BHG_FarRedAuto extends LinearOpMode {
 
             case END:
 
+                break;
+        }
+    }
+    private void intakeReverse() {
+        switch (reverseIntakes) {
+            case IDLE:
+                intakeSet(-0.25,-0.1);
+                reverseIntakes = ReverseIntakes.START_TIMER;
+                break;
+
+            case START_TIMER:
+                intakeTimer.reset();
+                reverseIntakes = ReverseIntakes.STOP_INTAKES;
+                break;
+
+            case STOP_INTAKES:
+                if (intakeTimer.milliseconds() > 250) {
+                    intakeSet(0, 0);
+                    reverseIntakes = ReverseIntakes.END;
+                }
+                break;
+
+            case END:
                 break;
         }
     }

@@ -65,7 +65,7 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
     private final Pose firstShotPose = new Pose(59, 84, Math.toRadians(130)); // Pose for First Group of Shots
     private final Pose firstIntakePose = new Pose(16, 83, Math.toRadians(192)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(130)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(12,59, Math.toRadians(185)); // Pose for the middle 3 artifacts
+    private final Pose secondIntakePose = new Pose(10.37,59.5, Math.toRadians(180)); // Pose for the middle 3 artifacts
     private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130));
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
@@ -167,7 +167,7 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
         secondIntakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(
                         secondShotPose,
-                        new Pose(88, 60, Math.toRadians(0)),  // CONTROL POINT
+                        new Pose(63.4, 53.6, Math.toRadians(0)),  // CONTROL POINT
                         secondIntakePose
                 ))
                 .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())

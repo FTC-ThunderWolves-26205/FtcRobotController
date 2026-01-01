@@ -248,6 +248,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
                 follower.setMaxPower(0.8);
                 follower.followPath(secondIntakePath);
                 autoState = AutoState.WAIT2;
+                break;
 
             case WAIT2: //  Wait after movement
                 if(!follower.isBusy()) {

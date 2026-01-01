@@ -60,13 +60,14 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    private final Pose startPose = new Pose(123, 123, Math.toRadians(37)); // Start position
-    private final Pose firstShotPose = new Pose(94, 92, Math.toRadians(43)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(125, 83, Math.toRadians(355)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(94, 92, Math.toRadians(43)); // Pose for Second Group of Shots
+    private final Pose startPose = new Pose(123.6, 123.4, Math.toRadians(37)); // Start position
+    private final Pose firstShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(125.9, 83.3, Math.toRadians(355)); // Pose for Intake 3 more
+    private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
+    private final Pose secondIntakePose = new Pose(132.4,59.5, Math.toRadians(352)); // Pose for Intake middle group of artifacts
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath;
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -78,6 +79,8 @@ public class BHG_CloseRedAuto extends LinearOpMode {
         WAIT1,
         MOVE_TO_SHOOT2,
         SHOOT2,
+        INTAKE2,
+        WAIT2,
         END
     }
 
@@ -160,6 +163,15 @@ public class BHG_CloseRedAuto extends LinearOpMode {
                 .addPath(new BezierLine(firstIntakePose, secondShotPose))
                 .setLinearHeadingInterpolation(firstIntakePose.getHeading(), secondShotPose.getHeading())
                 .build();
+
+        secondIntakePath = follower.pathBuilder()
+                .addPath(new BezierCurve(
+                        secondShotPose,
+                        new Pose(66.6, 62.4, Math.toRadians(0)),
+                        secondIntakePose
+                ))
+                .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())
+                .build();
     }
 
     /*
@@ -222,8 +234,22 @@ public class BHG_CloseRedAuto extends LinearOpMode {
                         shootThree();
                     }
                     if (shooterState == ShooterState.END) {
-                        autoState = AutoState.END;
+                        autoState = AutoState.INTAKE2;
                     }
+                }
+                break;
+
+            case INTAKE2: //  Turn on Intakes, drives to get the middle three
+                intakeSet(1, 0.85);
+                follower.setMaxPower(0.8);
+                follower.followPath(secondIntakePath);
+                autoState = AutoState.WAIT2;
+                break;
+
+            case WAIT2: //  Wait after movement
+                if(!follower.isBusy()) {
+                    intakeSet(0,0);
+                    autoState = AutoState.END;
                 }
                 break;
 

@@ -16,9 +16,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MCM_Constants {
-    static double resting_servo = 0.35;
-    static double launching_servo = 0.05;
-
-    Pose FarStart = new Pose(48,9,90);
-
+    static double RESTING_SERVO = 0.35;
+    static double LAUNCHING_SERVO = 0.05;
 }

@@ -2,7 +2,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -30,8 +29,8 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = MCM_Constants.resting_servo;
-    private static final double LAUNCHING_SERVO = MCM_Constants.launching_servo;
+    private static final double RESTING_SERVO = MCM_Constants.RESTING_SERVO;
+    private static final double LAUNCHING_SERVO = MCM_Constants.LAUNCHING_SERVO;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
     private PIDFController shooterControl;
@@ -57,23 +56,27 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    Pose startPose = new Pose(48,9,90);
-    Pose shootPose = new Pose(66.2,19.7,115);
+    Pose startPose = new Pose(48,9,90); //where the robot starts - middle of back of robot centered on bottom of left side of back triangle-lines
+    Pose shootPose = new Pose(66.2,19.7,115); //the position where robot shoots, in back left
+    Pose firstIntakePose = new Pose(35.5,34.9,180);
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain ToLaunch1;
+    private PathChain toLaunch1,toIntake1;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
     //THE WAIT STEP MUST INCLUDE A CHECK TO SEE IF FOLLOWER.ISBUSY IS FALSE
     private enum AutoState {
-       ToLaunch1,
-        End
+        TOLAUNCH1,
+        WAIT1,
+        LAUNCH1,
+        WAIT2,
+        END
     }
 
     //ENUM DEFINING STATES FOR SHOOTER.  DON'T MODIFY THIS AS IT TIES TO OUR SHOOTTHREE METHOD.
     private enum ShooterState {
-        START_SHOOTER,
+        IDLE,
         SHOOT_TWO,
         SHOOT_THIRD,
         STOP_INTAKES,
@@ -81,8 +84,8 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     }
 
     //SETTING STATES FOR OUR TWO FSM'S
-    private AutoState autoState = AutoState.ToLaunch1;
-    private ShooterState shooterState = ShooterState.START_SHOOTER;
+    private AutoState autoState = AutoState.TOLAUNCH1;
+    private ShooterState shooterState = ShooterState.IDLE;
 
 
     @Override
@@ -125,9 +128,13 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     //EACH MUST BE INTRODUCED ABOVE IN THE PATHCHAIN FIRST
     //USE DESCRIPTIVE NAME, ACTION OR DESTINATION
     public void buildPaths() {
-        ToLaunch1 = follower.pathBuilder()
+        toLaunch1 = follower.pathBuilder()
                 .addPath(new BezierLine(startPose,shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
+                .build();
+        toIntake1 = follower.pathBuilder()
+                .addPath(new BezierLine(shootPose,firstIntakePose))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), firstIntakePose.getHeading())
                 .build();
 
     }
@@ -140,13 +147,28 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     public void autonomousPathUpdate() {
         switch (autoState) {
 
-            case ToLaunch1:
-                    follower.followPath(ToLaunch1);
-                    autoState = AutoState.End;
+            case TOLAUNCH1:
+                    follower.followPath(toLaunch1);
+                    autoState = AutoState.WAIT1;
                 break;
 
+            case WAIT1:
+                if(!follower.isBusy()) {
+                    shooterState = ShooterState.IDLE;
+                    autoState = AutoState.LAUNCH1;
+                }
 
-            case End: //Always have an END.  Seems to be recommended to keep it empty.
+            case LAUNCH1:
+                shootThree();
+                if (shooterState == shooterState.END) {
+                    intakeSet(1,1);
+                    follower.setMaxPower(0.8);
+                    follower.followPath(toIntake1);
+                }
+
+            case WAIT2:
+
+            case END: //Always have an END.  Seems to be recommended to keep it empty.
 
                 break;
         }
@@ -163,7 +185,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
 
         switch (shooterState) {
 
-            case START_SHOOTER:
+            case IDLE:
                 timer.reset();
                 servoTimer.reset();
                 targetShooterVelocity = 1460;

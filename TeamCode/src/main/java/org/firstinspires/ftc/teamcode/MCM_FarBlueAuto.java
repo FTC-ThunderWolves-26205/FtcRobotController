@@ -141,10 +141,9 @@ public class MCM_FarBlueAuto extends LinearOpMode {
         switch (autoState) {
 
             case ToLaunch1:
-                if (!follower.isBusy()) {
                     follower.followPath(ToLaunch1);
-
-                }
+                    autoState = AutoState.End;
+                break;
 
 
             case End: //Always have an END.  Seems to be recommended to keep it empty.

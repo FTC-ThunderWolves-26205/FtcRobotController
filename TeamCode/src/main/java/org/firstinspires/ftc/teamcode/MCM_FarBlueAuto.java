@@ -142,7 +142,8 @@ public class MCM_FarBlueAuto extends LinearOpMode {
 
             case ToLaunch1:
                 if (!follower.isBusy()) {
-                    follower.
+                    follower.followPath(ToLaunch1);
+
                 }
 
 

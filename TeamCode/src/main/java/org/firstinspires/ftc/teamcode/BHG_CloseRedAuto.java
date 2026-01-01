@@ -64,7 +64,7 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     private final Pose firstShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for First Group of Shots
     private final Pose firstIntakePose = new Pose(125.9, 83.3, Math.toRadians(355)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(132.4,59.5, Math.toRadians(352)); // Pose for Intake middle group of artifacts
+    private final Pose secondIntakePose = new Pose(128.5,60.7, Math.toRadians(352)); // Pose for Intake middle group of artifacts
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath;
@@ -167,7 +167,7 @@ public class BHG_CloseRedAuto extends LinearOpMode {
         secondIntakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(
                         secondShotPose,
-                        new Pose(66.6, 62.4, Math.toRadians(0)),
+                        new Pose(81.9, 49.8, Math.toRadians(0)),
                         secondIntakePose
                 ))
                 .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())

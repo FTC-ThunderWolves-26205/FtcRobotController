@@ -66,9 +66,10 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
     private final Pose firstIntakePose = new Pose(16, 83, Math.toRadians(192)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(130)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(12,59, Math.toRadians(185)); // Pose for the middle 3 artifacts
+    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130));
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath;
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -82,6 +83,8 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
         SHOOT2,
         INTAKE2,
         WAIT2,
+        MOVE_TO_SHOOT3,
+        SHOOT3,
         END
     }
 
@@ -161,6 +164,11 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
                         secondIntakePose
                 ))
                 .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())
+                .build();
+
+        thirdShotPath = follower.pathBuilder()
+                .addPath(new BezierLine(secondIntakePose, thirdShotPose))
+                .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
                 .build();
 
     }
@@ -244,9 +252,42 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
             case WAIT2: //  Wait after movement
                 if(!follower.isBusy()) {
                     intakeSet(0,0);
-                    autoState = AutoState.END;
+                    autoState = AutoState.MOVE_TO_SHOOT3;
                 }
                 break;
+
+            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
+                follower.setMaxPower(1);
+                follower.followPath(thirdShotPath);
+                shooterState = ShooterState.IDLE;
+                intakeReverse = false;
+                intakeReverseStarted = false;
+                autoState = AutoState.SHOOT3;
+                break;
+
+            case SHOOT3: //  Reverse Intakes, then shoot
+                if (!follower.isBusy()) {
+                    if (!intakeReverse) {
+                        intakeSet(-0.25,-0.1);
+                        if(!intakeReverseStarted) {
+                            intakeTimer.reset();
+                            intakeReverseStarted = true;
+                        }
+                        if (intakeTimer.milliseconds() > 250) {
+                            intakeSet(0, 0);
+                            intakeReverse = true;
+                        }
+                    }
+                    if (intakeReverse) {
+                        shootThree();
+                    }
+                    if (shooterState == ShooterState.END) {
+                        shooter.setPower(0);
+                        autoState = AutoState.END;
+                    }
+                }
+                break;
+
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 

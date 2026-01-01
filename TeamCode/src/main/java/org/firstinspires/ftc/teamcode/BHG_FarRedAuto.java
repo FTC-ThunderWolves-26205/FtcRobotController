@@ -12,6 +12,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
+@Disabled
 @Autonomous(name = "Far Red - BEN", group = "Autonomous")
 
 public class BHG_FarRedAuto extends LinearOpMode {
@@ -98,8 +99,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
     }
 
     private enum ReverseIntakes {
-        IDLE,
-        START_TIMER,
+        START_REVERSE_INTAKES,
         STOP_INTAKES,
         END
 
@@ -108,7 +108,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
     //SETTING STATES FOR OUR TWO FSM'S
     private AutoState autoState = AutoState.MOVE_TO_SHOOT1;
     private ShooterState shooterState = ShooterState.IDLE;
-    private ReverseIntakes reverseIntakes = ReverseIntakes.IDLE;
+    private ReverseIntakes reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
 
 
     @Override
@@ -227,25 +227,14 @@ public class BHG_FarRedAuto extends LinearOpMode {
                 follower.setMaxPower(1);
                 follower.followPath(secondShotPath);
                 shooterState = ShooterState.IDLE;
-                intakeReverse = false;
-                intakeReverseStarted = false;
+                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
                 break;
 
             case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
                 if (!follower.isBusy()) {
-                    if (!intakeReverse) {
-                        intakeSet(-0.25,-0.1);
-                        if(!intakeReverseStarted) {
-                            intakeTimer.reset();
-                            intakeReverseStarted = true;
-                        }
-                        if (intakeTimer.milliseconds() > 250) {
-                            intakeSet(0, 0);
-                            intakeReverse = true;
-                        }
-                    }
-                    if (intakeReverse) {
+                    intakeReverse();
+                    if (reverseIntakes == ReverseIntakes.END) {
                         shootThree();
                     }
                     if (shooterState == ShooterState.END) {
@@ -273,25 +262,14 @@ public class BHG_FarRedAuto extends LinearOpMode {
                 follower.setMaxPower(1);
                 follower.followPath(thirdShotPath);
                 shooterState = ShooterState.IDLE;
-                intakeReverse = false;
-                intakeReverseStarted = false;
+                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT3;
                 break;
 
             case SHOOT3: //  Reverse Intakes, then shoot
                 if (!follower.isBusy()) {
-                    if (!intakeReverse) {
-                        intakeSet(-0.25,-0.1);
-                        if(!intakeReverseStarted) {
-                            intakeTimer.reset();
-                            intakeReverseStarted = true;
-                        }
-                        if (intakeTimer.milliseconds() > 250) {
-                            intakeSet(0, 0);
-                            intakeReverse = true;
-                        }
-                    }
-                    if (intakeReverse) {
+                    intakeReverse();
+                    if (reverseIntakes == ReverseIntakes.END) {
                         shootThree();
                     }
                     if (shooterState == ShooterState.END) {
@@ -359,12 +337,8 @@ public class BHG_FarRedAuto extends LinearOpMode {
     }
     private void intakeReverse() {
         switch (reverseIntakes) {
-            case IDLE:
+            case START_REVERSE_INTAKES:
                 intakeSet(-0.25,-0.1);
-                reverseIntakes = ReverseIntakes.START_TIMER;
-                break;
-
-            case START_TIMER:
                 intakeTimer.reset();
                 reverseIntakes = ReverseIntakes.STOP_INTAKES;
                 break;

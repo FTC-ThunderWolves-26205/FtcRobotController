@@ -306,7 +306,7 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
             case SHOOT_TWO:
 
                 if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && timer.milliseconds() > 1000) {
-                    intakeSet(1, 1);
+                    intakeSet(1, 0.5);
                     timer.reset();
                     shooterState = ShooterState.SHOOT_THIRD;
                 }

@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -57,11 +58,11 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     Pose startPose = new Pose(48,9,90); //where the robot starts - middle of back of robot centered on bottom of left side of back triangle-lines
-    Pose shootPose = new Pose(66.2,19.7,115); //the position where robot shoots, in back left
-    Pose firstIntakePose = new Pose(35.5,34.9,180);
+    Pose shootPose = new Pose(56.2,19.7,110); //the position where robot shoots, in back left
+    Pose firstIntakePose = new Pose(8.8,35.7,180);
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain toLaunch1,toIntake1;
+    private PathChain toLaunch1, Intake1;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -76,10 +77,13 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     //        END
 
     private enum AutoState {
-        TOLAUNCH1,
-        WAIT1,
+        TO_LAUNCH1,
         LAUNCH1,
-        WAIT2,
+        INTAKE1,
+        WAIT1,
+        TO_LAUNCH2, //Moving from end of intake path to shootPose
+        LAUNCH2,
+        INTAKE2, // back set of balls
         END
     }
 
@@ -93,7 +97,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     }
 
     //SETTING STATES FOR OUR TWO FSM'S
-    private AutoState autoState = AutoState.TOLAUNCH1;
+    private AutoState autoState = AutoState.TO_LAUNCH1;
     private ShooterState shooterState = ShooterState.IDLE;
 
 
@@ -141,9 +145,9 @@ public class MCM_FarBlueAuto extends LinearOpMode {
                 .addPath(new BezierLine(startPose,shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
-        toIntake1 = follower.pathBuilder()
-                .addPath(new BezierLine(shootPose,firstIntakePose))
-                .setLinearHeadingInterpolation(shootPose.getHeading(), firstIntakePose.getHeading())
+        Intake1 = follower.pathBuilder()
+                .addPath(new BezierCurve(shootPose,firstIntakePose))
+                .setLinearHeadingInterpolation(shootPose.getHeading(),firstIntakePose.getHeading(),2000)
                 .build();
 
     }
@@ -156,26 +160,35 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     public void autonomousPathUpdate() {
         switch (autoState) {
 
-            case TOLAUNCH1:
+            case TO_LAUNCH1:
                 follower.followPath(toLaunch1);
+                autoState = AutoState.LAUNCH1;
+                break;
+
+            case LAUNCH1:
+                if (!follower.isBusy()) {
+                    shooterState = ShooterState.IDLE;
+                    shootThree();
+                }
+                if (shooterState == shooterState.END) {
+                    shooter.setPower(0);
+                    intakeSet(1,0.85);
+                    autoState = AutoState.INTAKE1;
+                }
+                break;
+
+            case INTAKE1:
+                follower.setMaxPower(0.8);
+                follower.followPath(Intake1);
                 autoState = AutoState.WAIT1;
                 break;
 
             case WAIT1:
-                if(!follower.isBusy()) {
-                    shooterState = ShooterState.IDLE;
-                    autoState = AutoState.LAUNCH1;
+                if (!follower.isBusy()) {
+                    intakeSet(0,0);
+                    autoState = AutoState.END;
                 }
-
-            case LAUNCH1:
-                shootThree();
-                if (shooterState == shooterState.END) {
-                    intakeSet(1,1);
-                    follower.setMaxPower(0.8);
-                    follower.followPath(toIntake1);
-                }
-
-            case WAIT2:
+                break;
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 

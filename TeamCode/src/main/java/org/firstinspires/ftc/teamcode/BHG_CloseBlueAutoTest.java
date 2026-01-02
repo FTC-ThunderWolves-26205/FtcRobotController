@@ -34,10 +34,10 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.75;
-    private static final double LAUNCHING_SERVO = 0.4;
+    private static final double RESTING_SERVO = TB_Constants.RESTING_SERVO;
+    private static final double LAUNCHING_SERVO = TB_Constants.LAUNCHING_SERVO;
     private final double RANGE = 40;
-    private final long SERVO_DURATION = 500;
+    private final long SERVO_DURATION = 750;
     private PIDFController shooterControl;
     public static double kP = 0.004;
     public static double kI = 0.0;
@@ -68,9 +68,10 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
     private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(130)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(10.37,59.5, Math.toRadians(180)); // Pose for the middle 3 artifacts
     private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130)); // Pose for third group of Shots
+    private final Pose endPose = new Pose(21, 69.5, Math.toRadians(90)); // Pose for end
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -86,6 +87,8 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
         WAIT2,
         MOVE_TO_SHOOT3,
         SHOOT3,
+        MOVE_TO_END,
+        WAIT3,
         END
     }
 
@@ -177,6 +180,11 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
         thirdShotPath = follower.pathBuilder()
                 .addPath(new BezierLine(secondIntakePose, thirdShotPose))
                 .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
+                .build();
+
+        endPath = follower.pathBuilder()
+                .addPath(new BezierLine(thirdShotPose, endPose))
+                .setLinearHeadingInterpolation(thirdShotPose.getHeading(), endPose.getHeading())
                 .build();
 
     }
@@ -272,8 +280,19 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
                     //}
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
-                        autoState = AutoState.END;
+                        autoState = AutoState.MOVE_TO_END;
                     }
+                }
+                break;
+
+            case MOVE_TO_END:
+                follower.followPath(endPath);
+                autoState = AutoState.WAIT3;
+                break;
+
+            case WAIT3:
+                if(!follower.isBusy()) {
+                    autoState = AutoState.END;
                 }
                 break;
 
@@ -281,6 +300,9 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 
                 break;
+        }
+        if (autoState == AutoState.END) {
+            requestOpModeStop();
         }
     }
 

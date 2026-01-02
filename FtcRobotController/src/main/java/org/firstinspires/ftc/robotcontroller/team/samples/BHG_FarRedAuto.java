@@ -3,7 +3,7 @@
 //DO NOT TOUCH SHOOT THREE METHOD.
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+//import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Disabled
 @Autonomous(name = "Far Red - BEN", group = "Autonomous")
 
@@ -357,7 +357,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
 
     private void initialize() {
 
-        follower = Constants.createFollower(hardwareMap);
+        //follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
         buildPaths();
 

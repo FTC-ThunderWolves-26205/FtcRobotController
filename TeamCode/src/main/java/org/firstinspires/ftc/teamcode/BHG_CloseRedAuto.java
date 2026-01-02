@@ -43,7 +43,8 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     public static double kD = 0.00001;
     public static double kF = 0.00045;
     private double output;
-    private double targetShooterVelocity = 1460;
+    private double TARGET_SHOOTER_VELOCITY = 1460;
+    private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
 
@@ -64,10 +65,11 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     private final Pose firstShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for First Group of Shots
     private final Pose firstIntakePose = new Pose(125.9, 83.3, Math.toRadians(355)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(128.5,60.7, Math.toRadians(352)); // Pose for Intake middle group of artifacts
+    private final Pose secondIntakePose = new Pose(135,60.7, Math.toRadians(352)); // Pose for Intake middle group of artifacts
+    private final Pose thirdShotPose = new Pose(83.8,84, Math.toRadians(43)); // Pose for Third group of Shots
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath;
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -81,6 +83,8 @@ public class BHG_CloseRedAuto extends LinearOpMode {
         SHOOT2,
         INTAKE2,
         WAIT2,
+        MOVE_TO_SHOOT3,
+        SHOOT3,
         END
     }
 
@@ -151,11 +155,7 @@ public class BHG_CloseRedAuto extends LinearOpMode {
                 .build();
 
         firstIntakePath = follower.pathBuilder()
-                .addPath(new BezierCurve(
-                        firstShotPose,
-                        new Pose(67, 80, Math.toRadians(0)),  // CONTROL POINT
-                        firstIntakePose
-                ))
+                .addPath(new BezierLine(firstShotPose, firstIntakePose))
                 .setLinearHeadingInterpolation(firstShotPose.getHeading(), firstIntakePose.getHeading())
                 .build();
 
@@ -171,6 +171,11 @@ public class BHG_CloseRedAuto extends LinearOpMode {
                         secondIntakePose
                 ))
                 .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())
+                .build();
+
+        thirdShotPath = follower.pathBuilder()
+                .addPath(new BezierLine(secondIntakePose, thirdShotPose))
+                .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
                 .build();
     }
 
@@ -189,16 +194,19 @@ public class BHG_CloseRedAuto extends LinearOpMode {
 
             case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
+                    TARGET_SHOOTER_VELOCITY = 1500;
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
-                    intakeSet(1, 1);
+                    shooter.setPower(0);
+                    intakeSet(1, 0.85);
                     autoState = AutoState.INTAKE1;
                 }
 
                 break;
 
             case INTAKE1:  //Move and get the three artifacts
+                follower.setMaxPower(0.8);
                 follower.followPath(firstIntakePath);
                 autoState = AutoState.WAIT1;
                 break;
@@ -211,29 +219,22 @@ public class BHG_CloseRedAuto extends LinearOpMode {
                 break;
 
             case MOVE_TO_SHOOT2:  //Move back to shooting position
+                follower.setMaxPower(1);
                 follower.followPath(secondShotPath);
                 shooterState = ShooterState.IDLE;
+                TARGET_SHOOTER_VELOCITY = 1480;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
                 break;
 
             case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
                 if (!follower.isBusy()) {
-                    if (!intakeReverse) {
-                        intakeSet(-0.25,-0.1);
-                        if(!intakeReverseStarted) {
-                            intakeTimer.reset();
-                            intakeReverseStarted = true;
-                        }
-                        if (intakeTimer.milliseconds() > 100) {
-                            intakeSet(0, 0);
-                            intakeReverse = true;
-                        }
-                    }
-                    if (intakeReverse) {
-                        shootThree();
-                    }
+                    //intakeReverse();
+                    //if (reverseIntakes == ReverseIntakes.END) {
+                    shootThree();
+                    // }
                     if (shooterState == ShooterState.END) {
+                        shooter.setPower(0);
                         autoState = AutoState.INTAKE2;
                     }
                 }
@@ -249,13 +250,49 @@ public class BHG_CloseRedAuto extends LinearOpMode {
             case WAIT2: //  Wait after movement
                 if(!follower.isBusy()) {
                     intakeSet(0,0);
-                    autoState = AutoState.END;
+                    autoState = AutoState.MOVE_TO_SHOOT3;
                 }
                 break;
+
+            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
+                follower.setMaxPower(1);
+                follower.followPath(thirdShotPath);
+                shooterState = ShooterState.IDLE;
+                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
+                autoState = AutoState.SHOOT3;
+                break;
+
+            case SHOOT3: //  Reverse Intakes, then shoot
+                if (!follower.isBusy()) {
+                    //intakeReverse();
+                    //if (reverseIntakes == ReverseIntakes.END) {
+                    shootThree();
+                    //}
+                    if (shooterState == ShooterState.END) {
+                        shooter.setPower(0);
+                        autoState = AutoState.END;
+                    }
+                }
+                break;
+
+//            case MOVE_TO_END:
+//                follower.followPath(endPath);
+//                autoState = AutoState.WAIT3;
+//                break;
+//
+//            case WAIT3:
+//                if(!follower.isBusy()) {
+//                    autoState = AutoState.END;
+//                }
+//                break;
+
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 
                 break;
+        }
+        if (autoState == AutoState.END) {
+            requestOpModeStop();
         }
     }
 
@@ -265,12 +302,7 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     private void shootThree() {
         double shooterVelocity = shooter.getVelocity();
         output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
-
-        if (targetShooterVelocity > 0) {
-            shooter.setPower(output);
-        } else {
-            shooter.setPower(0);
-        }
+        shooter.setPower(output);
 
 
         switch (shooterState) {
@@ -278,7 +310,7 @@ public class BHG_CloseRedAuto extends LinearOpMode {
             case IDLE:
                 timer.reset();
                 servoTimer.reset();
-                targetShooterVelocity = 1460;
+                targetShooterVelocity = TARGET_SHOOTER_VELOCITY;
                 shooterState = ShooterState.SHOOT_TWO;
                 break;
 
@@ -286,14 +318,14 @@ public class BHG_CloseRedAuto extends LinearOpMode {
             case SHOOT_TWO:
 
                 if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && timer.milliseconds() > 1000) {
-                    intakeSet(1, 1);
+                    intakeSet(1, 0.5);
                     timer.reset();
                     shooterState = ShooterState.SHOOT_THIRD;
                 }
                 break;
 
             case SHOOT_THIRD:
-                if (timer.milliseconds() > 2000) {
+                if (timer.milliseconds() > 2500) {
                     servoMovement();
                     shooterState = ShooterState.STOP_INTAKES;
                 }

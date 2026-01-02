@@ -59,12 +59,14 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    Pose startPose = new Pose(48,9,90); //where the robot starts - middle of back of robot centered on bottom of left side of back triangle-lines
-    Pose shootPose = new Pose(63,19.3,115); //the position where robot shoots, in back left
-    Pose firstIntakePose = new Pose(8.8,35.7,180);
+    //private final Pose startPose = new Pose(48,9,105); //where the robot starts - middle of back of robot centered on bottom of left side of back triangle-lines
+    private final Pose shootPose = new Pose(60,9,105); //the position where robot shoots, in back left
+    private final Pose firstIntakePose = new Pose(8.8,35.7,180);
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain toLaunch1, Intake1;
+    private PathChain
+            //toLaunch1,
+            Intake1;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -99,7 +101,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     }
 
     //SETTING STATES FOR OUR TWO FSM'S
-    private AutoState autoState = AutoState.TO_LAUNCH1;
+    private AutoState autoState = AutoState.LAUNCH1;
     private ShooterState shooterState = ShooterState.IDLE;
 
 
@@ -143,13 +145,16 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     //EACH MUST BE INTRODUCED ABOVE IN THE PATHCHAIN FIRST
     //USE DESCRIPTIVE NAME, ACTION OR DESTINATION
     public void buildPaths() {
-        toLaunch1 = follower.pathBuilder()
-                .addPath(new BezierLine(startPose,shootPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
-                .build();
+//        toLaunch1 = follower.pathBuilder()
+//                .addPath(new BezierLine(startPose,shootPose))
+//                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
+//                .build();
 
         Intake1 = follower.pathBuilder()
-                .addPath(new BezierCurve(shootPose, new Pose (57.4,37.5), firstIntakePose))
+                .addPath(new BezierCurve(
+                        shootPose,
+                        new Pose (57.4,37.5),
+                        firstIntakePose))
                 .setLinearHeadingInterpolation(shootPose.getHeading(),firstIntakePose.getHeading())
                 .build();
 
@@ -163,10 +168,10 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     public void autonomousPathUpdate() {
         switch (autoState) {
 
-            case TO_LAUNCH1:
-                follower.followPath(toLaunch1);
-                autoState = AutoState.LAUNCH1;
-                break;
+//            case TO_LAUNCH1:
+//                follower.followPath(toLaunch1);
+//                autoState = AutoState.LAUNCH1;
+//                break;
 
             case LAUNCH1:
                 if (!follower.isBusy()) {
@@ -212,7 +217,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
             case IDLE:
                 timer.reset();
                 servoTimer.reset();
-                targetShooterVelocity = 1460;
+                targetShooterVelocity = 1800;
                 shooterState = ShooterState.SHOOT_TWO;
                 break;
 
@@ -251,7 +256,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     private void initialize() {
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(startPose);
+        follower.setStartingPose(shootPose);
         buildPaths();
 
     }

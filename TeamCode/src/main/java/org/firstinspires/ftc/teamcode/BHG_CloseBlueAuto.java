@@ -253,41 +253,41 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
             case WAIT2: //  Wait after movement
                 if(!follower.isBusy()) {
                     intakeSet(0,0);
-                    autoState = AutoState.MOVE_TO_SHOOT3;
+                    autoState = AutoState.END;
                 }
                 break;
 
-            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
-                follower.setMaxPower(1);
-                follower.followPath(thirdShotPath);
-                shooterState = ShooterState.IDLE;
-                intakeReverse = false;
-                intakeReverseStarted = false;
-                autoState = AutoState.SHOOT3;
-                break;
-
-            case SHOOT3: //  Reverse Intakes, then shoot
-                if (!follower.isBusy()) {
-                    if (!intakeReverse) {
-                        intakeSet(-0.25,-0.1);
-                        if(!intakeReverseStarted) {
-                            intakeTimer.reset();
-                            intakeReverseStarted = true;
-                        }
-                        if (intakeTimer.milliseconds() > 250) {
-                            intakeSet(0, 0);
-                            intakeReverse = true;
-                        }
-                    }
-                    if (intakeReverse) {
-                        shootThree();
-                    }
-                    if (shooterState == ShooterState.END) {
-                        shooter.setPower(0);
-                        autoState = AutoState.END;
-                    }
-                }
-                break;
+//            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
+//                follower.setMaxPower(1);
+//                follower.followPath(thirdShotPath);
+//                shooterState = ShooterState.IDLE;
+//                intakeReverse = false;
+//                intakeReverseStarted = false;
+//                autoState = AutoState.SHOOT3;
+//                break;
+//
+//            case SHOOT3: //  Reverse Intakes, then shoot
+//                if (!follower.isBusy()) {
+//                    if (!intakeReverse) {
+//                        intakeSet(-0.25,-0.1);
+//                        if(!intakeReverseStarted) {
+//                            intakeTimer.reset();
+//                            intakeReverseStarted = true;
+//                        }
+//                        if (intakeTimer.milliseconds() > 250) {
+//                            intakeSet(0, 0);
+//                            intakeReverse = true;
+//                        }
+//                    }
+//                    if (intakeReverse) {
+//                        shootThree();
+//                    }
+//                    if (shooterState == ShooterState.END) {
+//                        shooter.setPower(0);
+//                        autoState = AutoState.END;
+//                    }
+//                }
+//                break;
 
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.

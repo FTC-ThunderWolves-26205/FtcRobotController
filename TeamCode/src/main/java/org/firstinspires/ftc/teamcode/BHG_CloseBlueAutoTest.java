@@ -34,8 +34,8 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.35;
-    private static final double LAUNCHING_SERVO = 0.;
+    private static final double RESTING_SERVO = 0.75;
+    private static final double LAUNCHING_SERVO = 0.4;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
     private PIDFController shooterControl;

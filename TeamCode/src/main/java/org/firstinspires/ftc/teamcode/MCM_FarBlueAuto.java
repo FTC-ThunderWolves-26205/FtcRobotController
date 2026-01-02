@@ -66,6 +66,15 @@ public class MCM_FarBlueAuto extends LinearOpMode {
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
     //THE WAIT STEP MUST INCLUDE A CHECK TO SEE IF FOLLOWER.ISBUSY IS FALSE
+
+    //Standard Order and Terminology:
+    //        MOVE_TO_SHOOT1,
+    //        SHOOT1,
+    //        INTAKE1,
+    //        WAIT1,
+    //        ... REPEAT ...
+    //        END
+
     private enum AutoState {
         TOLAUNCH1,
         WAIT1,

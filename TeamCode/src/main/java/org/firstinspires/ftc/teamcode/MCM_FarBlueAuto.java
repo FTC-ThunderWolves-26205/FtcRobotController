@@ -60,7 +60,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     Pose startPose = new Pose(48,9,90); //where the robot starts - middle of back of robot centered on bottom of left side of back triangle-lines
-    Pose shootPose = new Pose(56.2,19.7,110); //the position where robot shoots, in back left
+    Pose shootPose = new Pose(63,19.3,115); //the position where robot shoots, in back left
     Pose firstIntakePose = new Pose(8.8,35.7,180);
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
@@ -147,8 +147,9 @@ public class MCM_FarBlueAuto extends LinearOpMode {
                 .addPath(new BezierLine(startPose,shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
+
         Intake1 = follower.pathBuilder()
-                .addPath(new BezierCurve(shootPose,firstIntakePose))
+                .addPath(new BezierCurve(shootPose, new Pose (57.4,37.5), firstIntakePose))
                 .setLinearHeadingInterpolation(shootPose.getHeading(),firstIntakePose.getHeading())
                 .build();
 

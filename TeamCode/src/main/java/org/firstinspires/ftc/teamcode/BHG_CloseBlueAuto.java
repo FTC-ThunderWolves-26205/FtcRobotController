@@ -257,7 +257,7 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
                 }
                 break;
 
-//            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
+//            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gateS
 //                follower.setMaxPower(1);
 //                follower.followPath(thirdShotPath);
 //                shooterState = ShooterState.IDLE;

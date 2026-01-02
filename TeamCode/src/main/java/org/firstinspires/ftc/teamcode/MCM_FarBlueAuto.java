@@ -149,7 +149,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
                 .build();
         Intake1 = follower.pathBuilder()
                 .addPath(new BezierCurve(shootPose,firstIntakePose))
-                .setLinearHeadingInterpolation(shootPose.getHeading(),firstIntakePose.getHeading(),2000)
+                .setLinearHeadingInterpolation(shootPose.getHeading(),firstIntakePose.getHeading())
                 .build();
 
     }
@@ -169,10 +169,9 @@ public class MCM_FarBlueAuto extends LinearOpMode {
 
             case LAUNCH1:
                 if (!follower.isBusy()) {
-                    shooterState = ShooterState.IDLE;
                     shootThree();
                 }
-                if (shooterState == shooterState.END) {
+                if (shooterState == ShooterState.END) {
                     shooter.setPower(0);
                     intakeSet(1,0.85);
                     autoState = AutoState.INTAKE1;

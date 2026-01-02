@@ -3,9 +3,10 @@
 //DO NOT TOUCH SHOOT THREE METHOD.
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -24,12 +25,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
-@Autonomous(name = "JLG Close Blue Test", group = "Autonomous")
+//import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Disabled
+@Autonomous(name = "Far Red - BEN", group = "Autonomous")
 
-public class JLG_PedroTesting extends LinearOpMode {
+public class BHG_FarRedAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;
@@ -46,11 +46,14 @@ public class JLG_PedroTesting extends LinearOpMode {
     public static double kF = 0.00045;
     private double output;
     private double targetShooterVelocity = 1460;
+    private boolean intakeReverse = false;
+    private boolean intakeReverseStarted = false;
 
     private GoBildaPinpointDriver pinpoint;
 
     private ElapsedTime timer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
+    private ElapsedTime intakeTimer = new ElapsedTime();
 
     private Follower follower;
 
@@ -59,24 +62,33 @@ public class JLG_PedroTesting extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    private final Pose startPose = new Pose(25, 119, Math.toRadians(145)); // Start position
-    private final Pose firstShotPose = new Pose(57, 86, Math.toRadians(145)); // Pose for First Shot
-    private final Pose intakeFirst = new Pose(19, 86, Math.toRadians(180)); // Pose for Intake 3 more
+    private final Pose startPose = new Pose(87.7, 9, Math.toRadians(90)); // Start position
+    private final Pose firstShotPose = new Pose(89, 14, Math.toRadians(65)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(132.9, 35.5, Math.toRadians(0)); // Pose for Intake 3 more
+    private final Pose secondShotPose = new Pose(89.3,  14.3, Math.toRadians(65)); // Pose for Second Group of Shots
+    private final Pose secondIntakePose = new Pose(12,59, Math.toRadians(185)); // Pose for the middle 3 artifacts
+    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130));
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath;
-
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
     //THE WAIT STEP MUST INCLUDE A CHECK TO SEE IF FOLLOWER.ISBUSY IS FALSE
     private enum AutoState {
-        START_PATH1,
-        WAIT_PATH1,
-        SHOOT,
-        WAIT_PATH2,
+        MOVE_TO_SHOOT1,
+        SHOOT1,
+        INTAKE1,
+        WAIT1,
+        MOVE_TO_SHOOT2,
+        SHOOT2,
+        INTAKE2,
+        WAIT2,
+        MOVE_TO_SHOOT3,
+        SHOOT3,
         END
     }
+
     //ENUM DEFINING STATES FOR SHOOTER.  DON'T MODIFY THIS AS IT TIES TO OUR SHOOTTHREE METHOD.
     private enum ShooterState {
         IDLE,
@@ -86,10 +98,17 @@ public class JLG_PedroTesting extends LinearOpMode {
         END
     }
 
-    //SETTING STATES FOR OUR TWO FSM'S
-    private AutoState autoState = AutoState.START_PATH1;
-    private ShooterState shooterState = ShooterState.IDLE;
+    private enum ReverseIntakes {
+        START_REVERSE_INTAKES,
+        STOP_INTAKES,
+        END
 
+    }
+
+    //SETTING STATES FOR OUR TWO FSM'S
+    private AutoState autoState = AutoState.MOVE_TO_SHOOT1;
+    private ShooterState shooterState = ShooterState.IDLE;
+    private ReverseIntakes reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
 
 
     @Override
@@ -108,8 +127,6 @@ public class JLG_PedroTesting extends LinearOpMode {
         waitForStart();
 
 
-
-
         while (opModeIsActive()) {
 
             // We don't need pinpoint.update(); since pedro handles for us
@@ -117,15 +134,8 @@ public class JLG_PedroTesting extends LinearOpMode {
             follower.update();
 
 
-
-
             autonomousPathUpdate(); // This calls our state machine.  It's all we need in the main loop
             //Ben wants to put the state machine here instead and just get rid of autonomousPathUpdate().  Considering it...
-
-
-
-
-
 
 
             telemetry.addData("x", follower.getPose().getX());
@@ -135,7 +145,6 @@ public class JLG_PedroTesting extends LinearOpMode {
 
         }
     }
-
 
 
     //BUILD PATHS HERE
@@ -148,9 +157,32 @@ public class JLG_PedroTesting extends LinearOpMode {
                 .build();
 
         firstIntakePath = follower.pathBuilder()
-                .addPath(new BezierLine(firstShotPose, intakeFirst))
-                .setLinearHeadingInterpolation(firstShotPose.getHeading(), intakeFirst.getHeading())
+                .addPath(new BezierCurve(
+                        firstShotPose,
+                        new Pose(71.7, 35.5, Math.toRadians(0)),
+                        firstIntakePose))
+                .setLinearHeadingInterpolation(firstShotPose.getHeading(), firstIntakePose.getHeading())
                 .build();
+
+        secondShotPath = follower.pathBuilder()
+                .addPath(new BezierLine(firstIntakePose, secondShotPose))
+                .setLinearHeadingInterpolation(firstIntakePose.getHeading(), secondShotPose.getHeading())
+                .build();
+
+        secondIntakePath = follower.pathBuilder()
+                .addPath(new BezierCurve(
+                        secondShotPose,
+                        new Pose(88, 60, Math.toRadians(0)),  // CONTROL POINT
+                        secondIntakePose
+                ))
+                .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())
+                .build();
+
+        thirdShotPath = follower.pathBuilder()
+                .addPath(new BezierLine(secondIntakePose, thirdShotPose))
+                .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
+                .build();
+
     }
 
     /*
@@ -161,36 +193,92 @@ public class JLG_PedroTesting extends LinearOpMode {
     public void autonomousPathUpdate() {
         switch (autoState) {
 
-            case START_PATH1:  //Back up from starting position.
+            case MOVE_TO_SHOOT1:  //Back up from starting position.
                 follower.followPath(firstShotPath);
-                autoState = AutoState.WAIT_PATH1;
+                autoState = AutoState.SHOOT1;
                 break;
 
-            case WAIT_PATH1:  //Wait after movement.
+            case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
-                    shooterState = ShooterState.IDLE;   // reset shooter FSM
-                    autoState = AutoState.SHOOT;
+                    shootThree();
                 }
-                break;
-
-            case SHOOT:  //Shoot Three, then turn on intakes and move to first set to intake.
-                shootThree();
-
                 if (shooterState == ShooterState.END) {
-                    intakeSet(0.5, 0.5);
-                    follower.followPath(firstIntakePath);
-                    shooterState = ShooterState.IDLE; //Resetting shooter state for the next shootThree()
-                    autoState = AutoState.WAIT_PATH2;
+                    shooter.setPower(0);
+                    intakeSet(1, 0.85);
+                    autoState = AutoState.INTAKE1;
                 }
+
                 break;
 
+            case INTAKE1:  //Move and get the three artifacts
+                follower.setMaxPower(0.8);
+                follower.followPath(firstIntakePath);
+                autoState = AutoState.WAIT1;
+                break;
 
-            case WAIT_PATH2:  //Wait after movement.  Stop intakes.
+            case WAIT1:  //Wait after movement. Stop intakes.
                 if (!follower.isBusy()) {
                     intakeSet(0, 0);
-                    autoState = AutoState.END;
+                    autoState = AutoState.MOVE_TO_SHOOT2;
                 }
                 break;
+
+            case MOVE_TO_SHOOT2:  //Move back to shooting position
+                follower.setMaxPower(1);
+                follower.followPath(secondShotPath);
+                shooterState = ShooterState.IDLE;
+                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
+                autoState = AutoState.SHOOT2;
+                break;
+
+            case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
+                if (!follower.isBusy()) {
+                    intakeReverse();
+                    if (reverseIntakes == ReverseIntakes.END) {
+                        shootThree();
+                    }
+                    if (shooterState == ShooterState.END) {
+                        shooter.setPower(0);
+                        autoState = AutoState.END; //  Skipping the next three cases to END because I don't have other stuff written
+                    }
+                }
+                break;
+
+            case INTAKE2: //  Turn on Intakes, drives to get the middle three
+                intakeSet(1, 0.85);
+                follower.setMaxPower(0.8);
+                follower.followPath(secondIntakePath);
+                autoState = AutoState.WAIT2;
+                break;
+
+            case WAIT2: //  Wait after movement
+                if(!follower.isBusy()) {
+                    intakeSet(0,0);
+                    autoState = AutoState.MOVE_TO_SHOOT3;
+                }
+                break;
+
+            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
+                follower.setMaxPower(1);
+                follower.followPath(thirdShotPath);
+                shooterState = ShooterState.IDLE;
+                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
+                autoState = AutoState.SHOOT3;
+                break;
+
+            case SHOOT3: //  Reverse Intakes, then shoot
+                if (!follower.isBusy()) {
+                    intakeReverse();
+                    if (reverseIntakes == ReverseIntakes.END) {
+                        shootThree();
+                    }
+                    if (shooterState == ShooterState.END) {
+                        shooter.setPower(0);
+                        autoState = AutoState.END;
+                    }
+                }
+                break;
+
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 
@@ -204,13 +292,7 @@ public class JLG_PedroTesting extends LinearOpMode {
     private void shootThree() {
         double shooterVelocity = shooter.getVelocity();
         output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
-
-        if (targetShooterVelocity > 0) {
-            shooter.setPower(output);
-        } else {
-            shooter.setPower(0);
-        }
-
+        shooter.setPower(output);
 
 
         switch (shooterState) {
@@ -233,7 +315,7 @@ public class JLG_PedroTesting extends LinearOpMode {
                 break;
 
             case SHOOT_THIRD:
-                if (timer.milliseconds() > 2000) {
+                if (timer.milliseconds() > 2500) {
                     servoMovement();
                     shooterState = ShooterState.STOP_INTAKES;
                 }
@@ -253,23 +335,40 @@ public class JLG_PedroTesting extends LinearOpMode {
                 break;
         }
     }
+    private void intakeReverse() {
+        switch (reverseIntakes) {
+            case START_REVERSE_INTAKES:
+                intakeSet(-0.25,-0.1);
+                intakeTimer.reset();
+                reverseIntakes = ReverseIntakes.STOP_INTAKES;
+                break;
+
+            case STOP_INTAKES:
+                if (intakeTimer.milliseconds() > 250) {
+                    intakeSet(0, 0);
+                    reverseIntakes = ReverseIntakes.END;
+                }
+                break;
+
+            case END:
+                break;
+        }
+    }
 
     private void initialize() {
 
-        follower = Constants.createFollower(hardwareMap);
+        //follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
         buildPaths();
 
     }
 
 
-
-
     private void hardwareStart() {
 
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
-        oIntake = hardwareMap.get(DcMotor.class,"OID");
-        iIntake = hardwareMap.get(DcMotor.class,"IID");
+        oIntake = hardwareMap.get(DcMotor.class, "OID");
+        iIntake = hardwareMap.get(DcMotor.class, "IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -286,7 +385,7 @@ public class JLG_PedroTesting extends LinearOpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
-        telemetry.addData("Status","Initialized");
+        telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
@@ -294,6 +393,7 @@ public class JLG_PedroTesting extends LinearOpMode {
         iIntake.setPower(iIntakePower);
         oIntake.setPower(oIntakePower);
     }
+
     private void servoMovement() {
         servo.setPosition(LAUNCHING_SERVO);
         servoTimer.reset();

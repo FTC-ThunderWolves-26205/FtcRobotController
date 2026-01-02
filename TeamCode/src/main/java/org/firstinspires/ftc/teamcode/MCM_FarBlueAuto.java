@@ -1,18 +1,12 @@
-//Use this base code to build auto.  Use visualizer to get pose points and build paths.
-//See comments below.
-//DO NOT TOUCH SHOOT THREE METHOD.
-
 
 package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -26,17 +20,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-@Disabled
-@Autonomous(name = "Far Red - BEN", group = "Autonomous")
 
-public class BHG_FarRedAuto extends LinearOpMode {
+@Autonomous(name = "Far Blue - Maddie", group = "Autonomous")
+
+public class MCM_FarBlueAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = 0.35;
-    private static final double LAUNCHING_SERVO = 0.;
+    private static final double RESTING_SERVO = TB_Constants.RESTING_SERVO;
+    private static final double LAUNCHING_SERVO = TB_Constants.LAUNCHING_SERVO;
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
     private PIDFController shooterControl;
@@ -62,30 +56,30 @@ public class BHG_FarRedAuto extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    private final Pose startPose = new Pose(87.7, 9, Math.toRadians(90)); // Start position
-    private final Pose firstShotPose = new Pose(89, 14, Math.toRadians(65)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(132.9, 35.5, Math.toRadians(0)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(89.3,  14.3, Math.toRadians(65)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(12,59, Math.toRadians(185)); // Pose for the middle 3 artifacts
-    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130));
+    Pose startPose = new Pose(48,9,90); //where the robot starts - middle of back of robot centered on bottom of left side of back triangle-lines
+    Pose shootPose = new Pose(66.2,19.7,115); //the position where robot shoots, in back left
+    Pose firstIntakePose = new Pose(35.5,34.9,180);
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
+    private PathChain toLaunch1,toIntake1;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
     //THE WAIT STEP MUST INCLUDE A CHECK TO SEE IF FOLLOWER.ISBUSY IS FALSE
+
+    //Standard Order and Terminology:
+    //        MOVE_TO_SHOOT1,
+    //        SHOOT1,
+    //        INTAKE1,
+    //        WAIT1,
+    //        ... REPEAT ...
+    //        END
+
     private enum AutoState {
-        MOVE_TO_SHOOT1,
-        SHOOT1,
-        INTAKE1,
+        TOLAUNCH1,
         WAIT1,
-        MOVE_TO_SHOOT2,
-        SHOOT2,
-        INTAKE2,
+        LAUNCH1,
         WAIT2,
-        MOVE_TO_SHOOT3,
-        SHOOT3,
         END
     }
 
@@ -98,17 +92,9 @@ public class BHG_FarRedAuto extends LinearOpMode {
         END
     }
 
-    private enum ReverseIntakes {
-        START_REVERSE_INTAKES,
-        STOP_INTAKES,
-        END
-
-    }
-
     //SETTING STATES FOR OUR TWO FSM'S
-    private AutoState autoState = AutoState.MOVE_TO_SHOOT1;
+    private AutoState autoState = AutoState.TOLAUNCH1;
     private ShooterState shooterState = ShooterState.IDLE;
-    private ReverseIntakes reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
 
 
     @Override
@@ -151,36 +137,13 @@ public class BHG_FarRedAuto extends LinearOpMode {
     //EACH MUST BE INTRODUCED ABOVE IN THE PATHCHAIN FIRST
     //USE DESCRIPTIVE NAME, ACTION OR DESTINATION
     public void buildPaths() {
-        firstShotPath = follower.pathBuilder()
-                .addPath(new BezierLine(startPose, firstShotPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), firstShotPose.getHeading())
+        toLaunch1 = follower.pathBuilder()
+                .addPath(new BezierLine(startPose,shootPose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
-
-        firstIntakePath = follower.pathBuilder()
-                .addPath(new BezierCurve(
-                        firstShotPose,
-                        new Pose(71.7, 35.5, Math.toRadians(0)),
-                        firstIntakePose))
-                .setLinearHeadingInterpolation(firstShotPose.getHeading(), firstIntakePose.getHeading())
-                .build();
-
-        secondShotPath = follower.pathBuilder()
-                .addPath(new BezierLine(firstIntakePose, secondShotPose))
-                .setLinearHeadingInterpolation(firstIntakePose.getHeading(), secondShotPose.getHeading())
-                .build();
-
-        secondIntakePath = follower.pathBuilder()
-                .addPath(new BezierCurve(
-                        secondShotPose,
-                        new Pose(88, 60, Math.toRadians(0)),  // CONTROL POINT
-                        secondIntakePose
-                ))
-                .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())
-                .build();
-
-        thirdShotPath = follower.pathBuilder()
-                .addPath(new BezierLine(secondIntakePose, thirdShotPose))
-                .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
+        toIntake1 = follower.pathBuilder()
+                .addPath(new BezierLine(shootPose,firstIntakePose))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), firstIntakePose.getHeading())
                 .build();
 
     }
@@ -193,92 +156,26 @@ public class BHG_FarRedAuto extends LinearOpMode {
     public void autonomousPathUpdate() {
         switch (autoState) {
 
-            case MOVE_TO_SHOOT1:  //Back up from starting position.
-                follower.followPath(firstShotPath);
-                autoState = AutoState.SHOOT1;
-                break;
-
-            case SHOOT1:  //Shoot three after movement, then turn on Intakes
-                if (!follower.isBusy()) {
-                    shootThree();
-                }
-                if (shooterState == ShooterState.END) {
-                    shooter.setPower(0);
-                    intakeSet(1, 0.85);
-                    autoState = AutoState.INTAKE1;
-                }
-
-                break;
-
-            case INTAKE1:  //Move and get the three artifacts
-                follower.setMaxPower(0.8);
-                follower.followPath(firstIntakePath);
+            case TOLAUNCH1:
+                follower.followPath(toLaunch1);
                 autoState = AutoState.WAIT1;
                 break;
 
-            case WAIT1:  //Wait after movement. Stop intakes.
-                if (!follower.isBusy()) {
-                    intakeSet(0, 0);
-                    autoState = AutoState.MOVE_TO_SHOOT2;
-                }
-                break;
-
-            case MOVE_TO_SHOOT2:  //Move back to shooting position
-                follower.setMaxPower(1);
-                follower.followPath(secondShotPath);
-                shooterState = ShooterState.IDLE;
-                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
-                autoState = AutoState.SHOOT2;
-                break;
-
-            case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
-                if (!follower.isBusy()) {
-                    intakeReverse();
-                    if (reverseIntakes == ReverseIntakes.END) {
-                        shootThree();
-                    }
-                    if (shooterState == ShooterState.END) {
-                        shooter.setPower(0);
-                        autoState = AutoState.END; //  Skipping the next three cases to END because I don't have other stuff written
-                    }
-                }
-                break;
-
-            case INTAKE2: //  Turn on Intakes, drives to get the middle three
-                intakeSet(1, 0.85);
-                follower.setMaxPower(0.8);
-                follower.followPath(secondIntakePath);
-                autoState = AutoState.WAIT2;
-                break;
-
-            case WAIT2: //  Wait after movement
+            case WAIT1:
                 if(!follower.isBusy()) {
-                    intakeSet(0,0);
-                    autoState = AutoState.MOVE_TO_SHOOT3;
+                    shooterState = ShooterState.IDLE;
+                    autoState = AutoState.LAUNCH1;
                 }
-                break;
 
-            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
-                follower.setMaxPower(1);
-                follower.followPath(thirdShotPath);
-                shooterState = ShooterState.IDLE;
-                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
-                autoState = AutoState.SHOOT3;
-                break;
-
-            case SHOOT3: //  Reverse Intakes, then shoot
-                if (!follower.isBusy()) {
-                    intakeReverse();
-                    if (reverseIntakes == ReverseIntakes.END) {
-                        shootThree();
-                    }
-                    if (shooterState == ShooterState.END) {
-                        shooter.setPower(0);
-                        autoState = AutoState.END;
-                    }
+            case LAUNCH1:
+                shootThree();
+                if (shooterState == shooterState.END) {
+                    intakeSet(1,1);
+                    follower.setMaxPower(0.8);
+                    follower.followPath(toIntake1);
                 }
-                break;
 
+            case WAIT2:
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 
@@ -335,25 +232,6 @@ public class BHG_FarRedAuto extends LinearOpMode {
                 break;
         }
     }
-    private void intakeReverse() {
-        switch (reverseIntakes) {
-            case START_REVERSE_INTAKES:
-                intakeSet(-0.25,-0.1);
-                intakeTimer.reset();
-                reverseIntakes = ReverseIntakes.STOP_INTAKES;
-                break;
-
-            case STOP_INTAKES:
-                if (intakeTimer.milliseconds() > 250) {
-                    intakeSet(0, 0);
-                    reverseIntakes = ReverseIntakes.END;
-                }
-                break;
-
-            case END:
-                break;
-        }
-    }
 
     private void initialize() {
 
@@ -403,4 +281,5 @@ public class BHG_FarRedAuto extends LinearOpMode {
         return Math.abs(shooterVelocity - targetVelocity) <= range;
     }
 }
+
 

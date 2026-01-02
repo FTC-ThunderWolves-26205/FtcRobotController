@@ -44,9 +44,10 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
     public static double kD = 0.00001;
     public static double kF = 0.00045;
     private double output;
-    private double targetShooterVelocity = 1460;
+    private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
+    private double TARGET_SHOOTER_VELOCITY = 1460;
 
     private GoBildaPinpointDriver pinpoint;
 
@@ -62,11 +63,11 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     private final Pose startPose = new Pose(25, 129, Math.toRadians(143)); // Start position
-    private final Pose firstShotPose = new Pose(59, 84, Math.toRadians(130)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(16, 83, Math.toRadians(192)); // Pose for Intake 3 more
+    private final Pose firstShotPose = new Pose(57.6, 77.8, Math.toRadians(130)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(16.9, 85.1, Math.toRadians(178)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(130)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(10.37,59.5, Math.toRadians(180)); // Pose for the middle 3 artifacts
-    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130));
+    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130)); // Pose for third group of Shots
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
@@ -195,6 +196,7 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
 
             case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
+                    TARGET_SHOOTER_VELOCITY = 1500;
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
@@ -222,16 +224,17 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
                 follower.setMaxPower(1);
                 follower.followPath(secondShotPath);
                 shooterState = ShooterState.IDLE;
+                TARGET_SHOOTER_VELOCITY = 1480;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
                 break;
 
             case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
                 if (!follower.isBusy()) {
-                    intakeReverse();
-                    if (reverseIntakes == ReverseIntakes.END) {
+                    //intakeReverse();
+                    //if (reverseIntakes == ReverseIntakes.END) {
                         shootThree();
-                    }
+                   // }
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
                         autoState = AutoState.INTAKE2;
@@ -263,10 +266,10 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
 
             case SHOOT3: //  Reverse Intakes, then shoot
                 if (!follower.isBusy()) {
-                    intakeReverse();
-                    if (reverseIntakes == ReverseIntakes.END) {
+                    //intakeReverse();
+                    //if (reverseIntakes == ReverseIntakes.END) {
                         shootThree();
-                    }
+                    //}
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
                         autoState = AutoState.END;
@@ -295,7 +298,7 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
             case IDLE:
                 timer.reset();
                 servoTimer.reset();
-                targetShooterVelocity = 1460;
+                targetShooterVelocity = TARGET_SHOOTER_VELOCITY;
                 shooterState = ShooterState.SHOOT_TWO;
                 break;
 

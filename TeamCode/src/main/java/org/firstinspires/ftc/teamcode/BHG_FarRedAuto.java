@@ -159,7 +159,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
         firstIntakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(
                         firstShotPose,
-                        new Pose(71.6, 36.6, Math.toRadians(0)),
+                        new Pose(71.7, 35.5, Math.toRadians(0)),
                         firstIntakePose))
                 .setLinearHeadingInterpolation(firstShotPose.getHeading(), firstIntakePose.getHeading())
                 .build();

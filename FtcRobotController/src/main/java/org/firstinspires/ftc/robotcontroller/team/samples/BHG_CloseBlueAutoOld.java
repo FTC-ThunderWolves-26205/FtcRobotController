@@ -30,7 +30,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 @Autonomous(name = "Close Blue - BEN", group = "Autonomous")
 @Disabled
 
-public class BHG_CloseBlueAuto extends LinearOpMode {
+public class BHG_CloseBlueAutoOld extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;

@@ -25,9 +25,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Close Red - BEN", group = "Autonomous")
+@Autonomous(name = "Far Blue - BEN", group = "Autonomous")
 
-public class BHG_CloseRedAuto extends LinearOpMode {
+public class BHG_FarBlueAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;
@@ -61,12 +61,12 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    private final Pose startPose = new Pose(123.6, 123.4, Math.toRadians(37)); // Start position
-    private final Pose firstShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(125.9, 83.3, Math.toRadians(355)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(135,60.7, Math.toRadians(352)); // Pose for Intake middle group of artifacts
-    private final Pose thirdShotPose = new Pose(83.8,84, Math.toRadians(43)); // Pose for Third group of Shots
+    private final Pose startPose = new Pose(56,9 , Math.toRadians(90)); // Start position
+    private final Pose firstShotPose = new Pose(56.3, 20.7, Math.toRadians(107)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(10, 38, Math.toRadians(180)); // Pose for Intake 3 more
+    private final Pose secondShotPose = new Pose(56.1, 20.6, Math.toRadians(107)); // Pose for Second Group of Shots
+    private final Pose secondIntakePose = new Pose(135.4,59.2, Math.toRadians(180)); // Pose for Intake middle group of artifacts
+    private final Pose thirdShotPose = new Pose(56.1,20.4, Math.toRadians(107)); // Pose for Third group of Shots
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
@@ -155,7 +155,10 @@ public class BHG_CloseRedAuto extends LinearOpMode {
                 .build();
 
         firstIntakePath = follower.pathBuilder()
-                .addPath(new BezierLine(firstShotPose, firstIntakePose))
+                .addPath(new BezierCurve(
+                        firstShotPose,
+                        new Pose(49.3, 31.3, Math.toRadians(0)),
+                        firstIntakePose))
                 .setLinearHeadingInterpolation(firstShotPose.getHeading(), firstIntakePose.getHeading())
                 .build();
 
@@ -167,7 +170,7 @@ public class BHG_CloseRedAuto extends LinearOpMode {
         secondIntakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(
                         secondShotPose,
-                        new Pose(81.9, 49.8, Math.toRadians(0)),
+                        new Pose(65.6, 61.4, Math.toRadians(0)),
                         secondIntakePose
                 ))
                 .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())

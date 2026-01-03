@@ -65,11 +65,12 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     private final Pose firstShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for First Group of Shots
     private final Pose firstIntakePose = new Pose(125.9, 83.3, Math.toRadians(355)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(135,60.7, Math.toRadians(352)); // Pose for Intake middle group of artifacts
+    private final Pose secondIntakePose = new Pose(132,60.7, Math.toRadians(356)); // Pose for Intake middle group of artifacts
     private final Pose thirdShotPose = new Pose(83.8,84, Math.toRadians(43)); // Pose for Third group of Shots
+    private final Pose endPose = new Pose(125,72.1,Math.toRadians(90)); // Pose for end position
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -85,6 +86,8 @@ public class BHG_CloseRedAuto extends LinearOpMode {
         WAIT2,
         MOVE_TO_SHOOT3,
         SHOOT3,
+        MOVE_TO_END,
+        WAIT3,
         END
     }
 
@@ -176,6 +179,11 @@ public class BHG_CloseRedAuto extends LinearOpMode {
         thirdShotPath = follower.pathBuilder()
                 .addPath(new BezierLine(secondIntakePose, thirdShotPose))
                 .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
+                .build();
+
+        endPath = follower.pathBuilder()
+                .addPath(new BezierLine(thirdShotPose, endPose))
+                .setLinearHeadingInterpolation(thirdShotPose.getHeading(), endPose.getHeading())
                 .build();
     }
 
@@ -270,21 +278,21 @@ public class BHG_CloseRedAuto extends LinearOpMode {
                     //}
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
-                        autoState = AutoState.END;
+                        autoState = AutoState.MOVE_TO_END;
                     }
                 }
                 break;
 
-//            case MOVE_TO_END:
-//                follower.followPath(endPath);
-//                autoState = AutoState.WAIT3;
-//                break;
-//
-//            case WAIT3:
-//                if(!follower.isBusy()) {
-//                    autoState = AutoState.END;
-//                }
-//                break;
+            case MOVE_TO_END: // Move to the end position by the gate
+                follower.followPath(endPath);
+                autoState = AutoState.WAIT3;
+                break;
+
+            case WAIT3: // Wait after movement
+                if(!follower.isBusy()) {
+                    autoState = AutoState.END;
+                }
+                break;
 
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.

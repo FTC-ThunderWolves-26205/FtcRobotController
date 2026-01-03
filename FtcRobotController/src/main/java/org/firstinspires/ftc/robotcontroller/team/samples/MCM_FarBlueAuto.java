@@ -1,15 +1,15 @@
 //
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -22,9 +22,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
 
 @Autonomous(name = "Far Blue - Maddie", group = "Autonomous")
+@Disabled
 
 public class MCM_FarBlueAuto extends LinearOpMode {
 
@@ -32,8 +33,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = TB_Constants.RESTING_SERVO;
-    private static final double LAUNCHING_SERVO = TB_Constants.LAUNCHING_SERVO;
+
     private final double RANGE = 40;
     private final long SERVO_DURATION = 500;
     private PIDFController shooterControl;
@@ -115,7 +115,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();  //not using dashboard but keep for now in case we do
 
-        servo.setPosition(RESTING_SERVO);
+     
 
 
         waitForStart();
@@ -240,7 +240,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
 
             case STOP_INTAKES:
                 if (servoTimer.milliseconds() > SERVO_DURATION) {
-                    servo.setPosition(RESTING_SERVO);
+                   // servo.setPosition(RESTING_SERVO);
                     intakeSet(0, 0);
                     targetShooterVelocity = 0;
                     shooterState = ShooterState.END;
@@ -255,7 +255,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
 
     private void initialize() {
 
-        follower = Constants.createFollower(hardwareMap);
+  
         follower.setStartingPose(shootPose);
         buildPaths();
 
@@ -293,7 +293,7 @@ public class MCM_FarBlueAuto extends LinearOpMode {
     }
 
     private void servoMovement() {
-        servo.setPosition(LAUNCHING_SERVO);
+    //    servo.setPosition(LAUNCHING_SERVO);
         servoTimer.reset();
     }
 

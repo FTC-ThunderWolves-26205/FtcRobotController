@@ -3,7 +3,7 @@
 //DO NOT TOUCH SHOOT THREE METHOD.
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -12,6 +12,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -24,30 +25,30 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+//import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Close Blue Test - BEN", group = "Autonomous")
+@Autonomous(name = "Close Blue - BEN", group = "Autonomous")
+@Disabled
 
-public class BHG_CloseBlueAutoTest extends LinearOpMode {
+public class BHG_CloseBlueAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private static final double RESTING_SERVO = TB_Constants.RESTING_SERVO;
-    private static final double LAUNCHING_SERVO = TB_Constants.LAUNCHING_SERVO;
+    static double RESTING_SERVO = 0.75;
+    static double LAUNCHING_SERVO = 0.4;
     private final double RANGE = 40;
-    private final long SERVO_DURATION = 750;
+    private final long SERVO_DURATION = 500;
     private PIDFController shooterControl;
     public static double kP = 0.004;
     public static double kI = 0.0;
     public static double kD = 0.00001;
     public static double kF = 0.00045;
     private double output;
-    private double targetShooterVelocity;
+    private double targetShooterVelocity = 1460;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
-    private double TARGET_SHOOTER_VELOCITY = 1460;
 
     private GoBildaPinpointDriver pinpoint;
 
@@ -63,15 +64,13 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     private final Pose startPose = new Pose(25, 129, Math.toRadians(143)); // Start position
-    private final Pose firstShotPose = new Pose(57.6, 77.8, Math.toRadians(130)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(16.9, 85.1, Math.toRadians(178)); // Pose for Intake 3 more
+    private final Pose firstShotPose = new Pose(59, 84, Math.toRadians(130)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(16, 83, Math.toRadians(192)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(130)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(10.37,59.5, Math.toRadians(180)); // Pose for the middle 3 artifacts
-    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130)); // Pose for third group of Shots
-    private final Pose endPose = new Pose(21, 69.5, Math.toRadians(90)); // Pose for end
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -87,8 +86,6 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
         WAIT2,
         MOVE_TO_SHOOT3,
         SHOOT3,
-        MOVE_TO_END,
-        WAIT3,
         END
     }
 
@@ -100,17 +97,10 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
         STOP_INTAKES,
         END
     }
-    private enum ReverseIntakes {
-        START_REVERSE_INTAKES,
-        STOP_INTAKES,
-        END
-
-    }
 
     //SETTING STATES FOR OUR TWO FSM'S
     private AutoState autoState = AutoState.MOVE_TO_SHOOT1;
     private ShooterState shooterState = ShooterState.IDLE;
-    private ReverseIntakes reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
 
 
     @Override
@@ -177,16 +167,6 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
                 .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())
                 .build();
 
-        thirdShotPath = follower.pathBuilder()
-                .addPath(new BezierLine(secondIntakePose, thirdShotPose))
-                .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
-                .build();
-
-        endPath = follower.pathBuilder()
-                .addPath(new BezierLine(thirdShotPose, endPose))
-                .setLinearHeadingInterpolation(thirdShotPose.getHeading(), endPose.getHeading())
-                .build();
-
     }
 
     /*
@@ -204,7 +184,6 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
 
             case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
-                    TARGET_SHOOTER_VELOCITY = 1500;
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
@@ -232,17 +211,27 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
                 follower.setMaxPower(1);
                 follower.followPath(secondShotPath);
                 shooterState = ShooterState.IDLE;
-                TARGET_SHOOTER_VELOCITY = 1480;
-                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
+                intakeReverse = false;
+                intakeReverseStarted = false;
                 autoState = AutoState.SHOOT2;
                 break;
 
             case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
                 if (!follower.isBusy()) {
-                    //intakeReverse();
-                    //if (reverseIntakes == ReverseIntakes.END) {
+                    if (!intakeReverse) {
+                        intakeSet(-0.25,-0.1);
+                        if(!intakeReverseStarted) {
+                            intakeTimer.reset();
+                            intakeReverseStarted = true;
+                        }
+                        if (intakeTimer.milliseconds() > 250) {
+                            intakeSet(0, 0);
+                            intakeReverse = true;
+                        }
+                    }
+                    if (intakeReverse) {
                         shootThree();
-                   // }
+                    }
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
                         autoState = AutoState.INTAKE2;
@@ -260,49 +249,13 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
             case WAIT2: //  Wait after movement
                 if(!follower.isBusy()) {
                     intakeSet(0,0);
-                    autoState = AutoState.MOVE_TO_SHOOT3;
-                }
-                break;
-
-            case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
-                follower.setMaxPower(1);
-                follower.followPath(thirdShotPath);
-                shooterState = ShooterState.IDLE;
-                reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
-                autoState = AutoState.SHOOT3;
-                break;
-
-            case SHOOT3: //  Reverse Intakes, then shoot
-                if (!follower.isBusy()) {
-                    //intakeReverse();
-                    //if (reverseIntakes == ReverseIntakes.END) {
-                        shootThree();
-                    //}
-                    if (shooterState == ShooterState.END) {
-                        shooter.setPower(0);
-                        autoState = AutoState.MOVE_TO_END;
-                    }
-                }
-                break;
-
-            case MOVE_TO_END:
-                follower.followPath(endPath);
-                autoState = AutoState.WAIT3;
-                break;
-
-            case WAIT3:
-                if(!follower.isBusy()) {
                     autoState = AutoState.END;
                 }
                 break;
 
-
             case END: //Always have an END.  Seems to be recommended to keep it empty.
 
                 break;
-        }
-        if (autoState == AutoState.END) {
-            requestOpModeStop();
         }
     }
 
@@ -320,7 +273,7 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
             case IDLE:
                 timer.reset();
                 servoTimer.reset();
-                targetShooterVelocity = TARGET_SHOOTER_VELOCITY;
+                targetShooterVelocity = 1460;
                 shooterState = ShooterState.SHOOT_TWO;
                 break;
 
@@ -328,7 +281,7 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
             case SHOOT_TWO:
 
                 if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && timer.milliseconds() > 1000) {
-                    intakeSet(1, 0.5);
+                    intakeSet(1, 1);
                     timer.reset();
                     shooterState = ShooterState.SHOOT_THIRD;
                 }
@@ -355,29 +308,10 @@ public class BHG_CloseBlueAutoTest extends LinearOpMode {
                 break;
         }
     }
-    private void intakeReverse() {
-        switch (reverseIntakes) {
-            case START_REVERSE_INTAKES:
-                intakeSet(-0.25,-0.1);
-                intakeTimer.reset();
-                reverseIntakes = ReverseIntakes.STOP_INTAKES;
-                break;
-
-            case STOP_INTAKES:
-                if (intakeTimer.milliseconds() > 250) {
-                    intakeSet(0, 0);
-                    reverseIntakes = ReverseIntakes.END;
-                }
-                break;
-
-            case END:
-                break;
-        }
-    }
 
     private void initialize() {
 
-        follower = Constants.createFollower(hardwareMap);
+      //  follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
         buildPaths();
 

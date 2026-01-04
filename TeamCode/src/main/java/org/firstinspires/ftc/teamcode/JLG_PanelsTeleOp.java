@@ -90,7 +90,10 @@ public class JLG_PanelsTeleOp extends LinearOpMode {
     private static final double RESTING_SERVO = 0.35, LAUNCHING_SERVO = 0;
     private final double NORMAL_SPEED = 0.75, SLOW_SPEED = 0.25, TURBO_SPEED = 1.0, SERVO_DURATION = 750;
     private PIDFController shooterControl;
-    public static double kP = 0.004, kI = 0.0, kD = 0.00001, kF = 0.00045;
+    public static double kP = TB_Constants.kP;
+    public static double kI = TB_Constants.kI;
+    public static double kD = TB_Constants.kD;
+    public static double kF = TB_Constants.kF;
     private GoBildaPinpointDriver pinpoint;
 
 

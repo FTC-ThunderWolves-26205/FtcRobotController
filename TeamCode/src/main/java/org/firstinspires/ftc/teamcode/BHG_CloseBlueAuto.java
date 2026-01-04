@@ -39,10 +39,10 @@ public class BHG_CloseBlueAuto extends LinearOpMode {
     private final double RANGE = 40;
     private final long SERVO_DURATION = 750;
     private PIDFController shooterControl;
-    public static double kP = 0.004;
-    public static double kI = 0.0;
-    public static double kD = 0.00001;
-    public static double kF = 0.00045;
+    public static double kP = TB_Constants.kP;
+    public static double kI = TB_Constants.kI;
+    public static double kD = TB_Constants.kD;
+    public static double kF = TB_Constants.kF;
     private double output;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;

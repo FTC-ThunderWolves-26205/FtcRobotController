@@ -52,7 +52,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@TeleOp(name = "PIDF TeleOp - Odometry", group = "Teleop")
+@TeleOp(name = "Team Bot TeleOp", group = "Teleop")
 @Config
 
 public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
@@ -78,10 +78,10 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
     private PIDFController shooterControl;
-    public static double kP = 0.004;
-    public static double kI = 0.0;
-    public static double kD = 0.00001;
-    public static double kF = 0.00045;
+    public static double kP = TB_Constants.kP;
+    public static double kI = TB_Constants.kI;
+    public static double kD = TB_Constants.kD;
+    public static double kF = TB_Constants.kF;
 
     private GoBildaPinpointDriver pinpoint;
 

@@ -4,6 +4,10 @@ package org.firstinspires.ftc.teamcode;
 
 
 public class TB_Constants {
-    static double RESTING_SERVO = 0.75;
-    static double LAUNCHING_SERVO = 0.4;
+    static double RESTING_SERVO = 0.45;
+    static double LAUNCHING_SERVO = 0.2;
+    static double kP = 0.004;
+    static double kI = 0.0;
+    static double kD = 0.00001;
+    static double kF = 0.00045;;
 }

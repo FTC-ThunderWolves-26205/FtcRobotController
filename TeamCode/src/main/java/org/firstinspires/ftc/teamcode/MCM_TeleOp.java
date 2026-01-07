@@ -196,6 +196,7 @@ public class MCM_TeleOp extends LinearOpMode {
 
 
 
+
             double shooterVelocity = shooter.getVelocity();
             iIntake.setPower(iIntakePower);
             oIntake.setPower(clampFull(oIntakePower));
@@ -226,6 +227,13 @@ public class MCM_TeleOp extends LinearOpMode {
 
             Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH),pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
             Pose goalPose = new Pose(9,141,90);
+
+            if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
+                gamepad1.rumble(100);
+                gamepad1.setLedColor(0,0,100,100);
+            } else {
+                gamepad1.setLedColor(100,0,0,100);
+            }
 
             telemetry.addData("Distance",getDistance(botPose,goalPose));
             telemetry.addData("Relative Angle",getRelAngle(botPose,goalPose));
@@ -268,8 +276,8 @@ public class MCM_TeleOp extends LinearOpMode {
         iIntake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
 
+        //
         telemetry.addData("Status","Initialized");
         telemetry.update();
     }
@@ -296,9 +304,11 @@ public class MCM_TeleOp extends LinearOpMode {
         return Math.sqrt(Math.pow(goal.getX()-current.getX(),2) + Math.pow(goal.getY()-current.getY(),2));
     }
     private double getRelAngle(Pose current, Pose goal) {
-        double a = Math.atan2(current.getX()- goal.getX(),current.getY()- goal.getY());
+        double a = Math.toDegrees(Math.atan2(current.getX()- goal.getX(),goal.getY()-current.getY()));
         telemetry.addData("A",a);
-        return (90 + a) - current.getHeading(); // for blue goal, 90 - a for red
+        telemetry.addData("X difference",current.getX()- goal.getX());
+        telemetry.addData("Y difference",goal.getY()-current.getY());
+        return current.getHeading() - (90 + a); // for blue goal, 90 - a for red
     }
 
 }

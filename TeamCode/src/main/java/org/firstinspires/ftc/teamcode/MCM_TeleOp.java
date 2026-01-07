@@ -224,7 +224,7 @@ public class MCM_TeleOp extends LinearOpMode {
             telemetry.addData("Y (in)", pinpoint.getPosY(DistanceUnit.INCH));
             telemetry.addData("Theta", pinpoint.getHeading(AngleUnit.DEGREES));
 
-            Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH),pinpoint.getPosX(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
+            Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH),pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
             Pose goalPose = new Pose(9,141,90);
 
             telemetry.addData("Distance",getDistance(botPose,goalPose));
@@ -296,14 +296,9 @@ public class MCM_TeleOp extends LinearOpMode {
         return Math.sqrt(Math.pow(goal.getX()-current.getX(),2) + Math.pow(goal.getY()-current.getY(),2));
     }
     private double getRelAngle(Pose current, Pose goal) {
-        telemetry.addData("Current Pose",current.getX()+","+current.getY());
-        telemetry.addData("Goal Pose",goal.getX()+","+goal.getY());
-        telemetry.addData("Angle Distance",getDistance(current, goal));
-        telemetry.addData("Before asin",(goal.getY()-current.getY())/getDistance(current,goal));
-        telemetry.addData("Y difference",goal.getY()-current.getY());
-        double a = Math.toDegrees(Math.asin(Math.toRadians((goal.getY()-current.getY())/getDistance(current,goal))));
+        double a = Math.atan2(current.getX()- goal.getX(),current.getY()- goal.getY());
         telemetry.addData("A",a);
-        return (180-a) - current.getHeading();
+        return (90 + a) - current.getHeading(); // for blue goal, 90 - a for red
     }
 
 }

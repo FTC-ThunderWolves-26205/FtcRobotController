@@ -43,7 +43,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1460;
+    private double TARGET_SHOOTER_VELOCITY = 1730;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
@@ -63,9 +63,9 @@ public class BHG_FarBlueAuto extends LinearOpMode {
      */
     private final Pose startPose = new Pose(56,9 , Math.toRadians(90)); // Start position
     private final Pose firstShotPose = new Pose(56.3, 20.7, Math.toRadians(107)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(10, 38, Math.toRadians(180)); // Pose for Intake 3 more
+    private final Pose firstIntakePose = new Pose(10, 36, Math.toRadians(180)); // Pose for Intake 3 more
     private final Pose secondShotPose = new Pose(56.1, 20.6, Math.toRadians(107)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(135.4,59.2, Math.toRadians(180)); // Pose for Intake middle group of artifacts
+    private final Pose secondIntakePose = new Pose(8.2,59.7, Math.toRadians(180)); // Pose for Intake middle group of artifacts
     private final Pose thirdShotPose = new Pose(56.1,20.4, Math.toRadians(107)); // Pose for Third group of Shots
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
@@ -197,7 +197,6 @@ public class BHG_FarBlueAuto extends LinearOpMode {
 
             case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
-                    TARGET_SHOOTER_VELOCITY = 1500;
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
@@ -225,7 +224,6 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                 follower.setMaxPower(1);
                 follower.followPath(secondShotPath);
                 shooterState = ShooterState.IDLE;
-                TARGET_SHOOTER_VELOCITY = 1480;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
                 break;

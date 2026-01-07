@@ -61,7 +61,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
     private DcMotorEx shooter;
-    private DcMotor iIntake;
+    private DcMotorEx iIntake;
     private DcMotor oIntake;
     private Servo servo;
 
@@ -227,6 +227,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             telemetry.addData("Shooter Velocity", shooterVelocity);
             telemetry.addData("Servo Position", servo.getPosition());
             telemetry.addData("Inner Intake Power", iIntake.getPower());
+            telemetry.addData("Inner Intake Velocity", iIntake.getVelocity());
             telemetry.addData("Outer Intake Power", oIntake.getPower());
             telemetry.update();
 
@@ -239,7 +240,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "BL");
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
         oIntake = hardwareMap.get(DcMotor.class,"OID");
-        iIntake = hardwareMap.get(DcMotor.class,"IID");
+        iIntake = hardwareMap.get(DcMotorEx.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

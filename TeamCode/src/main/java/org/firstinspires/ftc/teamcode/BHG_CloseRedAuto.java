@@ -67,7 +67,7 @@ public class BHG_CloseRedAuto extends LinearOpMode {
     private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(132,60.7, Math.toRadians(356)); // Pose for Intake middle group of artifacts
     private final Pose thirdShotPose = new Pose(83.8,84, Math.toRadians(43)); // Pose for Third group of Shots
-    private final Pose endPose = new Pose(125,72.1,Math.toRadians(90)); // Pose for end position
+    private final Pose endPose = new Pose(120,72.1,Math.toRadians(90)); // Pose for end position
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;

@@ -25,9 +25,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Far Blue - BEN", group = "Autonomous")
+@Autonomous(name = "Close Red - BEN", group = "Autonomous")
 
-public class BHG_FarBlueAuto extends LinearOpMode {
+public class TB_CloseRedAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;
@@ -43,7 +43,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1710;
+    private double TARGET_SHOOTER_VELOCITY = 1460;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
@@ -61,13 +61,13 @@ public class BHG_FarBlueAuto extends LinearOpMode {
     POSES GO HERE.
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
-    private final Pose startPose = new Pose(56,9 , Math.toRadians(90)); // Start position
-    private final Pose firstShotPose = new Pose(56.3, 20.7, Math.toRadians(110)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(10, 36, Math.toRadians(180)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(56.1, 20.6, Math.toRadians(110)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(9,59.7, Math.toRadians(180)); // Pose for Intake middle group of artifacts
-    private final Pose thirdShotPose = new Pose(56.1,20.4, Math.toRadians(110)); // Pose for Third group of Shots
-    private final Pose endPose = new Pose(31, 27, Math.toRadians(90)); // End position
+    private final Pose startPose = new Pose(123.6, 123.4, Math.toRadians(37)); // Start position
+    private final Pose firstShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(125.9, 83.3, Math.toRadians(355)); // Pose for Intake 3 more
+    private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
+    private final Pose secondIntakePose = new Pose(132,60.7, Math.toRadians(356)); // Pose for Intake middle group of artifacts
+    private final Pose thirdShotPose = new Pose(83.8,84, Math.toRadians(43)); // Pose for Third group of Shots
+    private final Pose endPose = new Pose(120,72.1,Math.toRadians(90)); // Pose for end position
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;
@@ -158,10 +158,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                 .build();
 
         firstIntakePath = follower.pathBuilder()
-                .addPath(new BezierCurve(
-                        firstShotPose,
-                        new Pose(49.3, 31.3, Math.toRadians(0)),
-                        firstIntakePose))
+                .addPath(new BezierLine(firstShotPose, firstIntakePose))
                 .setLinearHeadingInterpolation(firstShotPose.getHeading(), firstIntakePose.getHeading())
                 .build();
 
@@ -173,7 +170,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
         secondIntakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(
                         secondShotPose,
-                        new Pose(65.6, 61.4, Math.toRadians(0)),
+                        new Pose(81.9, 49.8, Math.toRadians(0)),
                         secondIntakePose
                 ))
                 .setLinearHeadingInterpolation(secondShotPose.getHeading(), secondIntakePose.getHeading())
@@ -205,6 +202,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
 
             case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
+                    TARGET_SHOOTER_VELOCITY = 1500;
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
@@ -233,6 +231,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                 follower.followPath(secondShotPath);
                 shooter.setVelocity(855);
                 shooterState = ShooterState.IDLE;
+                TARGET_SHOOTER_VELOCITY = 1480;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
                 break;
@@ -286,12 +285,12 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                 }
                 break;
 
-            case MOVE_TO_END:
+            case MOVE_TO_END: // Move to the end position by the gate
                 follower.followPath(endPath);
                 autoState = AutoState.WAIT3;
                 break;
 
-            case WAIT3:
+            case WAIT3: // Wait after movement
                 if(!follower.isBusy()) {
                     autoState = AutoState.END;
                 }
@@ -336,7 +335,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                 break;
 
             case SHOOT_THIRD:
-                if (timer.milliseconds() > 3000) {
+                if (timer.milliseconds() > 2500) {
                     servoMovement();
                     shooterState = ShooterState.STOP_INTAKES;
                 }

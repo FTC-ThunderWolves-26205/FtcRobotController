@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Far Red - BEN", group = "Autonomous")
 
-public class BHG_FarRedAuto extends LinearOpMode {
+public class TB_FarRedAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;

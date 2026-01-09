@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Close Blue - BEN", group = "Autonomous")
 
-public class BHG_CloseBlueAuto extends LinearOpMode {
+public class TB_CloseBlueAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
     private DcMotor iIntake;

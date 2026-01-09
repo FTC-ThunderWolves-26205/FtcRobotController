@@ -43,7 +43,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1730;
+    private double TARGET_SHOOTER_VELOCITY = 1710;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
@@ -62,14 +62,15 @@ public class BHG_FarBlueAuto extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     private final Pose startPose = new Pose(56,9 , Math.toRadians(90)); // Start position
-    private final Pose firstShotPose = new Pose(56.3, 20.7, Math.toRadians(107)); // Pose for First Group of Shots
+    private final Pose firstShotPose = new Pose(56.3, 20.7, Math.toRadians(110)); // Pose for First Group of Shots
     private final Pose firstIntakePose = new Pose(10, 36, Math.toRadians(180)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(56.1, 20.6, Math.toRadians(107)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(8.2,59.7, Math.toRadians(180)); // Pose for Intake middle group of artifacts
-    private final Pose thirdShotPose = new Pose(56.1,20.4, Math.toRadians(107)); // Pose for Third group of Shots
+    private final Pose secondShotPose = new Pose(56.1, 20.6, Math.toRadians(110)); // Pose for Second Group of Shots
+    private final Pose secondIntakePose = new Pose(9,59.7, Math.toRadians(180)); // Pose for Intake middle group of artifacts
+    private final Pose thirdShotPose = new Pose(56.1,20.4, Math.toRadians(110)); // Pose for Third group of Shots
+    private final Pose endPose = new Pose(31, 27, Math.toRadians(90)); // End position
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
-    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath;
+    private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;
 
 
     //ENUM DEFINING STATES FOR AUTO PATH.  YOU MUST HAVE A WAIT STEP AFTER ANY STEP THAT MOVES THE ROBOT.
@@ -85,6 +86,8 @@ public class BHG_FarBlueAuto extends LinearOpMode {
         WAIT2,
         MOVE_TO_SHOOT3,
         SHOOT3,
+        MOVE_TO_END,
+        WAIT3,
         END
     }
 
@@ -180,6 +183,11 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                 .addPath(new BezierLine(secondIntakePose, thirdShotPose))
                 .setLinearHeadingInterpolation(secondIntakePose.getHeading(), thirdShotPose.getHeading())
                 .build();
+
+        endPath = follower.pathBuilder()
+                .addPath(new BezierLine(thirdShotPose, endPose))
+                .setLinearHeadingInterpolation(thirdShotPose.getHeading(), endPose.getHeading())
+                .build();
     }
 
     /*
@@ -223,6 +231,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
             case MOVE_TO_SHOOT2:  //Move back to shooting position
                 follower.setMaxPower(1);
                 follower.followPath(secondShotPath);
+                shooter.setVelocity(855);
                 shooterState = ShooterState.IDLE;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
@@ -258,6 +267,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
             case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
                 follower.setMaxPower(1);
                 follower.followPath(thirdShotPath);
+                shooter.setVelocity(855);
                 shooterState = ShooterState.IDLE;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT3;
@@ -271,21 +281,21 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                     //}
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
-                        autoState = AutoState.END;
+                        autoState = AutoState.MOVE_TO_END;
                     }
                 }
                 break;
 
-//            case MOVE_TO_END:
-//                follower.followPath(endPath);
-//                autoState = AutoState.WAIT3;
-//                break;
-//
-//            case WAIT3:
-//                if(!follower.isBusy()) {
-//                    autoState = AutoState.END;
-//                }
-//                break;
+            case MOVE_TO_END:
+                follower.followPath(endPath);
+                autoState = AutoState.WAIT3;
+                break;
+
+            case WAIT3:
+                if(!follower.isBusy()) {
+                    autoState = AutoState.END;
+                }
+                break;
 
 
             case END: //Always have an END.  Seems to be recommended to keep it empty.
@@ -326,7 +336,7 @@ public class BHG_FarBlueAuto extends LinearOpMode {
                 break;
 
             case SHOOT_THIRD:
-                if (timer.milliseconds() > 2500) {
+                if (timer.milliseconds() > 3000) {
                     servoMovement();
                     shooterState = ShooterState.STOP_INTAKES;
                 }

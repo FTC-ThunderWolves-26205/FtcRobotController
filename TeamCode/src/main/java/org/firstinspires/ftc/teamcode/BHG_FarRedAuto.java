@@ -43,7 +43,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1750;
+    private double TARGET_SHOOTER_VELOCITY = 1710;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
@@ -231,6 +231,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
             case MOVE_TO_SHOOT2:  //Move back to shooting position
                 follower.setMaxPower(1);
                 follower.followPath(secondShotPath);
+                shooter.setVelocity(855);
                 shooterState = ShooterState.IDLE;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
@@ -266,6 +267,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
             case MOVE_TO_SHOOT3: //  Move back to shooting position. Expecting to have trouble bumping into gate
                 follower.setMaxPower(1);
                 follower.followPath(thirdShotPath);
+                shooter.setVelocity(855);
                 shooterState = ShooterState.IDLE;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT3;
@@ -335,7 +337,7 @@ public class BHG_FarRedAuto extends LinearOpMode {
                 break;
 
             case SHOOT_THIRD:
-                if (timer.milliseconds() > 2500) {
+                if (timer.milliseconds() > 3000) {
                     servoMovement();
                     shooterState = ShooterState.STOP_INTAKES;
                 }

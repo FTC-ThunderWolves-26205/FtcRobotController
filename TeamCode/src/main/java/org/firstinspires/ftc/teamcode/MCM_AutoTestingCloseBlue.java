@@ -292,6 +292,8 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
 
             case WAIT3:
                 if(!follower.isBusy()) {
+                    MCM_PoseStorage.poseX = follower.getPose().getX();
+                    MCM_PoseStorage.poseY = follower.getPose().getY();
                     autoState = AutoState.END;
                 }
                 break;

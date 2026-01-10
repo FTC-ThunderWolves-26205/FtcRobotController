@@ -99,6 +99,7 @@ public class MCM_TeleOp extends LinearOpMode {
 
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, MCM_PoseStorage.poseX, MCM_PoseStorage.poseY, AngleUnit.DEGREES, MCM_PoseStorage.poseHeading));
         waitForStart();
         shooterTimer.reset();
         servoTimer.reset();
@@ -131,10 +132,10 @@ public class MCM_TeleOp extends LinearOpMode {
                 speed = NORMAL_SPEED;
             }
 
-            if(gamepad1.a && posTimer.milliseconds() > 2000) {
-                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 39, 33, AngleUnit.DEGREES, 90));
-                posTimer.reset();
-            }
+//            if(gamepad1.a && posTimer.milliseconds() > 2000) {
+//                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 39, 33, AngleUnit.DEGREES, 90));
+//                posTimer.reset();
+//            }
 
             if(gamepad1.dpad_up && servoTimer.milliseconds() > 750) {
                 servo.setPosition(servo.getPosition()+0.05);
@@ -229,8 +230,8 @@ public class MCM_TeleOp extends LinearOpMode {
             Pose goalPose = new Pose(9,141,90);
 
             if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
-                gamepad1.rumble(100);
                 gamepad1.setLedColor(0,0,100,100);
+
             } else {
                 gamepad1.setLedColor(100,0,0,100);
             }

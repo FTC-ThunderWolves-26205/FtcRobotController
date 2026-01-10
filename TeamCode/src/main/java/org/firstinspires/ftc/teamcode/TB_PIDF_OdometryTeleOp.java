@@ -131,11 +131,6 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
                 speed = NORMAL_SPEED;
             }
 
-            if(gamepad1.a && posTimer.milliseconds() > 2000) {
-                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 39, 33, AngleUnit.DEGREES, 90));
-                posTimer.reset();
-            }
-
             if(gamepad1.dpad_up && servoTimer.milliseconds() > 750) {
                 servo.setPosition(servo.getPosition()+0.05);
                 servoTimer.reset();
@@ -161,7 +156,7 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             }
 
             if(gamepad2.b) {
-                targetShooterVelocity = 1520;
+                targetShooterVelocity = 1490;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {

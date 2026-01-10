@@ -26,7 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Close Blue - BEN", group = "Autonomous")
+@Autonomous(name = "Close Blue", group = "Autonomous")
 
 public class TB_CloseBlueAuto extends LinearOpMode {
 

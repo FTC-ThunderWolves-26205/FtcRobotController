@@ -25,7 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Far Red - BEN", group = "Autonomous")
+@Autonomous(name = "Far Red", group = "Autonomous")
 
 public class TB_FarRedAuto extends LinearOpMode {
 
@@ -43,7 +43,7 @@ public class TB_FarRedAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1710;
+    private double TARGET_SHOOTER_VELOCITY = 1700;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;

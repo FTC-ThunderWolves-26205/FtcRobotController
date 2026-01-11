@@ -169,7 +169,7 @@ public class BHG_ShootThree extends LinearOpMode {
                 break;
 
             case SHOOT_THIRD:
-                if (timer.milliseconds() > 2500) {
+                if (timer.milliseconds() > 3000) {
                     servoMovement();
                     shooterState = ShooterState.STOP_INTAKES;
                 }

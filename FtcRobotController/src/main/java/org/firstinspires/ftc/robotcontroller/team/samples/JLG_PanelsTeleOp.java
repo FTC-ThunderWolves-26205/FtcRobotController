@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.robotcontroller.team.samples;
 
 /*
 This code performs four basic functions:  basic mecanum drive + power-based shooter control + intakes on/off + servo increments.
@@ -62,7 +62,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+//import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp(name = "PIDF TeleOp - Panels", group = "Teleop")
 @Config
@@ -90,10 +90,10 @@ public class JLG_PanelsTeleOp extends LinearOpMode {
     private static final double RESTING_SERVO = 0.35, LAUNCHING_SERVO = 0;
     private final double NORMAL_SPEED = 0.75, SLOW_SPEED = 0.25, TURBO_SPEED = 1.0, SERVO_DURATION = 750;
     private PIDFController shooterControl;
-    public static double kP = TB_Constants.kP;
-    public static double kI = TB_Constants.kI;
-    public static double kD = TB_Constants.kD;
-    public static double kF = TB_Constants.kF;
+//    public static double kP = TB_Constants.kP;
+//    public static double kI = TB_Constants.kI;
+//    public static double kD = TB_Constants.kD;
+//    public static double kF = TB_Constants.kF;
     private GoBildaPinpointDriver pinpoint;
 
 
@@ -105,10 +105,10 @@ public class JLG_PanelsTeleOp extends LinearOpMode {
         double targetShooterVelocity = 0, iIntakePower = 0, oIntakePower = 0, output;
         boolean isServo = false;
 
-        shooterControl = new PIDFController(kP, kI, kD, kF);
-
-        // ### PANELS SETUP - START ###
-        follower = Constants.createFollower(hardwareMap);
+//        shooterControl = new PIDFController(kP, kI, kD, kF);
+//
+//        // ### PANELS SETUP - START ###
+//        follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose());
         telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
         fieldManager = PanelsField.INSTANCE.getField();

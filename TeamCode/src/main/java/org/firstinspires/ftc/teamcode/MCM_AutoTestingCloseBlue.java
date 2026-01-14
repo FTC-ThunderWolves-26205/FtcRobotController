@@ -309,7 +309,7 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
     }
 
     /*
-    Here is our FSM for shooting three.
+    Here is our FSM for shooting three..
      */
     private void shootThree() {
         double shooterVelocity = shooter.getVelocity();

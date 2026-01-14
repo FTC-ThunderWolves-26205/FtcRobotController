@@ -43,7 +43,7 @@ public class TB_CloseRedAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1460;
+    private double TARGET_SHOOTER_VELOCITY = 1470;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
@@ -202,7 +202,6 @@ public class TB_CloseRedAuto extends LinearOpMode {
 
             case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
-                    TARGET_SHOOTER_VELOCITY = 1500;
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
@@ -231,7 +230,6 @@ public class TB_CloseRedAuto extends LinearOpMode {
                 follower.followPath(secondShotPath);
                 shooter.setVelocity(855);
                 shooterState = ShooterState.IDLE;
-                TARGET_SHOOTER_VELOCITY = 1480;
                 reverseIntakes = ReverseIntakes.START_REVERSE_INTAKES;
                 autoState = AutoState.SHOOT2;
                 break;

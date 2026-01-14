@@ -290,6 +290,8 @@ public class TB_CloseRedAuto extends LinearOpMode {
 
             case WAIT3: // Wait after movement
                 if(!follower.isBusy()) {
+                    MCM_PoseStorage.poseX = pinpoint.getPosX(DistanceUnit.INCH);
+                    MCM_PoseStorage.poseY = pinpoint.getPosY(DistanceUnit.INCH);
                     autoState = AutoState.END;
                 }
                 break;

@@ -293,6 +293,8 @@ public class TB_FarBlueAuto extends LinearOpMode {
 
             case WAIT3:
                 if(!follower.isBusy()) {
+                    MCM_PoseStorage.poseX = pinpoint.getPosX(DistanceUnit.INCH);
+                    MCM_PoseStorage.poseY = pinpoint.getPosY(DistanceUnit.INCH);
                     autoState = AutoState.END;
                 }
                 break;

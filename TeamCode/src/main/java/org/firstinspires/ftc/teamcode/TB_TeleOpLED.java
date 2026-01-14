@@ -86,6 +86,8 @@ public class TB_TeleOpLED extends LinearOpMode {
     public static double kD = 0.00001;
     public static double kF = 0.00045;
 
+    private Pose goalPose;
+
     private GoBildaPinpointDriver pinpoint;
 
 
@@ -103,15 +105,26 @@ public class TB_TeleOpLED extends LinearOpMode {
         shooterControl = new PIDFController(kP, kI, kD, kF);
         FtcDashboard dashboard = FtcDashboard.getInstance();
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, MCM_PoseStorage.poseX, MCM_PoseStorage.poseY, AngleUnit.DEGREES, MCM_PoseStorage.poseHeading));
+
         waitForStart();
         shooterTimer.reset();
         servoTimer.reset();
         iIntakeTimer.reset();
         oIntakeTimer.reset();
         posTimer.reset();
+
+
         while(opModeIsActive()) {
 
             pinpoint.update();
+
+
+            if (MCM_PoseStorage.poseX <= 72) {
+                goalPose = new Pose(9, 141, 90);
+            } else {
+                goalPose = new Pose(135,141,90);
+            }
+
 
             double forward = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
@@ -230,7 +243,7 @@ public class TB_TeleOpLED extends LinearOpMode {
             telemetry.addData("Theta", pinpoint.getHeading(AngleUnit.DEGREES));
 
             Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH),pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
-            Pose goalPose = new Pose(9,141,90);
+
 
             if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
                 left_LED_Red.off();

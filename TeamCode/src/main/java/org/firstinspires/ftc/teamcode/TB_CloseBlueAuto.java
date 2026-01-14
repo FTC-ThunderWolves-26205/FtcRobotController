@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class TB_CloseBlueAuto extends LinearOpMode {
 
     private DcMotorEx shooter;
-    private DcMotor iIntake;
+    private DcMotorEx iIntake;
     private DcMotor oIntake;
     private Servo servo;
     private static final double RESTING_SERVO = TB_Constants.RESTING_SERVO;
@@ -68,7 +68,7 @@ public class TB_CloseBlueAuto extends LinearOpMode {
     private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(130)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(10.37,59.5, Math.toRadians(180)); // Pose for the middle 3 artifacts
     private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130)); // Pose for third group of Shots
-    private final Pose endPose = new Pose(21, 69.5, Math.toRadians(90)); // Pose for end
+    private final Pose endPose = new Pose(25, 69.5, Math.toRadians(90)); // Pose for end
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;
@@ -209,7 +209,7 @@ public class TB_CloseBlueAuto extends LinearOpMode {
                 }
                 if (shooterState == ShooterState.END) {
                     shooter.setPower(0);
-                    intakeSet(1, 0.85);
+                    intakeSet(680, 0.85);
                     autoState = AutoState.INTAKE1;
                 }
 
@@ -251,7 +251,7 @@ public class TB_CloseBlueAuto extends LinearOpMode {
                 break;
 
             case INTAKE2: //  Turn on Intakes, drives to get the middle three
-                intakeSet(1, 0.85);
+                intakeSet(680, 0.85);
                 follower.setMaxPower(0.8);
                 follower.followPath(secondIntakePath);
                 autoState = AutoState.WAIT2;
@@ -328,7 +328,7 @@ public class TB_CloseBlueAuto extends LinearOpMode {
             case SHOOT_TWO:
 
                 if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && timer.milliseconds() > 1000) {
-                    intakeSet(1, 0.8);
+                    intakeSet(680, 0.7);
                     timer.reset();
                     shooterState = ShooterState.SHOOT_THIRD;
                 }
@@ -388,7 +388,7 @@ public class TB_CloseBlueAuto extends LinearOpMode {
 
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
         oIntake = hardwareMap.get(DcMotor.class, "OID");
-        iIntake = hardwareMap.get(DcMotor.class, "IID");
+        iIntake = hardwareMap.get(DcMotorEx.class, "IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -410,7 +410,7 @@ public class TB_CloseBlueAuto extends LinearOpMode {
     }
 
     private void intakeSet(double iIntakePower, double oIntakePower) {
-        iIntake.setPower(iIntakePower);
+        iIntake.setVelocity(iIntakePower);
         oIntake.setPower(oIntakePower);
     }
 

@@ -45,6 +45,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -52,10 +53,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@TeleOp(name = "PIDF TeleOp - Odometry & Trig", group = "Teleop")
+@TeleOp(name = "Team Bot TeleOp - LED", group = "Teleop")
 @Config
 
-public class MCM_TeleOp extends LinearOpMode {
+public class TB_TeleOpLED extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;
@@ -64,6 +65,8 @@ public class MCM_TeleOp extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
+    private LED left_LED_Green;
+    private LED left_LED_Red;
 
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
@@ -230,10 +233,11 @@ public class MCM_TeleOp extends LinearOpMode {
             Pose goalPose = new Pose(9,141,90);
 
             if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
-                gamepad1.setLedColor(0,0,100,100);
-
+                left_LED_Red.off();
+                left_LED_Green.on();
             } else {
-                gamepad1.setLedColor(100,0,0,100);
+                left_LED_Green.off();
+                left_LED_Red.on();
             }
 
             telemetry.addData("Distance",getDistance(botPose,goalPose));
@@ -257,6 +261,9 @@ public class MCM_TeleOp extends LinearOpMode {
         oIntake = hardwareMap.get(DcMotor.class,"OID");
         iIntake = hardwareMap.get(DcMotor.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
+
+        left_LED_Green = hardwareMap.get(LED.class,"LED0");
+        left_LED_Red = hardwareMap.get(LED.class,"LED1");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

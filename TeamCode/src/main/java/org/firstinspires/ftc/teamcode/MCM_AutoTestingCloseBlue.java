@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 public class MCM_AutoTestingCloseBlue extends LinearOpMode {
 
     private DcMotorEx shooter;
-    private DcMotor iIntake;
+    private DcMotorEx iIntake;
     private DcMotor oIntake;
     private Servo servo;
     private static final double RESTING_SERVO = TB_Constants.RESTING_SERVO;
@@ -209,7 +209,7 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
                 }
                 if (shooterState == ShooterState.END) {
                     shooter.setPower(0);
-                    intakeSet(1, 0.85);
+                    intakeSet(680, 0.85);
                     autoState = AutoState.INTAKE1;
                 }
 
@@ -251,7 +251,7 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
                 break;
 
             case INTAKE2: //  Turn on Intakes, drives to get the middle three
-                intakeSet(1, 0.85);
+                intakeSet(680, 0.85);
                 follower.setMaxPower(0.8);
                 follower.followPath(secondIntakePath);
                 autoState = AutoState.WAIT2;
@@ -292,8 +292,8 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
 
             case WAIT3:
                 if(!follower.isBusy()) {
-                    MCM_PoseStorage.poseX = follower.getPose().getX();
-                    MCM_PoseStorage.poseY = follower.getPose().getY();
+                    MCM_PoseStorage.poseX = pinpoint.getPosX(DistanceUnit.INCH);
+                    MCM_PoseStorage.poseY = pinpoint.getPosY(DistanceUnit.INCH);
                     autoState = AutoState.END;
                 }
                 break;
@@ -330,7 +330,7 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
             case SHOOT_TWO:
 
                 if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && timer.milliseconds() > 1000) {
-                    intakeSet(1, 0.8);
+                    intakeSet(680, 0.7);
                     timer.reset();
                     shooterState = ShooterState.SHOOT_THIRD;
                 }
@@ -390,7 +390,7 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
 
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
         oIntake = hardwareMap.get(DcMotor.class, "OID");
-        iIntake = hardwareMap.get(DcMotor.class, "IID");
+        iIntake = hardwareMap.get(DcMotorEx.class, "IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -412,7 +412,7 @@ public class MCM_AutoTestingCloseBlue extends LinearOpMode {
     }
 
     private void intakeSet(double iIntakePower, double oIntakePower) {
-        iIntake.setPower(iIntakePower);
+        iIntake.setVelocity(iIntakePower);
         oIntake.setPower(oIntakePower);
     }
 

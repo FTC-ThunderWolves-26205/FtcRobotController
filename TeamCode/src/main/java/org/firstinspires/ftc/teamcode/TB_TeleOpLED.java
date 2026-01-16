@@ -82,7 +82,7 @@ public class TB_TeleOpLED extends LinearOpMode {
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
     private PIDFController shooterControl;
     public static double kP = 0.004;
-    public static double kI = 0.0;
+    public static double kI = 0;
     public static double kD = 0.00001;
     public static double kF = 0.00045;
 

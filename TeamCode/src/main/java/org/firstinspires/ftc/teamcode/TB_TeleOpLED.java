@@ -178,7 +178,7 @@ public class TB_TeleOpLED extends LinearOpMode {
             }
 
             if(gamepad2.b) {
-                targetShooterVelocity = 1520;
+                targetShooterVelocity = 1490;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {

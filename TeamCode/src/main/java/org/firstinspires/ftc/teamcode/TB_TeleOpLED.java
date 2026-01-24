@@ -71,6 +71,7 @@ public class TB_TeleOpLED extends LinearOpMode {
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
     private ElapsedTime iIntakeTimer = new ElapsedTime();
+    private ElapsedTime intakeFast = new ElapsedTime();
     private ElapsedTime oIntakeTimer = new ElapsedTime();
     private ElapsedTime posTimer = new ElapsedTime();
     private static final double RESTING_SERVO = TB_Constants.RESTING_SERVO;
@@ -81,10 +82,10 @@ public class TB_TeleOpLED extends LinearOpMode {
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
     private PIDFController shooterControl;
-    public static double kP = 0.004;
-    public static double kI = 0;
-    public static double kD = 0.00001;
-    public static double kF = 0.00045;
+    public static double kP = TB_Constants.kP;
+    public static double kI = TB_Constants.kI;
+    public static double kD = TB_Constants.kD;
+    public static double kF = TB_Constants.kF;
 
     private Pose goalPose;
 
@@ -110,6 +111,7 @@ public class TB_TeleOpLED extends LinearOpMode {
         shooterTimer.reset();
         servoTimer.reset();
         iIntakeTimer.reset();
+        intakeFast.reset();
         oIntakeTimer.reset();
         posTimer.reset();
 
@@ -174,14 +176,14 @@ public class TB_TeleOpLED extends LinearOpMode {
             }
 
             if(gamepad2.x) {
-                targetShooterVelocity = 1780;
+                targetShooterVelocity = 1580;
             }
 
             if(gamepad2.b) {
-                targetShooterVelocity = 1480;
+                targetShooterVelocity = 1300;
             }
 
-            if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
+            if(gamepad2.y && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
                 servo.setPosition(LAUNCHING_SERVO);
                 servoTimer.reset();
                 isServo = true;
@@ -193,8 +195,13 @@ public class TB_TeleOpLED extends LinearOpMode {
                 isServo = false;
             }
 
+            if(gamepad2.a && intakeFast.milliseconds() > 500) {
+                iIntakePower = 1;
+                intakeFast.reset();
+            }
+
             if(gamepad2.right_bumper && iIntakeTimer.milliseconds() > 250) {
-                iIntakePower = (iIntakePower == 0) ? 1 : 0;
+                iIntakePower = (iIntakePower == 0) ? 0.55 : 0;
                 iIntakeTimer.reset();
             }
             if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 250) {

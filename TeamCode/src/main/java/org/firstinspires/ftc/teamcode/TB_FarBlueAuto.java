@@ -209,7 +209,7 @@ public class TB_FarBlueAuto extends LinearOpMode {
                 }
                 if (shooterState == ShooterState.END) {
                     shooter.setPower(0);
-                    intakeSet(680, 0.85);
+                    intakeSet(1, 0.85);
                     autoState = AutoState.INTAKE1;
                 }
 
@@ -251,7 +251,7 @@ public class TB_FarBlueAuto extends LinearOpMode {
                 break;
 
             case INTAKE2: //  Turn on Intakes, drives to get the middle three
-                intakeSet(680, 0.85);
+                intakeSet(1, 0.85);
                 follower.setMaxPower(0.8);
                 follower.followPath(secondIntakePath);
                 autoState = AutoState.WAIT2;
@@ -331,7 +331,7 @@ public class TB_FarBlueAuto extends LinearOpMode {
             case SHOOT_TWO:
 
                 if (atTargetSpeed(shooter.getVelocity(), targetShooterVelocity, RANGE) && timer.milliseconds() > 1000) {
-                    intakeSet(680, 0.7);
+                    intakeSet(1, 0.7);
                     timer.reset();
                     shooterState = ShooterState.SHOOT_THIRD;
                 }

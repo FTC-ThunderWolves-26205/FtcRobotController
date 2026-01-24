@@ -152,11 +152,11 @@ public class TB_PIDF_OdometryTeleOp extends LinearOpMode {
             }
 
             if(gamepad2.x) {
-                targetShooterVelocity = 1780;
+                targetShooterVelocity = 1580;
             }
 
             if(gamepad2.b) {
-                targetShooterVelocity = 1480;
+                targetShooterVelocity = 1300;
             }
 
             if(gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {

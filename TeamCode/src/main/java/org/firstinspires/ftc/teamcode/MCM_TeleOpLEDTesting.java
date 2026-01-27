@@ -56,7 +56,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 @TeleOp(name = "Team Bot TeleOp - LED", group = "Teleop")
 @Config
 
-public class TB_TeleOpLED extends LinearOpMode {
+public class MCM_TeleOpLEDTesting extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;

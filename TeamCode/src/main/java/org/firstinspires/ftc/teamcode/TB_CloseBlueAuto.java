@@ -139,6 +139,10 @@ public class TB_CloseBlueAuto extends LinearOpMode {
             autonomousPathUpdate(); // This calls our state machine.  It's all we need in the main loop
             //Ben wants to put the state machine here instead and just get rid of autonomousPathUpdate().  Considering it...
 
+            MCM_PoseStorage.poseX = pinpoint.getPosX(DistanceUnit.INCH);
+            MCM_PoseStorage.poseY = pinpoint.getPosY(DistanceUnit.INCH);
+            MCM_PoseStorage.poseHeading = pinpoint.getHeading(AngleUnit.DEGREES);
+
 
             telemetry.addData("x", follower.getPose().getX());
             telemetry.addData("y", follower.getPose().getY());
@@ -292,8 +296,6 @@ public class TB_CloseBlueAuto extends LinearOpMode {
 
             case WAIT3:
                 if(!follower.isBusy()) {
-                    MCM_PoseStorage.poseX = pinpoint.getPosX(DistanceUnit.INCH);
-                    MCM_PoseStorage.poseY = pinpoint.getPosY(DistanceUnit.INCH);
                     autoState = AutoState.END;
                 }
                 break;

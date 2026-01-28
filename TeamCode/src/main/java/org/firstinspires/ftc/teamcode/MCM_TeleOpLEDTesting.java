@@ -67,6 +67,8 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
     private Servo servo;
     private LED left_LED_Green;
     private LED left_LED_Red;
+    private LED right_LED_Green;
+    private LED right_LED_Red;
 
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
@@ -81,11 +83,14 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
     private final double TURBO_SPEED = 1.0;
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
+    private final double INNER_PRECISION = 1;
+    private final double OUTER_PRECISION = 4;// In degrees
     private PIDFController shooterControl;
     public static double kP = TB_Constants.kP;
     public static double kI = TB_Constants.kI;
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
+
 
     private Pose goalPose;
 
@@ -116,7 +121,7 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
         posTimer.reset();
 
 
-        while(opModeIsActive()) {
+        while (opModeIsActive()) {
 
             pinpoint.update();
 
@@ -124,7 +129,7 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
             if (MCM_PoseStorage.poseX <= 72) {
                 goalPose = new Pose(9, 141, 90);
             } else {
-                goalPose = new Pose(135,141,90);
+                goalPose = new Pose(135, 141, 90);
             }
 
 
@@ -144,7 +149,7 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 speed = TURBO_SPEED;
-            } else if(gamepad1.left_bumper) {
+            } else if (gamepad1.left_bumper) {
                 speed = SLOW_SPEED;
             } else {
                 speed = NORMAL_SPEED;
@@ -155,12 +160,12 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
 //                posTimer.reset();
 //            }
 
-            if(gamepad1.dpad_up && servoTimer.milliseconds() > 750) {
-                servo.setPosition(servo.getPosition()+0.05);
+            if (gamepad1.dpad_up && servoTimer.milliseconds() > 750) {
+                servo.setPosition(servo.getPosition() + 0.05);
                 servoTimer.reset();
             }
-            if(gamepad1.dpad_down && servoTimer.milliseconds() > 750) {
-                servo.setPosition(servo.getPosition()-0.05);
+            if (gamepad1.dpad_down && servoTimer.milliseconds() > 750) {
+                servo.setPosition(servo.getPosition() - 0.05);
                 servoTimer.reset();
             }
 
@@ -170,46 +175,46 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
             } else if (gamepad2.dpad_down && shooterTimer.milliseconds() > 500) {
                 targetShooterVelocity -= 20;
                 shooterTimer.reset();
-            } else if(gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
+            } else if (gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
                 targetShooterVelocity = (targetShooterVelocity == 0) ? 2200 : 0;
                 shooterTimer.reset();
             }
 
-            if(gamepad2.x) {
+            if (gamepad2.x) {
                 targetShooterVelocity = 1580;
             }
 
-            if(gamepad2.b) {
+            if (gamepad2.b) {
                 targetShooterVelocity = 1300;
             }
 
-            if(gamepad2.y && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
+            if (gamepad2.a && servoTimer.milliseconds() > SERVO_DURATION && !isServo) {
                 servo.setPosition(LAUNCHING_SERVO);
                 servoTimer.reset();
                 isServo = true;
             }
 
-            if(servoTimer.milliseconds() > SERVO_DURATION && isServo) {
+            if (servoTimer.milliseconds() > SERVO_DURATION && isServo) {
                 servo.setPosition(RESTING_SERVO);
                 servoTimer.reset();
                 isServo = false;
             }
 
-            if(gamepad2.a && intakeFast.milliseconds() > 500) {
+            if (gamepad2.a && intakeFast.milliseconds() > 500) {
                 iIntakePower = 1;
                 intakeFast.reset();
             }
 
-            if(gamepad2.right_bumper && iIntakeTimer.milliseconds() > 250) {
+            if (gamepad2.right_bumper && iIntakeTimer.milliseconds() > 250) {
                 iIntakePower = (iIntakePower == 0) ? 0.55 : 0;
                 iIntakeTimer.reset();
             }
-            if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 250) {
+            if (gamepad2.left_bumper && oIntakeTimer.milliseconds() > 250) {
                 oIntakePower = (oIntakePower == 0) ? 1 : 0;
                 oIntakeTimer.reset();
             }
 
-            if(gamepad2.right_trigger > 0 && iIntakeTimer.milliseconds() > 250) {
+            if (gamepad2.right_trigger > 0 && iIntakeTimer.milliseconds() > 250) {
                 iIntakePower = (iIntakePower == 0) ? -1 : 0;
                 iIntakeTimer.reset();
             }
@@ -219,13 +224,11 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
             }
 
 
-
-
             double shooterVelocity = shooter.getVelocity();
             iIntake.setPower(iIntakePower);
             oIntake.setPower(clampFull(oIntakePower));
 
-            if(targetShooterVelocity == 0) {
+            if (targetShooterVelocity == 0) {
                 output = 0;
             } else {
                 output = shooterControl.calculate(shooterVelocity, targetShooterVelocity);
@@ -249,19 +252,66 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
             telemetry.addData("Y (in)", pinpoint.getPosY(DistanceUnit.INCH));
             telemetry.addData("Theta", pinpoint.getHeading(AngleUnit.DEGREES));
 
-            Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH),pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
+            Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH), pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
 
 
-            if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
+//            if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
+//                left_LED_Red.off();
+//                left_LED_Green.on();
+//            } else {
+//                left_LED_Green.off();
+//                left_LED_Red.on();
+//            }
+
+            if (Math.abs(getRelAngle(botPose, goalPose)) <= INNER_PRECISION) {
+                //left- green
+                //right- green
+                
                 left_LED_Red.off();
                 left_LED_Green.on();
-            } else {
+
+                right_LED_Red.off();
+                right_LED_Green.on();
+            } else if (Math.abs(getRelAngle(botPose, goalPose)) <= OUTER_PRECISION && (getRelAngle(botPose, goalPose)) >= 0) {
+                //left- green
+                //right- amber
+
+                left_LED_Red.off();
+                left_LED_Green.on();
+
+                right_LED_Green.on();
+                right_LED_Red.on();
+            } else if (Math.abs(getRelAngle(botPose, goalPose)) <= OUTER_PRECISION && (getRelAngle(botPose, goalPose)) <= 0) {
+                //left- amber
+                //right- green
+
+                right_LED_Red.off();
+                right_LED_Green.on();
+
+                left_LED_Red.on();
+                left_LED_Green.on();
+            } else if ((getRelAngle(botPose, goalPose)) >= 0) {
+                //left- amber
+                //right- red
+
+                left_LED_Red.on();
+                left_LED_Green.on();
+
+                right_LED_Green.off();
+                right_LED_Red.on();
+            } else if ((getRelAngle(botPose, goalPose)) <= 0) {
+                //left- red
+                //right - amber
+
+                right_LED_Red.on();
+                right_LED_Green.on();
+
                 left_LED_Green.off();
                 left_LED_Red.on();
             }
 
-            telemetry.addData("Distance",getDistance(botPose,goalPose));
-            telemetry.addData("Relative Angle",getRelAngle(botPose,goalPose));
+            telemetry.addData("Distance", getDistance(botPose, goalPose));
+            telemetry.addData("Relative Angle", getRelAngle(botPose, goalPose));
 
             telemetry.addData("Target Velocity", targetShooterVelocity);
             telemetry.addData("Shooter Velocity", shooterVelocity);
@@ -272,18 +322,22 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
 
         }
     }
+
     private void hardwareStart() {
         frontRight = hardwareMap.get(DcMotor.class, "FR");
         frontLeft = hardwareMap.get(DcMotor.class, "FL");
         backRight = hardwareMap.get(DcMotor.class, "BR");
         backLeft = hardwareMap.get(DcMotor.class, "BL");
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
-        oIntake = hardwareMap.get(DcMotor.class,"OID");
-        iIntake = hardwareMap.get(DcMotor.class,"IID");
+        oIntake = hardwareMap.get(DcMotor.class, "OID");
+        iIntake = hardwareMap.get(DcMotor.class, "IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
-        left_LED_Green = hardwareMap.get(LED.class,"LED0");
-        left_LED_Red = hardwareMap.get(LED.class,"LED1");
+        left_LED_Green = hardwareMap.get(LED.class, "LED0");
+        left_LED_Red = hardwareMap.get(LED.class, "LED1");
+
+        right_LED_Green = hardwareMap.get(LED.class, "LED2");
+        right_LED_Red = hardwareMap.get(LED.class, "LED3");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -306,36 +360,48 @@ public class MCM_TeleOpLEDTesting extends LinearOpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
         //
-        telemetry.addData("Status","Initialized");
+        telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
     private double clampPos(double val) {
         return Math.max(0.0, Math.min(1.0, val));
     }
+
     private double clampFull(double val) {
         return Math.max(-1.0, Math.min(1.0, val));
     }
+
     private double clampServo(double val) {
         return Math.max(LAUNCHING_SERVO, Math.min(RESTING_SERVO, val));
     }
-    private double clampShoot(double val) { return Math.max(0.0, Math.min(2200, val));}
-    private double ticksPerSecondToRPM(double tps) { return tps * 60.0 / TICKS_PER_REV; }
-    private double getDistance(double x,double y,double x1, double y1) { // get distance between point (x,y) and (x1,y1)
-        return Math.sqrt(Math.pow(x1-x,2) + Math.pow(y1-y,2));
+
+    private double clampShoot(double val) {
+        return Math.max(0.0, Math.min(2200, val));
     }
-    private double getRelAngle(double x,double y, double h, double x1, double y1) {
-        double angle = 180 - (Math.asin((y1-y)/getDistance(x,y,x1,y1)));
+
+    private double ticksPerSecondToRPM(double tps) {
+        return tps * 60.0 / TICKS_PER_REV;
+    }
+
+    private double getDistance(double x, double y, double x1, double y1) { // get distance between point (x,y) and (x1,y1)
+        return Math.sqrt(Math.pow(x1 - x, 2) + Math.pow(y1 - y, 2));
+    }
+
+    private double getRelAngle(double x, double y, double h, double x1, double y1) {
+        double angle = 180 - (Math.asin((y1 - y) / getDistance(x, y, x1, y1)));
         return Math.abs(angle - h);
     }
+
     private double getDistance(Pose current, Pose goal) { // get distance between point (x,y) and (x1,y1)
-        return Math.sqrt(Math.pow(goal.getX()-current.getX(),2) + Math.pow(goal.getY()-current.getY(),2));
+        return Math.sqrt(Math.pow(goal.getX() - current.getX(), 2) + Math.pow(goal.getY() - current.getY(), 2));
     }
+
     private double getRelAngle(Pose current, Pose goal) {
-        double a = Math.toDegrees(Math.atan2(current.getX()- goal.getX(),goal.getY()-current.getY()));
-        telemetry.addData("A",a);
-        telemetry.addData("X difference",current.getX()- goal.getX());
-        telemetry.addData("Y difference",goal.getY()-current.getY());
+        double a = Math.toDegrees(Math.atan2(current.getX() - goal.getX(), goal.getY() - current.getY()));
+        telemetry.addData("A", a);
+        telemetry.addData("X difference", current.getX() - goal.getX());
+        telemetry.addData("Y difference", goal.getY() - current.getY());
         return current.getHeading() - (90 + a); // for blue goal, 90 - a for red
     }
 

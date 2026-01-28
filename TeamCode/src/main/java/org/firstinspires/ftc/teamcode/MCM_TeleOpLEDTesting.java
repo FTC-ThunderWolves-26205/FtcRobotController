@@ -53,7 +53,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@TeleOp(name = "Team Bot TeleOp - LED", group = "Teleop")
+@TeleOp(name = "Team Bot TeleOp - LED Test Maddie", group = "Teleop")
 @Config
 
 public class MCM_TeleOpLEDTesting extends LinearOpMode {

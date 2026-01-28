@@ -167,17 +167,20 @@ public class JLG_ShootThreeTest extends LinearOpMode {
                     intakeSet(0.55, 0.85);
                     autoState = AutoState.MOVE_TO_SHOOT2;
                 }
+                break;
 
             case MOVE_TO_SHOOT2:  //Back up from starting position.
                 follower.setMaxPower(0.8);
                 follower.followPath(firstShotPath);
-                autoState = AutoState.SHOOT2;
+                autoState = AutoState.WAIT1;
                 break;
 
             case WAIT1:  //Wait after movement. Stop intakes.
                 if (!follower.isBusy()) {
                     intakeSet(0, 0);
+                    shooterState = ShooterState.IDLE;
                     autoState = AutoState.SHOOT2;
+
                 }
                 break;
 

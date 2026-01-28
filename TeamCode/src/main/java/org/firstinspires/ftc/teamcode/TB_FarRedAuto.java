@@ -1,6 +1,6 @@
 //Use this base code to build auto.  Use visualizer to get pose points and build paths.
 //See comments below.
-//DO NOT TOUCH SHOOT THREE METHOD.
+//DO NOT TOUCH SHOOT THREE METHOD./
 
 
 package org.firstinspires.ftc.teamcode;

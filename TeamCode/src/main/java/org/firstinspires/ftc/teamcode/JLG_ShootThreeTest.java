@@ -25,7 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Close Red", group = "Autonomous")
+@Autonomous(name = "Auto Testing", group = "Autonomous")
 
 public class JLG_ShootThreeTest extends LinearOpMode {
 

@@ -65,8 +65,8 @@ public class TB_TeleOpLED extends LinearOpMode {
     private DcMotor iIntake;
     private DcMotor oIntake;
     private Servo servo;
-    private LED left_LED_Green;
-    private LED left_LED_Red;
+//    private LED left_LED_Green;
+//    private LED left_LED_Red;
 
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
@@ -252,13 +252,13 @@ public class TB_TeleOpLED extends LinearOpMode {
             Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH),pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
 
 
-            if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
-                left_LED_Red.off();
-                left_LED_Green.on();
-            } else {
-                left_LED_Green.off();
-                left_LED_Red.on();
-            }
+//            if (Math.abs(getRelAngle(botPose,goalPose)) <= 5) {
+//                left_LED_Red.off();
+//                left_LED_Green.on();
+//            } else {
+//                left_LED_Green.off();
+//                left_LED_Red.on();
+//            }
 
             telemetry.addData("Distance",getDistance(botPose,goalPose));
             telemetry.addData("Relative Angle",getRelAngle(botPose,goalPose));
@@ -282,8 +282,8 @@ public class TB_TeleOpLED extends LinearOpMode {
         iIntake = hardwareMap.get(DcMotor.class,"IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
-        left_LED_Green = hardwareMap.get(LED.class,"LED0");
-        left_LED_Red = hardwareMap.get(LED.class,"LED1");
+//        left_LED_Green = hardwareMap.get(LED.class,"LED0");
+//        left_LED_Red = hardwareMap.get(LED.class,"LED1");
 
         shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 

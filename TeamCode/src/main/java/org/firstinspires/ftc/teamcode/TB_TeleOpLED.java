@@ -176,7 +176,7 @@ public class TB_TeleOpLED extends LinearOpMode {
             }
 
             if(gamepad2.x) {
-                targetShooterVelocity = 1580;
+                targetShooterVelocity = 1620;
             }
 
             if(gamepad2.b) {
@@ -195,13 +195,13 @@ public class TB_TeleOpLED extends LinearOpMode {
                 isServo = false;
             }
 
-            if(gamepad2.a && intakeFast.milliseconds() > 500) {
-                iIntakePower = 1;
-                intakeFast.reset();
-            }
+//            if(gamepad2.y && intakeFast.milliseconds() > 500) {
+//                iIntakePower = 1;
+//                intakeFast.reset();
+//            }
 
             if(gamepad2.right_bumper && iIntakeTimer.milliseconds() > 250) {
-                iIntakePower = (iIntakePower == 0) ? 0.55 : 0;
+                iIntakePower = (iIntakePower == 0) ? 1 : 0;
                 iIntakeTimer.reset();
             }
             if(gamepad2.left_bumper && oIntakeTimer.milliseconds() > 250) {

@@ -53,10 +53,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@TeleOp(name = "Team Bot TeleOp - AutoShoot&Align - Test", group = "Teleop")
+@TeleOp(name = "Team Bot TeleOp - AutoShoot", group = "Teleop")
 @Config
 
-public class MCM_TeleOpTesting extends LinearOpMode {
+public class TB_TeleOpAutoShoot extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor frontLeft;
     private DcMotor backRight;

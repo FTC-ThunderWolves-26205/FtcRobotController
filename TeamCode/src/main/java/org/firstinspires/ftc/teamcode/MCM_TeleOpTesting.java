@@ -125,6 +125,8 @@ public class MCM_TeleOpTesting extends LinearOpMode {
 
             pinpoint.update();
 
+            Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH), pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
+
 
             if (MCM_PoseStorage.poseX <= 72) {
                 goalPose = new Pose(9, 141, 90);
@@ -229,7 +231,7 @@ public class MCM_TeleOpTesting extends LinearOpMode {
 
             shooter.setPower(output);
 
-            Pose botPose = new Pose(pinpoint.getPosX(DistanceUnit.INCH), pinpoint.getPosY(DistanceUnit.INCH), pinpoint.getHeading(AngleUnit.DEGREES));
+
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target Velocity", targetShooterVelocity);

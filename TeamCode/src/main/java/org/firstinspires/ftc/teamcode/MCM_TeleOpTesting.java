@@ -90,6 +90,8 @@ public class MCM_TeleOpTesting extends LinearOpMode {
     public static double kI = TB_Constants.kI;
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
+    private double autoVelocity;
+    private double distance;
 
 
     private Pose goalPose;
@@ -134,6 +136,9 @@ public class MCM_TeleOpTesting extends LinearOpMode {
                 goalPose = new Pose(135, 141, 90);
             }
 
+            //y = 591.9123 + 36.61393*x - 0.6971521*x^2 + 0.005668831*x^3 - 0.00001569973*x^4
+            distance = getDistance(botPose,goalPose);
+            autoVelocity = 591.9123 + 36.61393*distance - 0.6971521*Math.pow(distance,2) + 0.005668831*Math.pow(distance,3) - 0.00001569973*Math.pow(distance,4);
 
             double forward = -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
@@ -174,7 +179,7 @@ public class MCM_TeleOpTesting extends LinearOpMode {
                 targetShooterVelocity -= 20;
                 shooterTimer.reset();
             } else if (gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
-                targetShooterVelocity = (targetShooterVelocity == 0) ? 2200 : 0;
+                targetShooterVelocity = (targetShooterVelocity == 0) ? autoVelocity : 0;
                 shooterTimer.reset();
             }
 
@@ -242,6 +247,7 @@ public class MCM_TeleOpTesting extends LinearOpMode {
             packet.put("Theta Position", pinpoint.getHeading(AngleUnit.DEGREES));
             packet.put("Distance to Goal", getDistance(botPose, goalPose));
             packet.put("Relative Angle", getRelAngle(botPose, goalPose));
+            packet.put("Auto Velocity", autoVelocity);
 
 
             dashboard.sendTelemetryPacket(packet);

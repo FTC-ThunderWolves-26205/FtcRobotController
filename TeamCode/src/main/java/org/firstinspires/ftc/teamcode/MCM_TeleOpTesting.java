@@ -261,6 +261,53 @@ public class MCM_TeleOpTesting extends LinearOpMode {
                 left_LED_Red.on();
             }
 
+//            if (Math.abs(getRelAngle(botPose, goalPose)) <= INNER_PRECISION) {
+//                //left- green
+//                //right- green
+//
+//                left_LED_Red.off();
+//                left_LED_Green.on();
+//
+//                right_LED_Red.off();
+//                right_LED_Green.on();
+//            } else if (Math.abs(getRelAngle(botPose, goalPose)) <= OUTER_PRECISION && (getRelAngle(botPose, goalPose)) >= 0) {
+//                //left- green
+//                //right- amber
+//
+//                left_LED_Red.off();
+//                left_LED_Green.on();
+//
+//                right_LED_Green.on();
+//                right_LED_Red.on();
+//            } else if (Math.abs(getRelAngle(botPose, goalPose)) <= OUTER_PRECISION && (getRelAngle(botPose, goalPose)) <= 0) {
+//                //left- amber
+//                //right- green
+//
+//                right_LED_Red.off();
+//                right_LED_Green.on();
+//
+//                left_LED_Red.on();
+//                left_LED_Green.on();
+//            } else if ((getRelAngle(botPose, goalPose)) >= 0) {
+//                //left- amber
+//                //right- red
+//
+//                left_LED_Red.on();
+//                left_LED_Green.on();
+//
+//                right_LED_Green.off();
+//                right_LED_Red.on();
+//            } else if ((getRelAngle(botPose, goalPose)) <= 0) {
+//                //left- red
+//                //right - amber
+//
+//                right_LED_Red.on();
+//                right_LED_Green.on();
+//
+//                left_LED_Green.off();
+//                left_LED_Red.on();
+//            }
+
 
 
             telemetry.addData("Distance", getDistance(botPose, goalPose));

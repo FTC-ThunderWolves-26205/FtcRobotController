@@ -67,8 +67,7 @@ public class TB_TeleOp extends LinearOpMode {
     private Servo servo;
     private LED left_LED_Green;
     private LED left_LED_Red;
-    private LED right_LED_Green;
-    private LED right_LED_Red;
+
 
     private ElapsedTime shooterTimer = new ElapsedTime();
     private ElapsedTime servoTimer = new ElapsedTime();
@@ -83,9 +82,7 @@ public class TB_TeleOp extends LinearOpMode {
     private final double TURBO_SPEED = 1.0;
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
-    private final double INNER_PRECISION = 1;
-    private final double OUTER_PRECISION = 4;// In degrees
-    private PIDFController shooterControl;
+     private PIDFController shooterControl;
     public static double kP = TB_Constants.kP;
     public static double kI = TB_Constants.kI;
     public static double kD = TB_Constants.kD;
@@ -212,10 +209,7 @@ public class TB_TeleOp extends LinearOpMode {
                 targetShooterVelocity -= 20;
                 shooterTimer.reset();
             }
-//            else if (gamepad2.dpad_right && shooterTimer.milliseconds() > 500) {
-//               targetShooterVelocity = (targetShooterVelocity == 0) ? autoVelocity : 0;
-//              shooterTimer.reset();
-//           }
+
 
             if (gamepad2.x) {
                 targetShooterVelocity = 1580;
@@ -293,7 +287,7 @@ public class TB_TeleOp extends LinearOpMode {
 
 
 
-            if (Math.abs(getRelAngle(botPose,goalPose)) <= 1) {
+            if (Math.abs(getRelAngle(botPose,goalPose)) <= 4) {
                 left_LED_Red.off();
                 left_LED_Green.on();
             } else {

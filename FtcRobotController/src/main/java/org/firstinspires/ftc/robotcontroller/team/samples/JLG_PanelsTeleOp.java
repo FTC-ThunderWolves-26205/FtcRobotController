@@ -51,6 +51,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector; // Assuming this is correct from your last fix
 import com.pedropathing.util.PoseHistory;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -66,6 +67,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 @TeleOp(name = "PIDF TeleOp - Panels", group = "Teleop")
 @Config
+@Disabled
 public class JLG_PanelsTeleOp extends LinearOpMode {
 
     private DcMotor frontRight, frontLeft, backRight, backLeft, iIntake, oIntake;

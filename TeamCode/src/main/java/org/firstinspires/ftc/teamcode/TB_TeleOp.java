@@ -82,7 +82,7 @@ public class TB_TeleOp extends LinearOpMode {
     private final double TURBO_SPEED = 1.0;
     private final double SERVO_DURATION = 750;
     private final double TICKS_PER_REV = 28.0; // GoBilda 6k Motor has 28 Ticks per Rev per GoBilda website
-     private PIDFController shooterControl;
+    private PIDFController shooterControl;
     public static double kP = TB_Constants.kP;
     public static double kI = TB_Constants.kI;
     public static double kD = TB_Constants.kD;
@@ -161,15 +161,15 @@ public class TB_TeleOp extends LinearOpMode {
 
             if (gamepad1.a) {
                 if (relativeAngle < -4 && relativeAngle > -180) {
-                    frontLeft.setPower(-0.4);
-                    frontRight.setPower(0.4);
-                    backLeft.setPower(-0.4);
-                    backRight.setPower(0.4);
-                } else if (relativeAngle > 4 && relativeAngle < 180) {
                     frontLeft.setPower(0.4);
                     frontRight.setPower(-0.4);
                     backLeft.setPower(0.4);
                     backRight.setPower(-0.4);
+                } else if (relativeAngle > 4 && relativeAngle < 180) {
+                    frontLeft.setPower(-0.4);
+                    frontRight.setPower(0.4);
+                    backLeft.setPower(-0.4);
+                    backRight.setPower(0.4);
                 } else {
                     frontLeft.setPower(0);
                     frontRight.setPower(0);
@@ -377,11 +377,15 @@ public class TB_TeleOp extends LinearOpMode {
     }
 
     private double getRelAngle(Pose current, Pose goal) {
-        double a = Math.toDegrees(Math.atan2(current.getX() - goal.getX(), goal.getY() - current.getY()));
+        double a = Math.toDegrees(Math.atan2(goal.getY()-current.getY(), goal.getX() - current.getX()));
         telemetry.addData("A", a);
-        telemetry.addData("X difference", current.getX() - goal.getX());
+        telemetry.addData("X difference", goal.getX() - current.getX());
         telemetry.addData("Y difference", goal.getY() - current.getY());
-        return current.getHeading() - (90 + a); // for blue goal, 90 - a for red
+        double relAngle = a - current.getHeading();
+        while (relAngle > 180) relAngle -= 360;
+        while (relAngle <= -180) relAngle += 360;
+
+        return relAngle;
     }
 
 }

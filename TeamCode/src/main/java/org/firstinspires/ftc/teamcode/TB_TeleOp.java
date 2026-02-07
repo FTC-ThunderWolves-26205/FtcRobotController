@@ -62,7 +62,7 @@ public class TB_TeleOp extends LinearOpMode {
     private DcMotor backRight;
     private DcMotor backLeft;
     private DcMotorEx shooter;
-    private DcMotor iIntake;
+    private DcMotorEx iIntake;
     private DcMotor oIntake;
     private Servo servo;
     private LED left_LED_Green;
@@ -130,9 +130,9 @@ public class TB_TeleOp extends LinearOpMode {
 
 
             if (MCM_PoseStorage.poseX <= 72) {
-                goalPose = new Pose(9, 141, 90);
+                goalPose = new Pose(8, 141, 90);
             } else {
-                goalPose = new Pose(135, 141, 90);
+                goalPose = new Pose(136, 141, 90);
             }
 
             //y = 591.9123 + 36.61393*x - 0.6971521*x^2 + 0.005668831*x^3 - 0.00001569973*x^4
@@ -160,12 +160,12 @@ public class TB_TeleOp extends LinearOpMode {
             double backRightPower = (forward + strafe - turn) * speed;
 
             if (gamepad1.a) {
-                if (relativeAngle < -4 && relativeAngle > -180) {
+                if (relativeAngle < -3 && relativeAngle > -180) {
                     frontLeft.setPower(0.4);
                     frontRight.setPower(-0.4);
                     backLeft.setPower(0.4);
                     backRight.setPower(-0.4);
-                } else if (relativeAngle > 4 && relativeAngle < 180) {
+                } else if (relativeAngle > 3 && relativeAngle < 180) {
                     frontLeft.setPower(-0.4);
                     frontRight.setPower(0.4);
                     backLeft.setPower(-0.4);
@@ -234,7 +234,7 @@ public class TB_TeleOp extends LinearOpMode {
 
 
             if (gamepad2.right_bumper && iIntakeTimer.milliseconds() > 250) {
-                iIntakePower = (iIntakePower == 0) ? 0.55 : 0;
+                iIntakePower = (iIntakePower == 0) ? 2930 : 0;
                 iIntakeTimer.reset();
             }
             if (gamepad2.left_bumper && oIntakeTimer.milliseconds() > 250) {
@@ -243,7 +243,7 @@ public class TB_TeleOp extends LinearOpMode {
             }
 
             if (gamepad2.right_trigger > 0 && iIntakeTimer.milliseconds() > 250) {
-                iIntakePower = (iIntakePower == 0) ? -1 : 0;
+                iIntakePower = (iIntakePower == 0) ? -2930 : 0;
                 iIntakeTimer.reset();
             }
             if (gamepad2.left_trigger > 0 && oIntakeTimer.milliseconds() > 250) {
@@ -253,7 +253,7 @@ public class TB_TeleOp extends LinearOpMode {
 
 
             double shooterVelocity = shooter.getVelocity();
-            iIntake.setPower(iIntakePower);
+            iIntake.setVelocity(iIntakePower);
             oIntake.setPower(clampFull(oIntakePower));
 
             if (targetShooterVelocity == 0) {
@@ -276,6 +276,7 @@ public class TB_TeleOp extends LinearOpMode {
             packet.put("Distance to Goal", getDistance(botPose, goalPose));
             packet.put("Relative Angle", getRelAngle(botPose, goalPose));
             packet.put("Auto Velocity", autoVelocity);
+            packet.put("Inner Intake Velocity", iIntake.getVelocity());
 
 
             dashboard.sendTelemetryPacket(packet);
@@ -300,6 +301,7 @@ public class TB_TeleOp extends LinearOpMode {
 
             telemetry.addData("Target Velocity", targetShooterVelocity);
             telemetry.addData("Shooter Velocity", shooterVelocity);
+            telemetry.addData("Inner Intake Velocity", iIntake.getVelocity());
             telemetry.update();
 
         }
@@ -312,7 +314,7 @@ public class TB_TeleOp extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "BL");
         shooter = hardwareMap.get(DcMotorEx.class, "SD");
         oIntake = hardwareMap.get(DcMotor.class, "OID");
-        iIntake = hardwareMap.get(DcMotor.class, "IID");
+        iIntake = hardwareMap.get(DcMotorEx.class, "IID");
         servo = hardwareMap.get(Servo.class, "servo");
 
         left_LED_Green = hardwareMap.get(LED.class, "LED0");

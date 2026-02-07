@@ -65,9 +65,9 @@ public class TB_CloseBlueAuto extends LinearOpMode {
     private final Pose startPose = new Pose(25, 129, Math.toRadians(143)); // Start position
     private final Pose firstShotPose = new Pose(57.6, 77.8, Math.toRadians(130)); // Pose for First Group of Shots
     private final Pose firstIntakePose = new Pose(16.9, 85.1, Math.toRadians(178)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(130)); // Pose for Second Group of Shots
+    private final Pose secondShotPose = new Pose(59,  84, Math.toRadians(135)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(10.37,59.5, Math.toRadians(180)); // Pose for the middle 3 artifacts
-    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(130)); // Pose for third group of Shots
+    private final Pose thirdShotPose = new Pose(59,83, Math.toRadians(135)); // Pose for third group of Shots
     private final Pose endPose = new Pose(25, 69.5, Math.toRadians(90)); // Pose for end
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.

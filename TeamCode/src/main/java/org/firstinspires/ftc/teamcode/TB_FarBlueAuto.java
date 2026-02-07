@@ -43,7 +43,7 @@ public class TB_FarBlueAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1580;
+    private double TARGET_SHOOTER_VELOCITY = 1540;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;

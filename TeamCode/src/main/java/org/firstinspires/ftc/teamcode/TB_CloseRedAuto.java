@@ -43,7 +43,7 @@ public class TB_CloseRedAuto extends LinearOpMode {
     public static double kD = TB_Constants.kD;
     public static double kF = TB_Constants.kF;
     private double output;
-    private double TARGET_SHOOTER_VELOCITY = 1300;
+    private double TARGET_SHOOTER_VELOCITY;
     private double targetShooterVelocity;
     private boolean intakeReverse = false;
     private boolean intakeReverseStarted = false;
@@ -62,10 +62,10 @@ public class TB_CloseRedAuto extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     private final Pose startPose = new Pose(123.6, 123.4, Math.toRadians(37)); // Start position
-    private final Pose firstShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(125.9, 83.3, Math.toRadians(355)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(83.8, 83.8, Math.toRadians(43)); // Pose for Second Group of Shots
-    private final Pose secondIntakePose = new Pose(132,60.7, Math.toRadians(356)); // Pose for Intake middle group of artifacts
+    private final Pose firstShotPose = new Pose(84.8, 76.4, Math.toRadians(47)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(127, 83.3, Math.toRadians(2)); // Pose for Intake 3 more
+    private final Pose secondShotPose = new Pose(83.8, 84, Math.toRadians(43)); // Pose for Second Group of Shots
+    private final Pose secondIntakePose = new Pose(133.5,60.7, Math.toRadians(356)); // Pose for Intake middle group of artifacts
     private final Pose thirdShotPose = new Pose(83.8,84, Math.toRadians(43)); // Pose for Third group of Shots
     private final Pose endPose = new Pose(120,72.1,Math.toRadians(90)); // Pose for end position
 
@@ -206,6 +206,7 @@ public class TB_CloseRedAuto extends LinearOpMode {
 
             case SHOOT1:  //Shoot three after movement, then turn on Intakes
                 if (!follower.isBusy()) {
+                    TARGET_SHOOTER_VELOCITY = 1320;
                     shootThree();
                 }
                 if (shooterState == ShooterState.END) {
@@ -240,10 +241,8 @@ public class TB_CloseRedAuto extends LinearOpMode {
 
             case SHOOT2:  //Reverse intakes, then shoot second group of artifacts
                 if (!follower.isBusy()) {
-                    //intakeReverse();
-                    //if (reverseIntakes == ReverseIntakes.END) {
+                    TARGET_SHOOTER_VELOCITY = 1290;
                     shootThree();
-                    // }
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
                         autoState = AutoState.INTAKE2;
@@ -276,10 +275,7 @@ public class TB_CloseRedAuto extends LinearOpMode {
 
             case SHOOT3: //  Reverse Intakes, then shoot
                 if (!follower.isBusy()) {
-                    //intakeReverse();
-                    //if (reverseIntakes == ReverseIntakes.END) {
                     shootThree();
-                    //}
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
                         autoState = AutoState.MOVE_TO_END;

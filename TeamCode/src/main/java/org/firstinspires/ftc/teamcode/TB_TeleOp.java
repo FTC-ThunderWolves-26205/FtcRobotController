@@ -380,9 +380,6 @@ public class TB_TeleOp extends LinearOpMode {
 
     private double getRelAngle(Pose current, Pose goal) {
         double a = Math.toDegrees(Math.atan2(goal.getY()-current.getY(), goal.getX() - current.getX()));
-        telemetry.addData("A", a);
-        telemetry.addData("X difference", goal.getX() - current.getX());
-        telemetry.addData("Y difference", goal.getY() - current.getY());
         double relAngle = a - current.getHeading();
         while (relAngle > 180) relAngle -= 360;
         while (relAngle <= -180) relAngle += 360;

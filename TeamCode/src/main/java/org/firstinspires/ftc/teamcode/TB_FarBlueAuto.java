@@ -62,11 +62,11 @@ public class TB_FarBlueAuto extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     private final Pose startPose = new Pose(56,9 , Math.toRadians(90)); // Start position
-    private final Pose firstShotPose = new Pose(56.3, 20.7, Math.toRadians(110)); // Pose for First Group of Shots
-    private final Pose firstIntakePose = new Pose(10, 36, Math.toRadians(180)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(56.1, 20.6, Math.toRadians(110)); // Pose for Second Group of Shots
+    private final Pose firstShotPose = new Pose(56.3, 20.7, Math.toRadians(115)); // Pose for First Group of Shots
+    private final Pose firstIntakePose = new Pose(9.5, 36, Math.toRadians(180)); // Pose for Intake 3 more
+    private final Pose secondShotPose = new Pose(56.1, 20.6, Math.toRadians(115)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(9,59.7, Math.toRadians(180)); // Pose for Intake middle group of artifacts
-    private final Pose thirdShotPose = new Pose(56.1,20.4, Math.toRadians(110)); // Pose for Third group of Shots
+    private final Pose thirdShotPose = new Pose(56.1,20.4, Math.toRadians(115)); // Pose for Third group of Shots
     private final Pose endPose = new Pose(31, 27, Math.toRadians(90)); // End position
 
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
@@ -279,10 +279,7 @@ public class TB_FarBlueAuto extends LinearOpMode {
 
             case SHOOT3: //  Reverse Intakes, then shoot
                 if (!follower.isBusy()) {
-                    //intakeReverse();
-                    //if (reverseIntakes == ReverseIntakes.END) {
                     shootThree();
-                    //}
                     if (shooterState == ShooterState.END) {
                         shooter.setPower(0);
                         autoState = AutoState.MOVE_TO_END;
@@ -340,7 +337,7 @@ public class TB_FarBlueAuto extends LinearOpMode {
                 break;
 
             case SHOOT_THIRD:
-                if (timer.milliseconds() > 3000) {
+                if (timer.milliseconds() > 1500) {
                     servoMovement();
                     shooterState = ShooterState.STOP_INTAKES;
                 }

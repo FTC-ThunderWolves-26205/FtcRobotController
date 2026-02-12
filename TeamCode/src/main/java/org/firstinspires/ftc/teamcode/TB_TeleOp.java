@@ -160,12 +160,12 @@ public class TB_TeleOp extends LinearOpMode {
             double backRightPower = (forward + strafe - turn) * speed;
 
             if (gamepad1.a) {
-                if (relativeAngle < -3 && relativeAngle > -180) {
+                if (relativeAngle < -2.85 && relativeAngle > -180) {
                     frontLeft.setPower(0.4);
                     frontRight.setPower(-0.4);
                     backLeft.setPower(0.4);
                     backRight.setPower(-0.4);
-                } else if (relativeAngle > 3 && relativeAngle < 180) {
+                } else if (relativeAngle > 2.85 && relativeAngle < 180) {
                     frontLeft.setPower(-0.4);
                     frontRight.setPower(0.4);
                     backLeft.setPower(-0.4);

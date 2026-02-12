@@ -62,11 +62,11 @@ public class TB_FarRedAuto extends LinearOpMode {
     ADD A COMMENT AFTER EACH POSE DESCRIBING WHAT IT IS.
      */
     private final Pose startPose = new Pose(87.5,9 , Math.toRadians(90)); // Start position
-    private final Pose firstShotPose = new Pose(89.1, 14.5, Math.toRadians(65)); // Pose for First Group of Shots
+    private final Pose firstShotPose = new Pose(89.1, 14.5, Math.toRadians(67)); // Pose for First Group of Shots
     private final Pose firstIntakePose = new Pose(135, 35.5, Math.toRadians(0)); // Pose for Intake 3 more
-    private final Pose secondShotPose = new Pose(89.1, 14.5, Math.toRadians(65)); // Pose for Second Group of Shots
+    private final Pose secondShotPose = new Pose(89.1, 14.5, Math.toRadians(67)); // Pose for Second Group of Shots
     private final Pose secondIntakePose = new Pose(135.4,56, Math.toRadians(0)); // Pose for Intake middle group of artifacts
-    private final Pose thirdShotPose = new Pose(89.1,14.5, Math.toRadians(65)); // Pose for Third group of Shots
+    private final Pose thirdShotPose = new Pose(89.1,14.5, Math.toRadians(67)); // Pose for Third group of Shots
     private final Pose endPose = new Pose(106, 16, Math.toRadians(90)); // Pose for end
     //PATHS GO HERE.  USE DESCRIPTIVE NAMES.
     private PathChain firstShotPath, firstIntakePath, secondShotPath, secondIntakePath, thirdShotPath, endPath;
